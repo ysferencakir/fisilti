@@ -13,6 +13,7 @@ class User(AbstractUser):
     is_banned = models.BooleanField(default=False)
     banned_until = models.DateTimeField(null=True, blank=True)
     country = models.CharField(max_length=100, blank=True)
+    ad_soyad = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
