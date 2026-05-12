@@ -10,7 +10,8 @@ const COUNTRIES = [
 export default function Register() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
-        username: '', email: '', password: '', country: ''
+        ad_soyad: '', username: '', email: '',
+        password: '', country: ''
     });
     const [agreed, setAgreed] = useState(false);
     const [error, setError] = useState('');
@@ -48,6 +49,13 @@ export default function Register() {
                 <h2 style={styles.title}>Kayit Ol</h2>
                 {error && <p style={styles.error}>{error}</p>}
                 <form onSubmit={handleSubmit}>
+                    <input
+                        style={styles.input}
+                        name="ad_soyad"
+                        placeholder="Ad Soyad"
+                        value={form.ad_soyad}
+                        onChange={handleChange}
+                    />
                     <input
                         style={styles.input}
                         name="username"
