@@ -4,8 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenBlacklistView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenBlacklistView
 from django.contrib.auth import authenticate
+from django.core.mail import send_mail
 from datetime import timedelta
 import logging
 
@@ -15,7 +16,7 @@ from .serializers import (
     PasswordResetRequestSerializer, PasswordResetConfirmSerializer,
     UserSerializer, MeSerializer
 )
-from .utils import validate_username, validate_password_strength, check_login_throttle, check_email_verification_throttle, log_security_event
+from .utils import check_login_throttle, check_email_verification_throttle, log_security_event
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
@@ -29,8 +30,13 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             verification = EmailVerification.create_for_user(user)
-            if settings.DEBUG:
-                logger.debug(f'Email verification code for {user.email}: {verification.code}')
+            send_mail(
+                subject='Fısıltı — E-posta Doğrulama',
+                message=f'Doğrulama kodunuz: {verification.code}\n\n(Bu kod 10 dakika geçerlidir.)',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
             return Response({'message': 'Kayıt başarılı.'}, status=201)
         return Response(serializer.errors, status=400)
 
@@ -46,7 +52,7 @@ class VerifyEmailView(APIView):
         email = serializer.validated_data['email']
         code = serializer.validated_data['code']
 
-        throttle_ok, fail_count = check_email_verification_throttle(email)
+        throttle_ok, _ = check_email_verification_throttle(email)
         if not throttle_ok:
             log_security_event('EMAIL_VERIFY_THROTTLE', email=email)
             return Response({'detail': 'Çok fazla deneme.'}, status=429)
@@ -58,18 +64,15 @@ class VerifyEmailView(APIView):
             ).latest('created_at')
 
             if verification.is_expired:
-                LoginAttempt.objects.create(email=email, is_successful=False)
                 return Response({'detail': 'Kod süresi dolmuş.'}, status=400)
 
             if verification.code != code:
-                LoginAttempt.objects.create(email=email, is_successful=False)
                 return Response({'detail': 'Kod hatalı.'}, status=400)
 
             verification.is_used = True
             verification.save()
             user.is_email_verified = True
             user.save()
-            LoginAttempt.objects.create(email=email, is_successful=True)
             log_security_event('EMAIL_VERIFIED', user=user)
             return Response({'message': 'E-posta doğrulandı.'})
 
@@ -89,9 +92,16 @@ class ResendVerificationView(APIView):
 
         try:
             user = User.objects.get(email=email)
+            if user.is_email_verified:
+                return Response({'detail': 'E-posta zaten doğrulanmış.'}, status=400)
             verification = EmailVerification.create_for_user(user)
-            if settings.DEBUG:
-                logger.debug(f'Email verification code (resend) for {user.email}: {verification.code}')
+            send_mail(
+                subject='Fısıltı — Yeni Doğrulama Kodu',
+                message=f'Yeni doğrulama kodunuz: {verification.code}\n\n(Bu kod 10 dakika geçerlidir.)',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
             return Response({'message': 'Yeni kod gönderildi.'})
         except User.DoesNotExist:
             return Response({'detail': 'Kullanıcı bulunamadı.'}, status=404)
@@ -107,7 +117,7 @@ class LoginView(APIView):
         if not email or not password:
             return Response({'detail': 'E-posta ve şifre gereklidir.'}, status=400)
 
-        throttle_ok, fail_count = check_login_throttle(email)
+        throttle_ok, _ = check_login_throttle(email)
         if not throttle_ok:
             log_security_event('LOGIN_THROTTLE', email=email)
             return Response({'detail': 'Çok fazla hatalı deneme.'}, status=429)
@@ -159,17 +169,22 @@ class PasswordResetRequestView(APIView):
         email = serializer.validated_data['email']
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(email=email, is_active=True)
             token = PasswordResetToken.objects.create(
                 user=user,
                 expires_at=timezone.now() + timedelta(hours=1)
             )
             reset_link = f"{settings.PASSWORD_RESET_FRONTEND_URL}?token={token.token}"
-            if settings.DEBUG:
-                logger.debug(f'Password reset link for {email}: {reset_link}')
+            send_mail(
+                subject='Fısıltı — Şifre Sıfırlama',
+                message=f'Şifrenizi sıfırlamak için aşağıdaki linke tıklayın:\n\n{reset_link}\n\n(Bu link 1 saat geçerlidir.)',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
             log_security_event('PASSWORD_RESET_REQUESTED', user=user)
         except User.DoesNotExist:
-            pass
+            pass  # E-posta yoksa bile aynı yanıtı dön (enum attack'ı önlemek için)
 
         return Response({'message': 'Şifre sıfırlama linki gönderildi.'})
 

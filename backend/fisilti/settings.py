@@ -132,9 +132,14 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': LOGS_DIR / 'django.log',
         },
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
     },
     'loggers': {
         'django': {'handlers': ['file'], 'level': 'ERROR'},
+        # Security event'leri hem dosyaya hem terminale yaz
+        'apps': {'handlers': ['file', 'console'], 'level': 'WARNING', 'propagate': False},
     },
 }
 

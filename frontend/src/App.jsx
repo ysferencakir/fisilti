@@ -12,20 +12,20 @@ const Admin = () => <div style={{ padding: '2rem' }}><h2>Admin Paneli</h2><p>Bu 
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useAuth();
-    if (loading) return <div style={{ padding: '2rem' }}>Yukleniyor...</div>;
+    if (loading) return <div style={{ padding: '2rem' }}>Yükleniyor...</div>;
     return user ? children : <Navigate to="/login" replace />;
 }
 
 function AdminRoute({ children }) {
     const { user, loading } = useAuth();
-    if (loading) return <div style={{ padding: '2rem' }}>Yukleniyor...</div>;
+    if (loading) return <div style={{ padding: '2rem' }}>Yükleniyor...</div>;
     if (!user) return <Navigate to="/login" replace />;
     return user.role === 'admin' ? children : <Navigate to="/" replace />;
 }
 
 function GuestRoute({ children }) {
     const { user, loading } = useAuth();
-    if (loading) return <div style={{ padding: '2rem' }}>Yukleniyor...</div>;
+    if (loading) return <div style={{ padding: '2rem' }}>Yükleniyor...</div>;
     return user ? <Navigate to="/" replace /> : children;
 }
 
