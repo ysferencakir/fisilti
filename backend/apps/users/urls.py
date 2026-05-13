@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
-
-
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     RegisterView, VerifyEmailView, ResendVerificationView,
     LoginView, LogoutView,
     PasswordResetRequestView, PasswordResetConfirmView,
-    UserListView, MeView, UserDetailView, AccountDeactivateView
+    UserListView, MeView, UserDetailView, AccountDeactivateView, AccountReactivateView
 )
 
 urlpatterns = [
@@ -25,5 +22,6 @@ urlpatterns = [
     path('users/', UserListView.as_view()),
     path('users/me/', MeView.as_view()),
     path('users/me/delete/', AccountDeactivateView.as_view()),
+    path('users/reactivate/', AccountReactivateView.as_view()),
     path('users/<str:username>/', UserDetailView.as_view()),
 ]

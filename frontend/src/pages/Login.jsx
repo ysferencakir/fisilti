@@ -22,12 +22,25 @@ export default function Login() {
             navigate('/');
         } catch (err) {
             const status = err.response?.status;
-            const detail = err.response?.data?.detail || '';
-            if (status === 429) setError('Cok fazla hatali deneme. Lutfen bekleyin.');
-            else if (status === 403 && detail.includes('askiya')) setError('Hesabiniz askiya alinmistir.');
-            else if (status === 403 && detail.includes('dogrulayin')) setError('E-postanizi dogrulayin.');
-            else if (status === 403 && detail.includes('pasife')) setError('Bu hesap pasife alinmistir.');
-            else setError('E-posta veya sifre hatali.');
+            const detail = err.response?.data?.detail || err.response?.data?.message || 'Bir hata oluştu';
+
+            if (status === 429) {
+                setError('Çok fazla hatalı deneme. Lütfen bekleyin.');
+            } else if (status === 403) {
+                if (detail.includes('askıya')) {
+                    setError('Hesabınız askıya alınmıştır.');
+                } else if (detail.includes('doğrula')) {
+                    setError('E-postanızı doğrulayın.');
+                } else if (detail.includes('pasif')) {
+                    setError('Bu hesap pasife alınmıştır.');
+                } else {
+                    setError(detail);
+                }
+            } else if (status === 401) {
+                setError('E-posta veya şifre hatalı.');
+            } else {
+                setError(detail);
+            }
         } finally {
             setLoading(false);
         }
@@ -36,13 +49,13 @@ export default function Login() {
     return (
         <div style={styles.container}>
             <div style={styles.card}>
-                <h2 style={styles.title}>Giris Yap</h2>
+                <h2 style={styles.title}>Giriş Yap</h2>
                 {error && (
                     <div>
                         <p style={styles.error}>{error}</p>
-                        {error.includes('dogrulayin') && (
+                        {error.includes('doğrula') && (
                             <Link to="/verify-email" style={styles.link}>
-                                E-postanizi dogrulayin
+                                E-postanızı doğrulayın
                             </Link>
                         )}
                     </div>
@@ -56,28 +69,30 @@ export default function Login() {
                         value={form.email}
                         onChange={handleChange}
                         required
+                        disabled={loading}
                     />
                     <input
                         style={styles.input}
                         name="password"
                         type="password"
-                        placeholder="Sifre"
+                        placeholder="Şifre"
                         value={form.password}
                         onChange={handleChange}
                         required
+                        disabled={loading}
                     />
                     <div style={styles.forgotRow}>
                         <Link to="/password-reset" style={styles.link}>
-                            Sifremi Unuttum
+                            Şifremi Unuttum
                         </Link>
                     </div>
                     <button style={styles.button} type="submit" disabled={loading}>
-                        {loading ? 'Giris yapiliyor...' : 'Giris Yap'}
+                        {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
                     </button>
                 </form>
                 <p style={styles.registerText}>
-                    Hesabiniz yok mu?{' '}
-                    <Link to="/register" style={styles.link}>Kayit Ol</Link>
+                    Hesabınız yok mu?{' '}
+                    <Link to="/register" style={styles.link}>Kayıt Ol</Link>
                 </p>
             </div>
         </div>

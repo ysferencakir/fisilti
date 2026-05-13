@@ -105,6 +105,8 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+PASSWORD_RESET_FRONTEND_URL = config('PASSWORD_RESET_FRONTEND_URL', default='http://localhost:5173/password-reset')
+
 CORS_ALLOWED_ORIGINS = [
     config('FRONTEND_URL', default='http://localhost:5173'),
 ]

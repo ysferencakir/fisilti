@@ -1,15 +1,15 @@
 # Fısıltı — Yusuf Eren Çakır
 
-**Rol:** Proje Yöneticisi / Web Geliştirici  
-**Modül:** Proje Altyapısı + Routing + Frontend Çekirdeği  
+**Rol:** Proje Yöneticisi / Web Geliştirici
+**Modül:** Proje Altyapısı + Routing + Frontend Çekirdeği
 **Branch adı:** `feature/yusuf-altyapi`
 
 ---
 
 ## Genel Bilgiler
 
-**Stack:** Django + DRF · React + Vite · PostgreSQL · JWT  
-**Backend:** http://localhost:8000  
+**Stack:** Django + DRF · React + Vite · PostgreSQL · JWT
+**Backend:** http://localhost:8000
 **Frontend:** http://localhost:5173
 
 ### Kurulum
@@ -23,6 +23,7 @@ cd ../frontend && npm install
 ```
 
 **PostgreSQL:**
+
 ```bash
 psql -U postgres
 CREATE DATABASE fisilti;
@@ -31,6 +32,7 @@ GRANT ALL PRIVILEGES ON DATABASE fisilti TO fisilti_user;
 ```
 
 **Çalıştırma:**
+
 ```bash
 # Terminal 1
 cd backend && python manage.py runserver
@@ -108,6 +110,7 @@ urlpatterns = [
 `settings.py` büyük ölçüde hazır. Aşağıdaki blokları ekle:
 
 **Loglama (OR-19, PV-11):**
+
 ```python
 import os
 LOGS_DIR = BASE_DIR / 'logs'
@@ -127,17 +130,20 @@ LOGGING = {
     },
 }
 ```
+
 > ⚠️ Log dosyasına asla şifre, token veya tam e-posta yazma. Username ya da ID yeterli.
 
 **Sayfalama (PR-5):**
 
 `REST_FRAMEWORK` dict'ine ekle:
+
 ```python
 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 'PAGE_SIZE': 20,
 ```
 
 **Önbellekleme — isteğe bağlı (PR-6):**
+
 ```python
 CACHES = {
     'default': {
@@ -147,6 +153,7 @@ CACHES = {
 ```
 
 **Test / Production ayrımı (OR-20):**
+
 - `.env`'deki `DEBUG=True/False` ile kontrol edilir — settings.py'de zaten `config('DEBUG')` var.
 - `DEBUG=False` iken `ALLOWED_HOSTS` production domain'ini içermeli.
 - Production'da `gunicorn` kullanılmalı (`runserver` sadece geliştirme içindir).
@@ -156,7 +163,7 @@ CACHES = {
 #### `docker-compose.yml`
 
 ```yaml
-version: '3.9'
+version: "3.9"
 
 services:
   db:
@@ -202,6 +209,7 @@ volumes:
 #### Yedekleme Scripti (SR-12, OR-4, TBD-09)
 
 `backup.sh` dosyası oluştur, root dizinine koy:
+
 ```bash
 #!/bin/bash
 mkdir -p backups
@@ -212,6 +220,7 @@ echo "Yedek alındı: backups/backup_$DATE.sql"
 ```
 
 Geri yükleme:
+
 ```bash
 docker compose exec -T db psql -U fisilti_user fisilti < backups/backup_TARIH.sql
 ```
@@ -227,15 +236,15 @@ Günlük cron için (sunucu üzerinde): `0 2 * * * cd /path/to/fisilti && bash b
 #### `src/api/index.js`
 
 ```javascript
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: "http://localhost:8000/api",
 });
 
 // Her isteğe token ekle
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -248,18 +257,21 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
       try {
-        const refresh = localStorage.getItem('refreshToken');
-        const { data } = await axios.post('http://localhost:8000/api/auth/token/refresh/', { refresh });
-        localStorage.setItem('accessToken', data.access);
+        const refresh = localStorage.getItem("refreshToken");
+        const { data } = await axios.post(
+          "http://localhost:8000/api/auth/token/refresh/",
+          { refresh },
+        );
+        localStorage.setItem("accessToken", data.access);
         original.headers.Authorization = `Bearer ${data.access}`;
         return api(original);
       } catch {
         localStorage.clear();
-        window.location.href = '/login';
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
@@ -270,8 +282,8 @@ export default api;
 #### `src/context/AuthContext.jsx`
 
 ```jsx
-import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../api';
+import { createContext, useContext, useState, useEffect } from "react";
+import api from "../api";
 
 const AuthContext = createContext(null);
 
@@ -280,9 +292,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (token) {
-      api.get('/users/me/')
+      api
+        .get("/users/me/")
         .then(({ data }) => setUser(data))
         .catch(() => localStorage.clear())
         .finally(() => setLoading(false));
@@ -294,17 +307,19 @@ export function AuthProvider({ children }) {
   // login() hataları fırlatır — Login.jsx try/catch ile yakalar
   // error.response.status değerine göre: 429 = throttle, 403 = ban/unverified, 401 = yanlış şifre
   const login = async (email, password) => {
-    const { data } = await api.post('/auth/login/', { email, password });
-    localStorage.setItem('accessToken', data.access);
-    localStorage.setItem('refreshToken', data.refresh);
-    const me = await api.get('/users/me/');
+    const { data } = await api.post("/auth/login/", { email, password });
+    localStorage.setItem("accessToken", data.access);
+    localStorage.setItem("refreshToken", data.refresh);
+    const me = await api.get("/users/me/");
     setUser(me.data);
     // Hata durumunda bu fonksiyon throw eder — Login.jsx'in catch bloğu error.response.status'u okur
   };
 
   const logout = async () => {
-    const refresh = localStorage.getItem('refreshToken');
-    try { await api.post('/auth/logout/', { refresh }); } catch {}
+    const refresh = localStorage.getItem("refreshToken");
+    try {
+      await api.post("/auth/logout/", { refresh });
+    } catch {}
     localStorage.clear();
     setUser(null);
   };
@@ -324,16 +339,16 @@ export const useAuth = () => useContext(AuthContext);
 #### `src/App.jsx`
 
 ```jsx
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import VerifyEmail from './pages/VerifyEmail';
-import PasswordReset from './pages/PasswordReset';  // Kadircan geliştirecek
-import Profile from './pages/Profile';
-import Admin from './pages/Admin';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import VerifyEmail from "./pages/VerifyEmail";
+import PasswordReset from "./pages/PasswordReset"; // Kadircan geliştirecek
+import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -345,7 +360,7 @@ function AdminRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <div>Yükleniyor...</div>;
   if (!user) return <Navigate to="/login" />;
-  return user.role === 'admin' ? children : <Navigate to="/" />;
+  return user.role === "admin" ? children : <Navigate to="/" />;
 }
 
 function GuestRoute({ children }) {
@@ -360,13 +375,48 @@ export default function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
-          <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <GuestRoute>
+                <Login />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <GuestRoute>
+                <Register />
+              </GuestRoute>
+            }
+          />
           <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/password-reset" element={<GuestRoute><PasswordReset /></GuestRoute>} />
+          <Route
+            path="/password-reset"
+            element={
+              <GuestRoute>
+                <PasswordReset />
+              </GuestRoute>
+            }
+          />
           <Route path="/profile/:username" element={<Profile />} />
-          <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <Admin />
+              </AdminRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
@@ -379,8 +429,8 @@ export default function App() {
 #### `src/components/Navbar.jsx`
 
 ```jsx
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -388,16 +438,25 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
-    <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', gap: '16px' }}>
-      <Link to="/"><strong>Fısıltı</strong></Link>
+    <nav
+      style={{
+        padding: "10px",
+        borderBottom: "1px solid #ccc",
+        display: "flex",
+        gap: "16px",
+      }}
+    >
+      <Link to="/">
+        <strong>Fısıltı</strong>
+      </Link>
       {user ? (
         <>
           <Link to={`/profile/${user.username}`}>{user.username}</Link>
-          {user.role === 'admin' && <Link to="/admin">Admin Panel</Link>}
+          {user.role === "admin" && <Link to="/admin">Admin Panel</Link>}
           <button onClick={handleLogout}>Çıkış Yap</button>
         </>
       ) : (
@@ -415,33 +474,33 @@ export default function Navbar() {
 
 ## Sana Ait Çapraz Kesim Gereksinimleri
 
-| Gereksinim | Ne Yapacaksın |
-|---|---|
-| SR-6: JWT oturum | SimpleJWT settings.py'de ayarlı — dokunmaya gerek yok |
-| SR-7: Oturum timeout | axios interceptor'da 401 → refresh → logout zinciri |
-| SR-8: Güvenlik | ORM kullan; `CORS_ALLOWED_ORIGINS` sadece frontend origin'i |
-| SR-12: Yedekleme | `backup.sh` scripti + günlük cron |
-| SR-13: HTTPS | Production'da nginx + SSL; geliştirmede HTTP |
-| PR-4: 100 kullanıcı | Docker + gunicorn workers |
-| PR-6: Önbellekleme | `CACHES` ayarı settings.py'ye ekle |
-| OR-19: Hata logu | `LOGGING` konfigürasyonu |
-| OR-20: Test/prod ayrımı | `.env`'deki `DEBUG` değişkeni ile |
-| PV-11: Log'larda hassas veri yok | Log'a şifre/token/email yazmama kuralı |
+| Gereksinim                       | Ne Yapacaksın                                               |
+| -------------------------------- | ----------------------------------------------------------- |
+| SR-6: JWT oturum                 | SimpleJWT settings.py'de ayarlı — dokunmaya gerek yok       |
+| SR-7: Oturum timeout             | axios interceptor'da 401 → refresh → logout zinciri         |
+| SR-8: Güvenlik                   | ORM kullan; `CORS_ALLOWED_ORIGINS` sadece frontend origin'i |
+| SR-12: Yedekleme                 | `backup.sh` scripti + günlük cron                           |
+| SR-13: HTTPS                     | Production'da nginx + SSL; geliştirmede HTTP                |
+| PR-4: 100 kullanıcı              | Docker + gunicorn workers                                   |
+| PR-6: Önbellekleme               | `CACHES` ayarı settings.py'ye ekle                          |
+| OR-19: Hata logu                 | `LOGGING` konfigürasyonu                                    |
+| OR-20: Test/prod ayrımı          | `.env`'deki `DEBUG` değişkeni ile                           |
+| PV-11: Log'larda hassas veri yok | Log'a şifre/token/email yazmama kuralı                      |
 
 ---
 
 ## Tamamlanma Kontrol Listesi
 
-- [ ] `apps/users/apps.py` — UsersConfig
-- [ ] `apps/posts/apps.py` — PostsConfig
-- [ ] `apps/follows/apps.py` — FollowsConfig
-- [ ] `apps/reports/apps.py` — ReportsConfig
-- [ ] `fisilti/urls.py` — tüm include'lar
-- [ ] `fisilti/settings.py` — LOGGING, PAGINATION, CACHES eklendi
-- [ ] `docker-compose.yml` — db + backend + frontend
-- [ ] `src/api/index.js` — axios instance + interceptors
-- [ ] `src/context/AuthContext.jsx`
-- [ ] `src/App.jsx` — Router + korumalı route'lar
-- [ ] `src/components/Navbar.jsx`
-- [ ] Yedekleme scripti (`backup.sh`)
-- [ ] `/password-reset` route'u App.jsx'e eklendi (Kadircan `PasswordReset.jsx`'i bitirdiğinde import et)
+- [x] `apps/users/apps.py` — UsersConfig
+- [x] `apps/posts/apps.py` — PostsConfig
+- [x] `apps/follows/apps.py` — FollowsConfig
+- [x] `apps/reports/apps.py` — ReportsConfig
+- [x] `fisilti/urls.py` — tüm include'lar
+- [x] `fisilti/settings.py` — LOGGING, PAGINATION, CACHES eklendi
+- [x] `docker-compose.yml` — db + backend + frontend
+- [x] `src/api/index.js` — axios instance + interceptors
+- [x] `src/context/AuthContext.jsx`
+- [x] `src/App.jsx` — Router + korumalı route'lar
+- [x] `src/components/Navbar.jsx`
+- [x] Yedekleme scripti (`backup.sh`)
+- [ ] `/password-reset` route'u — Kadircan `PasswordReset.jsx`'i bitirince App.jsx import'unu güncelle

@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenBlacklistView, TokenRefreshView
 from django.contrib.auth import authenticate
 from datetime import timedelta
+import logging
 
 from .models import User, EmailVerification, PasswordResetToken, LoginAttempt
 from .serializers import (
@@ -14,6 +15,10 @@ from .serializers import (
     PasswordResetRequestSerializer, PasswordResetConfirmSerializer,
     UserSerializer, MeSerializer
 )
+from .utils import validate_username, validate_password_strength, check_login_throttle, check_email_verification_throttle, log_security_event
+from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterView(APIView):
@@ -24,8 +29,9 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             verification = EmailVerification.create_for_user(user)
-            print(f"[DEV] Email: {user.email} Code: {verification.code}")
-            return Response({'message': 'Kayit basarili.'}, status=201)
+            if settings.DEBUG:
+                logger.debug(f'Email verification code for {user.email}: {verification.code}')
+            return Response({'message': 'Kayıt başarılı.'}, status=201)
         return Response(serializer.errors, status=400)
 
 
@@ -40,14 +46,10 @@ class VerifyEmailView(APIView):
         email = serializer.validated_data['email']
         code = serializer.validated_data['code']
 
-        ten_min_ago = timezone.now() - timedelta(minutes=10)
-        fail_count = LoginAttempt.objects.filter(
-            email=email,
-            attempted_at__gte=ten_min_ago,
-            is_successful=False
-        ).count()
-        if fail_count >= 5:
-            return Response({'detail': 'Cok fazla deneme.'}, status=429)
+        throttle_ok, fail_count = check_email_verification_throttle(email)
+        if not throttle_ok:
+            log_security_event('EMAIL_VERIFY_THROTTLE', email=email)
+            return Response({'detail': 'Çok fazla deneme.'}, status=429)
 
         try:
             user = User.objects.get(email=email)
@@ -57,21 +59,24 @@ class VerifyEmailView(APIView):
 
             if verification.is_expired:
                 LoginAttempt.objects.create(email=email, is_successful=False)
-                return Response({'detail': 'Kod suresi dolmus.'}, status=400)
+                return Response({'detail': 'Kod süresi dolmuş.'}, status=400)
 
             if verification.code != code:
                 LoginAttempt.objects.create(email=email, is_successful=False)
-                return Response({'detail': 'Kod hatali.'}, status=400)
+                return Response({'detail': 'Kod hatalı.'}, status=400)
 
             verification.is_used = True
             verification.save()
             user.is_email_verified = True
             user.save()
             LoginAttempt.objects.create(email=email, is_successful=True)
-            return Response({'message': 'E-posta dogrulandi.'})
+            log_security_event('EMAIL_VERIFIED', user=user)
+            return Response({'message': 'E-posta doğrulandı.'})
 
-        except (User.DoesNotExist, EmailVerification.DoesNotExist):
-            return Response({'detail': 'Gecersiz istek.'}, status=400)
+        except User.DoesNotExist:
+            return Response({'detail': 'Geçersiz istek.'}, status=400)
+        except EmailVerification.DoesNotExist:
+            return Response({'detail': 'Doğrulama kodu bulunamadı.'}, status=400)
 
 
 class ResendVerificationView(APIView):
@@ -79,13 +84,17 @@ class ResendVerificationView(APIView):
 
     def post(self, request):
         email = request.data.get('email')
+        if not email:
+            return Response({'detail': 'E-posta gereklidir.'}, status=400)
+
         try:
             user = User.objects.get(email=email)
             verification = EmailVerification.create_for_user(user)
-            print(f"[DEV] Email: {user.email} New Code: {verification.code}")
-            return Response({'message': 'Yeni kod gonderildi.'})
+            if settings.DEBUG:
+                logger.debug(f'Email verification code (resend) for {user.email}: {verification.code}')
+            return Response({'message': 'Yeni kod gönderildi.'})
         except User.DoesNotExist:
-            return Response({'detail': 'Kullanici bulunamadi.'}, status=404)
+            return Response({'detail': 'Kullanıcı bulunamadı.'}, status=404)
 
 
 class LoginView(APIView):
@@ -95,42 +104,40 @@ class LoginView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        # 1. Throttle check
-        fifteen_min_ago = timezone.now() - timedelta(minutes=15)
-        fail_count = LoginAttempt.objects.filter(
-            email=email,
-            attempted_at__gte=fifteen_min_ago,
-            is_successful=False
-        ).count()
-        if fail_count >= 5:
-            return Response({'detail': 'Cok fazla hatali deneme.'}, status=429)
+        if not email or not password:
+            return Response({'detail': 'E-posta ve şifre gereklidir.'}, status=400)
 
-        # 2. Authentication
+        throttle_ok, fail_count = check_login_throttle(email)
+        if not throttle_ok:
+            log_security_event('LOGIN_THROTTLE', email=email)
+            return Response({'detail': 'Çok fazla hatalı deneme.'}, status=429)
+
         user = authenticate(request, username=email, password=password)
         if not user:
             LoginAttempt.objects.create(email=email, is_successful=False)
-            return Response({'detail': 'E-posta veya sifre hatali.'}, status=401)
+            log_security_event('LOGIN_FAILED', email=email)
+            return Response({'detail': 'E-posta veya şifre hatalı.'}, status=401)
 
         LoginAttempt.objects.create(email=email, is_successful=True)
 
-        # 3. is_active check
         if not user.is_active:
-            return Response({'detail': 'Hesabiniz pasife alinmistir.'}, status=403)
+            log_security_event('LOGIN_INACTIVE_ACCOUNT', user=user)
+            return Response({'detail': 'Hesabınız pasife alınmıştır.'}, status=403)
 
-        # 4 & 5. Ban check
         if user.is_banned:
-            if user.banned_until is None or user.banned_until > timezone.now():
-                return Response({'detail': 'Hesabiniz askiya alinmistir.'}, status=403)
-            else:
+            if user.banned_until and user.banned_until <= timezone.now():
                 user.is_banned = False
+                user.banned_until = None
                 user.save()
+            else:
+                log_security_event('LOGIN_BANNED_ACCOUNT', user=user)
+                return Response({'detail': 'Hesabınız askıya alınmıştır.'}, status=403)
 
-        # 6. Email verification check
         if not user.is_email_verified:
-            return Response({'detail': 'E-postanizi dogrulayin.'}, status=403)
+            return Response({'detail': 'E-postanızı doğrulayın.'}, status=403)
 
-        # 7. Generate JWT token
         refresh = RefreshToken.for_user(user)
+        log_security_event('LOGIN_SUCCESS', user=user)
         return Response({
             'access': str(refresh.access_token),
             'refresh': str(refresh),
@@ -150,18 +157,21 @@ class PasswordResetRequestView(APIView):
             return Response(serializer.errors, status=400)
 
         email = serializer.validated_data['email']
+
         try:
             user = User.objects.get(email=email)
             token = PasswordResetToken.objects.create(
                 user=user,
                 expires_at=timezone.now() + timedelta(hours=1)
             )
-            reset_link = f"http://localhost:5173/password-reset?token={token.token}"
-            print(f"[DEV] Reset link: {reset_link}")
+            reset_link = f"{settings.PASSWORD_RESET_FRONTEND_URL}?token={token.token}"
+            if settings.DEBUG:
+                logger.debug(f'Password reset link for {email}: {reset_link}')
+            log_security_event('PASSWORD_RESET_REQUESTED', user=user)
         except User.DoesNotExist:
             pass
 
-        return Response({'message': 'Sifre sifirlama linki gonderildi.'})
+        return Response({'message': 'Şifre sıfırlama linki gönderildi.'})
 
 
 class PasswordResetConfirmView(APIView):
@@ -178,27 +188,29 @@ class PasswordResetConfirmView(APIView):
         try:
             reset_token = PasswordResetToken.objects.get(token=token)
             if reset_token.is_used:
-                return Response({'detail': 'Token daha once kullanildi.'}, status=400)
+                log_security_event('PASSWORD_RESET_TOKEN_REUSED', email=reset_token.user.email)
+                return Response({'detail': 'Token daha önce kullanıldı.'}, status=400)
             if reset_token.expires_at < timezone.now():
-                return Response({'detail': 'Token suresi dolmus.'}, status=400)
+                return Response({'detail': 'Token süresi dolmuş.'}, status=400)
 
             user = reset_token.user
             user.set_password(new_password)
             user.save()
             reset_token.is_used = True
             reset_token.save()
-            return Response({'message': 'Sifre basariyla guncellendi.'})
+            log_security_event('PASSWORD_RESET_SUCCESS', user=user)
+            return Response({'message': 'Şifre başarıyla güncellendi.'})
 
         except PasswordResetToken.DoesNotExist:
-            return Response({'detail': 'Gecersiz token.'}, status=400)
+            return Response({'detail': 'Geçersiz token.'}, status=400)
 
 
 class UserListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        search = request.query_params.get('search', '')
-        users = User.objects.filter(username__icontains=search, is_active=True)
+        search = request.query_params.get('search', '')[:100]
+        users = User.objects.filter(username__icontains=search, is_active=True)[:50]
         serializer = UserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -207,6 +219,8 @@ class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        if not request.user.is_active:
+            return Response({'detail': 'Hesap pasife alınmıştır.'}, status=403)
         serializer = MeSerializer(request.user)
         return Response(serializer.data)
 
@@ -216,11 +230,11 @@ class UserDetailView(APIView):
 
     def get(self, request, username):
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(username=username, is_active=True)
             serializer = UserSerializer(user, context={'request': request})
             return Response(serializer.data)
         except User.DoesNotExist:
-            return Response({'detail': 'Kullanici bulunamadi.'}, status=404)
+            return Response({'detail': 'Kullanıcı bulunamadı.'}, status=404)
 
 
 class AccountDeactivateView(APIView):
@@ -230,4 +244,30 @@ class AccountDeactivateView(APIView):
         user = request.user
         user.is_active = False
         user.save()
-        return Response({'message': 'Hesabiniz pasife alindi.'})
+        log_security_event('ACCOUNT_DEACTIVATED', user=user)
+        return Response({'message': 'Hesabınız pasife alındı.'})
+
+
+class AccountReactivateView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            return Response({'detail': 'E-posta ve şifre gereklidir.'}, status=400)
+
+        try:
+            user = User.objects.get(email=email)
+            if user.check_password(password):
+                if user.is_active:
+                    return Response({'detail': 'Hesap zaten aktif.'}, status=400)
+                user.is_active = True
+                user.save()
+                log_security_event('ACCOUNT_REACTIVATED', user=user)
+                return Response({'message': 'Hesap yeniden aktif edildi.'})
+            else:
+                return Response({'detail': 'E-posta veya şifre hatalı.'}, status=401)
+        except User.DoesNotExist:
+            return Response({'detail': 'Kullanıcı bulunamadı.'}, status=404)

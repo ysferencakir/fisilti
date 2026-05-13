@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+from .utils import validate_username, validate_password_strength
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -10,6 +11,18 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'country', 'ad_soyad']
+
+    def validate_username(self, value):
+        is_valid, error = validate_username(value)
+        if not is_valid:
+            raise serializers.ValidationError(error)
+        return value
+
+    def validate_password(self, value):
+        is_valid, error = validate_password_strength(value)
+        if not is_valid:
+            raise serializers.ValidationError(error)
+        return value
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -35,6 +48,12 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     token = serializers.UUIDField()
     new_password = serializers.CharField(min_length=8)
 
+    def validate_new_password(self, value):
+        is_valid, error = validate_password_strength(value)
+        if not is_valid:
+            raise serializers.ValidationError(error)
+        return value
+
 
 class UserSerializer(serializers.ModelSerializer):
     followers_count = serializers.SerializerMethodField()
@@ -52,13 +71,13 @@ class UserSerializer(serializers.ModelSerializer):
     def get_followers_count(self, obj):
         try:
             return obj.follower_set.count()
-        except:
+        except Exception:
             return 0
 
     def get_following_count(self, obj):
         try:
             return obj.following_set.count()
-        except:
+        except Exception:
             return 0
 
     def get_is_following(self, obj):
@@ -70,7 +89,9 @@ class UserSerializer(serializers.ModelSerializer):
             return Follow.objects.filter(
                 follower=request.user, following=obj
             ).exists()
-        except:
+        except ImportError:
+            return False
+        except Exception:
             return False
 
 

@@ -12,6 +12,7 @@ export default function VerifyEmail() {
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
+    const [resendLoading, setResendLoading] = useState(false);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,13 +22,20 @@ export default function VerifyEmail() {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setMessage('');
         try {
             await api.post('/auth/verify-email/', form);
-            navigate('/login');
+            setMessage('E-posta doğrulandı! Giriş sayfasına yönlendiriliyorsunuz...');
+            setTimeout(() => navigate('/login'), 2000);
         } catch (err) {
             const status = err.response?.status;
-            if (status === 429) setError('Cok fazla deneme. Lutfen bekleyin.');
-            else setError(err.response?.data?.detail || 'Dogrulama hatasi.');
+            const detail = err.response?.data?.detail || 'Doğrulama hatası';
+
+            if (status === 429) {
+                setError('Çok fazla deneme. Lütfen bekleyin.');
+            } else {
+                setError(detail);
+            }
         } finally {
             setLoading(false);
         }
@@ -36,19 +44,24 @@ export default function VerifyEmail() {
     const handleResend = async () => {
         setMessage('');
         setError('');
+        setResendLoading(true);
+
         try {
             await api.post('/auth/resend-verification/', { email: form.email });
-            setMessage('Yeni kod gonderildi.');
+            setMessage('Yeni kod gönderildi. E-postanızı kontrol edin.');
         } catch (err) {
-            setError('Kod gonderilemedi.');
+            const detail = err.response?.data?.detail || 'Kod gönderilemedi.';
+            setError(detail);
+        } finally {
+            setResendLoading(false);
         }
     };
 
     return (
         <div style={styles.container}>
             <div style={styles.card}>
-                <h2 style={styles.title}>E-posta Dogrulama</h2>
-                <p style={styles.subtitle}>E-postaniza gonderilen 6 haneli kodu girin.</p>
+                <h2 style={styles.title}>E-posta Doğrulama</h2>
+                <p style={styles.subtitle}>E-postanıza gönderilen 6 haneli kodu girin.</p>
                 {error && <p style={styles.error}>{error}</p>}
                 {message && <p style={styles.success}>{message}</p>}
                 <form onSubmit={handleSubmit}>
@@ -60,6 +73,7 @@ export default function VerifyEmail() {
                         value={form.email}
                         onChange={handleChange}
                         required
+                        disabled={loading || resendLoading}
                     />
                     <input
                         style={styles.input}
@@ -69,13 +83,19 @@ export default function VerifyEmail() {
                         value={form.code}
                         onChange={handleChange}
                         required
+                        disabled={loading || resendLoading}
                     />
-                    <button style={styles.button} type="submit" disabled={loading}>
-                        {loading ? 'Dogrulan�yor...' : 'Dogrula'}
+                    <button style={styles.button} type="submit" disabled={loading || resendLoading}>
+                        {loading ? 'Doğrulanıyor...' : 'Doğrula'}
                     </button>
                 </form>
-                <button style={styles.resendButton} onClick={handleResend}>
-                    Kodu Tekrar Gonder
+                <button
+                    style={styles.resendButton}
+                    onClick={handleResend}
+                    disabled={loading || resendLoading}
+                    type="button"
+                >
+                    {resendLoading ? 'Gönderiliyor...' : 'Kodu Tekrar Gönder'}
                 </button>
             </div>
         </div>
