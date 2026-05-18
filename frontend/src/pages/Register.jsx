@@ -53,6 +53,13 @@ export default function Register() {
         return newErrors;
     };
 
+    const passwordRules = [
+        { label: 'En az 8 karakter', ok: form.password.length >= 8 },
+        { label: 'Büyük harf', ok: /[A-Z]/.test(form.password) },
+        { label: 'Küçük harf', ok: /[a-z]/.test(form.password) },
+        { label: 'Rakam', ok: /[0-9]/.test(form.password) },
+    ];
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
@@ -75,7 +82,8 @@ export default function Register() {
 
         try {
             await api.post('/auth/register/', form);
-            navigate('/verify-email?email=' + form.email);
+            // TODO: DNS doğrulaması tamamlanınca navigate('/verify-email?email=' + form.email) yap
+            navigate('/login');
         } catch (err) {
             const response = err.response?.data || {};
             if (typeof response === 'object') {
@@ -142,7 +150,15 @@ export default function Register() {
                             disabled={loading}
                         />
                         {errors.password && <p style={styles.fieldError}>{errors.password}</p>}
-                        <p style={styles.charCount}>{form.password.length}/8 minimum</p>
+                        {form.password && (
+                            <div style={styles.passwordRules}>
+                                {passwordRules.map(rule => (
+                                    <span key={rule.label} style={{ color: rule.ok ? '#16a34a' : '#9ca3af', fontSize: '12px', display: 'block' }}>
+                                        {rule.ok ? '✓' : '✗'} {rule.label}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <select
@@ -203,7 +219,7 @@ const styles = {
         border: '1px solid #ddd', borderRadius: '8px',
         fontSize: '14px', boxSizing: 'border-box'
     },
-    charCount: { fontSize: '12px', color: '#888', marginBottom: '12px' },
+    passwordRules: { marginBottom: '12px', marginTop: '4px' },
     checkboxRow: { display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' },
     checkboxLabel: { fontSize: '13px', color: '#555', paddingTop: '2px' },
     button: {

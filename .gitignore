@@ -27,6 +27,8 @@ node_modules/
 frontend/dist/
 frontend/.env
 frontend/.env.local
+backend/package-lock.json
+backend/package.json
 
 # IDE
 .vscode/

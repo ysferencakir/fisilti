@@ -39,7 +39,7 @@ export default function App() {
                     <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
                     <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
                     <Route path="/verify-email" element={<VerifyEmail />} />
-                    <Route path="/password-reset" element={<GuestRoute><PasswordReset /></GuestRoute>} />
+                    <Route path="/password-reset" element={<PasswordReset />} />
                     <Route path="/profile/:username" element={<Profile />} />
                     <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
                     <Route path="*" element={<Navigate to="/" replace />} />

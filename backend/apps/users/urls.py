@@ -4,7 +4,7 @@ from .views import (
     RegisterView, VerifyEmailView, ResendVerificationView,
     LoginView, LogoutView,
     PasswordResetRequestView, PasswordResetConfirmView,
-    UserListView, MeView, UserDetailView, AccountDeactivateView, AccountReactivateView
+    UserListView, MeView, UserDetailView, AccountReactivateView
 )
 
 urlpatterns = [
@@ -21,7 +21,6 @@ urlpatterns = [
     # Users
     path('users/', UserListView.as_view()),
     path('users/me/', MeView.as_view()),
-    path('users/me/delete/', AccountDeactivateView.as_view()),
     path('users/reactivate/', AccountReactivateView.as_view()),
     path('users/<str:username>/', UserDetailView.as_view()),
 ]

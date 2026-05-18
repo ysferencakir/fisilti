@@ -3,7 +3,8 @@ import random
 import logging
 from datetime import timedelta
 from django.utils import timezone
-from .models import EmailVerification, LoginAttempt
+from django.core.cache import cache
+from .models import LoginAttempt
 
 logger = logging.getLogger(__name__)
 
@@ -32,14 +33,17 @@ def check_login_throttle(email, minutes=15, max_attempts=5):
     ).count()
     return fail_count < max_attempts, fail_count
 
-def check_email_verification_throttle(email, minutes=10, max_attempts=5):
-    cutoff = timezone.now() - timedelta(minutes=minutes)
-    fail_count = EmailVerification.objects.filter(
-        user__email=email,
-        created_at__gte=cutoff,
-        is_used=False
-    ).exclude(code__isnull=True).count()
+def check_email_verification_throttle(email, max_attempts=5):
+    cache_key = f'email_verify_fail:{email}'
+    fail_count = cache.get(cache_key, 0)
     return fail_count < max_attempts, fail_count
+
+def record_verify_fail(email, minutes=10):
+    cache_key = f'email_verify_fail:{email}'
+    try:
+        cache.incr(cache_key)
+    except ValueError:
+        cache.set(cache_key, 1, timeout=minutes * 60)
 
 def log_security_event(event_type, user=None, email=None, ip_address=None, details=None):
     msg = f"[{event_type}]"

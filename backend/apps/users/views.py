@@ -16,7 +16,7 @@ from .serializers import (
     PasswordResetRequestSerializer, PasswordResetConfirmSerializer,
     UserSerializer, MeSerializer
 )
-from .utils import check_login_throttle, check_email_verification_throttle, log_security_event
+from .utils import check_login_throttle, check_email_verification_throttle, record_verify_fail, log_security_event
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
@@ -29,15 +29,23 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            if settings.DEBUG:
+                # Geliştirme ortamında email doğrulamasını atla (DNS bekleniyor)
+                user.is_email_verified = True
+                user.save()
+                return Response({'message': 'Kayıt başarılı.'}, status=201)
             verification = EmailVerification.create_for_user(user)
-            send_mail(
-                subject='Fısıltı — E-posta Doğrulama',
-                message=f'Doğrulama kodunuz: {verification.code}\n\n(Bu kod 10 dakika geçerlidir.)',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=True,
-            )
-            return Response({'message': 'Kayıt başarılı.'}, status=201)
+            try:
+                send_mail(
+                    subject='Fısıltı — E-posta Doğrulama',
+                    message=f'Doğrulama kodunuz: {verification.code}\n\n(Bu kod 10 dakika geçerlidir.)',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                )
+                return Response({'message': 'Kayıt başarılı.'}, status=201)
+            except Exception:
+                logger.error(f'[MAIL_ERROR] Verification email failed: user_id={user.id}')
+                return Response({'message': 'Kayıt başarılı. E-posta gönderilemedi, lütfen "Kodu Tekrar Gönder" butonunu kullanın.'}, status=201)
         return Response(serializer.errors, status=400)
 
 
@@ -64,9 +72,11 @@ class VerifyEmailView(APIView):
             ).latest('created_at')
 
             if verification.is_expired:
+                record_verify_fail(email)
                 return Response({'detail': 'Kod süresi dolmuş.'}, status=400)
 
             if verification.code != code:
+                record_verify_fail(email)
                 return Response({'detail': 'Kod hatalı.'}, status=400)
 
             verification.is_used = True
@@ -95,13 +105,16 @@ class ResendVerificationView(APIView):
             if user.is_email_verified:
                 return Response({'detail': 'E-posta zaten doğrulanmış.'}, status=400)
             verification = EmailVerification.create_for_user(user)
-            send_mail(
-                subject='Fısıltı — Yeni Doğrulama Kodu',
-                message=f'Yeni doğrulama kodunuz: {verification.code}\n\n(Bu kod 10 dakika geçerlidir.)',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=True,
-            )
+            try:
+                send_mail(
+                    subject='Fısıltı — Yeni Doğrulama Kodu',
+                    message=f'Yeni doğrulama kodunuz: {verification.code}\n\n(Bu kod 10 dakika geçerlidir.)',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                )
+            except Exception:
+                logger.error(f'[MAIL_ERROR] Resend verification email failed: user_id={user.id}')
+                return Response({'detail': 'E-posta gönderilemedi. Lütfen tekrar deneyin.'}, status=500)
             return Response({'message': 'Yeni kod gönderildi.'})
         except User.DoesNotExist:
             return Response({'detail': 'Kullanıcı bulunamadı.'}, status=404)
@@ -175,13 +188,15 @@ class PasswordResetRequestView(APIView):
                 expires_at=timezone.now() + timedelta(hours=1)
             )
             reset_link = f"{settings.PASSWORD_RESET_FRONTEND_URL}?token={token.token}"
-            send_mail(
-                subject='Fısıltı — Şifre Sıfırlama',
-                message=f'Şifrenizi sıfırlamak için aşağıdaki linke tıklayın:\n\n{reset_link}\n\n(Bu link 1 saat geçerlidir.)',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=True,
-            )
+            try:
+                send_mail(
+                    subject='Fısıltı — Şifre Sıfırlama',
+                    message=f'Şifrenizi sıfırlamak için aşağıdaki linke tıklayın:\n\n{reset_link}\n\n(Bu link 1 saat geçerlidir.)',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                )
+            except Exception:
+                logger.error(f'[MAIL_ERROR] Password reset email failed: user_id={user.id}')
             log_security_event('PASSWORD_RESET_REQUESTED', user=user)
         except User.DoesNotExist:
             pass  # E-posta yoksa bile aynı yanıtı dön (enum attack'ı önlemek için)
@@ -239,6 +254,13 @@ class MeView(APIView):
         serializer = MeSerializer(request.user)
         return Response(serializer.data)
 
+    def delete(self, request):
+        user = request.user
+        user.is_active = False
+        user.save()
+        log_security_event('ACCOUNT_DEACTIVATED', user=user)
+        return Response({'message': 'Hesabınız pasife alındı.'})
+
 
 class UserDetailView(APIView):
     permission_classes = [AllowAny]
@@ -251,16 +273,6 @@ class UserDetailView(APIView):
         except User.DoesNotExist:
             return Response({'detail': 'Kullanıcı bulunamadı.'}, status=404)
 
-
-class AccountDeactivateView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request):
-        user = request.user
-        user.is_active = False
-        user.save()
-        log_security_event('ACCOUNT_DEACTIVATED', user=user)
-        return Response({'message': 'Hesabınız pasife alındı.'})
 
 
 class AccountReactivateView(APIView):
