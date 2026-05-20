@@ -107,151 +107,191 @@ function Profile() {
     const styles = {
         page: {
             minHeight: "100vh",
-            background: "linear-gradient(135deg, #f4f0ff 0%, #fff7fb 45%, #f7fbff 100%)",
+            background:
+                "linear-gradient(135deg, #020617 0%, #111827 40%, #1e1b4b 100%)",
             padding: "2rem 1rem",
             boxSizing: "border-box",
         },
+
         container: {
             maxWidth: "780px",
             margin: "0 auto",
             width: "100%",
         },
+
         card: {
-            background: "rgba(255, 255, 255, 0.92)",
-            border: "1px solid rgba(124, 58, 237, 0.14)",
-            borderRadius: "24px",
-            padding: "2rem",
+            background: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(18px)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: "28px",
+            padding: "2.5rem 2rem",
             textAlign: "center",
-            boxShadow: "0 20px 50px rgba(88, 28, 135, 0.12)",
-            backdropFilter: "blur(12px)",
+            boxShadow: "0 25px 60px rgba(0,0,0,0.45)",
+            transition: "0.3s ease",
         },
+
         avatar: {
-            width: "92px",
-            height: "92px",
+            width: "100px",
+            height: "100px",
             borderRadius: "50%",
-            margin: "0 auto 1rem",
+            margin: "0 auto 1.2rem",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "2.4rem",
+            fontSize: "2.5rem",
             fontWeight: "800",
             color: "white",
-            background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-            boxShadow: "0 12px 30px rgba(124, 58, 237, 0.35)",
+            background:
+                "linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)",
+            boxShadow: "0 15px 40px rgba(124,58,237,0.5)",
         },
+
         username: {
-            margin: "0",
-            fontSize: "1.8rem",
-            color: "#1f2937",
+            margin: 0,
+            fontSize: "2rem",
+            color: "#F8FAFC",
+            fontWeight: "800",
         },
+
         subtitle: {
-            marginTop: "0.4rem",
-            color: "#6b7280",
+            marginTop: "0.5rem",
+            color: "#CBD5E1",
             fontSize: "0.95rem",
         },
+
         stats: {
             display: "flex",
             justifyContent: "center",
             gap: "1rem",
-            margin: "1.5rem 0",
+            margin: "2rem 0",
             flexWrap: "wrap",
         },
+
         statBox: {
-            minWidth: "130px",
-            padding: "0.9rem 1rem",
-            borderRadius: "18px",
-            background: "#f8f5ff",
-            border: "1px solid #ede9fe",
+            minWidth: "140px",
+            padding: "1rem",
+            borderRadius: "20px",
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.08)",
         },
+
         statNumber: {
             display: "block",
-            fontSize: "1.35rem",
+            fontSize: "1.5rem",
             fontWeight: "800",
-            color: "#5b21b6",
+            color: "#F8FAFC",
         },
+
         statLabel: {
             display: "block",
-            marginTop: "0.2rem",
-            color: "#6b7280",
+            marginTop: "0.25rem",
+            color: "#CBD5E1",
             fontSize: "0.9rem",
         },
+
         primaryButton: {
             border: "none",
             borderRadius: "999px",
-            padding: "0.8rem 1.5rem",
+            padding: "0.9rem 1.7rem",
             fontWeight: "700",
+            fontSize: "0.95rem",
             cursor: "pointer",
             color: "white",
-            background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-            boxShadow: "0 12px 24px rgba(124, 58, 237, 0.25)",
+            background:
+                "linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)",
+            boxShadow: "0 12px 28px rgba(124,58,237,0.35)",
+            transition: "0.25s ease",
         },
+
         secondaryButton: {
-            border: "1px solid #ddd6fe",
+            border: "1px solid rgba(255,255,255,0.15)",
             borderRadius: "999px",
-            padding: "0.8rem 1.5rem",
+            padding: "0.9rem 1.7rem",
             fontWeight: "700",
+            fontSize: "0.95rem",
             cursor: "pointer",
-            color: "#5b21b6",
-            background: "#ffffff",
+            color: "#F8FAFC",
+            background: "rgba(255,255,255,0.06)",
+            backdropFilter: "blur(10px)",
+            transition: "0.25s ease",
         },
+
         dangerButton: {
             border: "none",
             borderRadius: "999px",
-            padding: "0.8rem 1.5rem",
+            padding: "0.9rem 1.7rem",
             fontWeight: "700",
+            fontSize: "0.95rem",
             cursor: "pointer",
             color: "white",
-            background: "linear-gradient(135deg, #ef4444, #f97316)",
-            boxShadow: "0 12px 24px rgba(239, 68, 68, 0.22)",
+            background:
+                "linear-gradient(135deg, #ef4444 0%, #f97316 100%)",
+            boxShadow: "0 12px 28px rgba(239,68,68,0.3)",
         },
+
         tabs: {
-            marginTop: "1.5rem",
+            marginTop: "2rem",
             display: "flex",
             justifyContent: "center",
-            gap: "0.8rem",
+            gap: "1rem",
             flexWrap: "wrap",
         },
+
         tabButton: (active) => ({
-            border: active ? "none" : "1px solid #ddd6fe",
+            border: active
+                ? "none"
+                : "1px solid rgba(255,255,255,0.12)",
             borderRadius: "999px",
-            padding: "0.75rem 1.3rem",
+            padding: "0.85rem 1.5rem",
             fontWeight: "700",
+            fontSize: "0.95rem",
             cursor: "pointer",
-            color: active ? "white" : "#6d28d9",
+            color: active ? "white" : "#CBD5E1",
             background: active
-                ? "linear-gradient(135deg, #7c3aed, #ec4899)"
-                : "rgba(255, 255, 255, 0.85)",
-            boxShadow: active ? "0 10px 22px rgba(124, 58, 237, 0.22)" : "none",
+                ? "linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)"
+                : "rgba(255,255,255,0.06)",
+            boxShadow: active
+                ? "0 12px 28px rgba(124,58,237,0.3)"
+                : "none",
+            transition: "0.25s ease",
         }),
+
         content: {
-            marginTop: "1.5rem",
+            marginTop: "1.8rem",
         },
+
         empty: {
-            background: "white",
-            borderRadius: "20px",
-            padding: "2rem",
+            background: "rgba(255,255,255,0.06)",
+            border: "1px dashed rgba(255,255,255,0.15)",
+            borderRadius: "24px",
+            padding: "2.5rem",
             textAlign: "center",
-            color: "#6b7280",
-            border: "1px dashed #c4b5fd",
+            color: "#CBD5E1",
+            backdropFilter: "blur(12px)",
         },
+
         loading: {
-            minHeight: "70vh",
+            minHeight: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#6d28d9",
+            background: "#020617",
+            color: "#F8FAFC",
             fontWeight: "700",
-            fontSize: "1.1rem",
+            fontSize: "1.2rem",
         },
+
         error: {
-            minHeight: "70vh",
+            minHeight: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#dc2626",
+            background: "#020617",
+            color: "#ef4444",
             fontWeight: "700",
             fontSize: "1.1rem",
             textAlign: "center",
+            padding: "2rem",
         },
     };
 
@@ -272,22 +312,33 @@ function Profile() {
                 <div style={styles.card}>
                     <div style={styles.avatar}>{firstLetter}</div>
 
-                    <h2 style={styles.username}>@{profile.username}</h2>
-                    <p style={styles.subtitle}>Fısıltı profili</p>
+                    <h2 style={styles.username}>
+                        @{profile.username}
+                    </h2>
+
+                    <p style={styles.subtitle}>
+                        Fısıltı topluluğunda aktif kullanıcı
+                    </p>
 
                     <div style={styles.stats}>
                         <div style={styles.statBox}>
                             <span style={styles.statNumber}>
                                 {profile.followers_count}
                             </span>
-                            <span style={styles.statLabel}>Takipçi</span>
+
+                            <span style={styles.statLabel}>
+                                Takipçi
+                            </span>
                         </div>
 
                         <div style={styles.statBox}>
                             <span style={styles.statNumber}>
                                 {profile.following_count}
                             </span>
-                            <span style={styles.statLabel}>Takip edilen</span>
+
+                            <span style={styles.statLabel}>
+                                Takip edilen
+                            </span>
                         </div>
                     </div>
 
@@ -337,15 +388,21 @@ function Profile() {
                             <h3 style={{ marginTop: 0 }}>
                                 Bu sekmede gönderi yok.
                             </h3>
+
                             <p style={{ marginBottom: 0 }}>
-                                Kullanıcı paylaşım yaptığında burada görünecek.
+                                Kullanıcı paylaşım yaptığında burada
+                                görünecek.
                             </p>
                         </div>
                     ) : (
                         posts.map((post) => (
                             <PostCard
                                 key={post.id}
-                                item={post.post ? post : { type: "post", post }}
+                                item={
+                                    post.post
+                                        ? post
+                                        : { type: "post", post }
+                                }
                                 currentUser={user?.username}
                             />
                         ))
@@ -357,3 +414,4 @@ function Profile() {
 }
 
 export default Profile;
+
