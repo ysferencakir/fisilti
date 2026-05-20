@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../api";
 import PostCard from "../components/PostCard";
 import { useAuth } from "../context/AuthContext";
 
 function Profile() {
     const { username } = useParams();
+    const navigate = useNavigate();
     const { user } = useAuth();
 
     const [profile, setProfile] = useState(null);
@@ -59,13 +60,12 @@ function Profile() {
     const handleFollow = async () => {
         try {
             await api.post(`/${username}/follow/`);
-
             setProfile((prev) => ({
                 ...prev,
                 is_following: true,
                 followers_count: prev.followers_count + 1,
             }));
-        } catch (err) {
+        } catch {
             alert("Takip işlemi başarısız oldu.");
         }
     };
@@ -73,14 +73,32 @@ function Profile() {
     const handleUnfollow = async () => {
         try {
             await api.delete(`/${username}/follow/`);
-
             setProfile((prev) => ({
                 ...prev,
                 is_following: false,
                 followers_count: prev.followers_count - 1,
             }));
-        } catch (err) {
+        } catch {
             alert("Takipten çıkma işlemi başarısız oldu.");
+        }
+    };
+
+    const handleDeactivateAccount = async () => {
+        const confirmed = window.confirm(
+            "Hesabınızı pasife almak istediğinize emin misiniz?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await api.delete("/users/me/");
+
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+
+            navigate("/login");
+        } catch {
+            alert("Hesap pasife alınamadı.");
         }
     };
 
@@ -139,7 +157,9 @@ function Profile() {
                 </div>
 
                 {isOwnProfile ? (
-                    <button>Hesabı Pasife Al</button>
+                    <button onClick={handleDeactivateAccount}>
+                        Hesabı Pasife Al
+                    </button>
                 ) : profile.is_following ? (
                     <button onClick={handleUnfollow}>Takipten Çık</button>
                 ) : (
