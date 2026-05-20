@@ -7,8 +7,9 @@ import { useAuth } from "../context/AuthContext";
 function Profile() {
     const { username } = useParams();
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const auth = useAuth();
 
+    const [currentUser, setCurrentUser] = useState(auth?.user || null);
     const [profile, setProfile] = useState(null);
     const [posts, setPosts] = useState([]);
     const [activeTab, setActiveTab] = useState("posts");
@@ -20,7 +21,23 @@ function Profile() {
     }, [username, activeTab]);
 
     const getResults = (data) => {
-        return Array.isArray(data) ? data : data.results || [];
+        return Array.isArray(data) ? data : data?.results || [];
+    };
+
+    const loadCurrentUser = async () => {
+        if (auth?.user) {
+            setCurrentUser(auth.user);
+            return auth.user;
+        }
+
+        try {
+            const response = await api.get("/users/me/");
+            setCurrentUser(response.data);
+            return response.data;
+        } catch {
+            setCurrentUser(null);
+            return null;
+        }
     };
 
     const loadProfile = async () => {
@@ -28,8 +45,21 @@ function Profile() {
             setLoading(true);
             setError("");
 
+            const current = await loadCurrentUser();
+
             const profileResponse = await api.get(`/users/${username}/`);
-            setProfile(profileResponse.data);
+            const profileData = profileResponse.data;
+
+            if (
+                profileData?.is_banned ||
+                profileData?.is_suspended ||
+                profileData?.is_active === false
+            ) {
+                setError("Bu hesap askıya alınmıştır.");
+                return;
+            }
+
+            setProfile(profileData);
 
             const postsUrl =
                 activeTab === "posts"
@@ -47,7 +77,16 @@ function Profile() {
                 }
             }
         } catch (err) {
-            if (err.response?.status === 404) {
+            const detail = err.response?.data?.detail || "";
+
+            if (
+                err.response?.status === 403 ||
+                detail.toLowerCase().includes("ban") ||
+                detail.toLowerCase().includes("suspend") ||
+                detail.toLowerCase().includes("askıya")
+            ) {
+                setError("Bu hesap askıya alınmıştır.");
+            } else if (err.response?.status === 404) {
                 setError("Kullanıcı bulunamadı.");
             } else {
                 setError("Kullanıcı bilgileri yüklenemedi.");
@@ -95,8 +134,15 @@ function Profile() {
         try {
             await api.delete("/users/me/");
 
+            if (typeof auth?.logout === "function") {
+                auth.logout();
+            }
+
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            localStorage.removeItem("user");
 
             navigate("/login");
         } catch {
@@ -112,13 +158,11 @@ function Profile() {
             padding: "2rem 1rem",
             boxSizing: "border-box",
         },
-
         container: {
             maxWidth: "780px",
             margin: "0 auto",
             width: "100%",
         },
-
         card: {
             background: "rgba(255,255,255,0.08)",
             backdropFilter: "blur(18px)",
@@ -127,9 +171,7 @@ function Profile() {
             padding: "2.5rem 2rem",
             textAlign: "center",
             boxShadow: "0 25px 60px rgba(0,0,0,0.45)",
-            transition: "0.3s ease",
         },
-
         avatar: {
             width: "100px",
             height: "100px",
@@ -141,24 +183,20 @@ function Profile() {
             fontSize: "2.5rem",
             fontWeight: "800",
             color: "white",
-            background:
-                "linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)",
+            background: "linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)",
             boxShadow: "0 15px 40px rgba(124,58,237,0.5)",
         },
-
         username: {
             margin: 0,
             fontSize: "2rem",
             color: "#F8FAFC",
             fontWeight: "800",
         },
-
         subtitle: {
             marginTop: "0.5rem",
             color: "#CBD5E1",
             fontSize: "0.95rem",
         },
-
         stats: {
             display: "flex",
             justifyContent: "center",
@@ -166,7 +204,6 @@ function Profile() {
             margin: "2rem 0",
             flexWrap: "wrap",
         },
-
         statBox: {
             minWidth: "140px",
             padding: "1rem",
@@ -174,21 +211,18 @@ function Profile() {
             background: "rgba(255,255,255,0.06)",
             border: "1px solid rgba(255,255,255,0.08)",
         },
-
         statNumber: {
             display: "block",
             fontSize: "1.5rem",
             fontWeight: "800",
             color: "#F8FAFC",
         },
-
         statLabel: {
             display: "block",
             marginTop: "0.25rem",
             color: "#CBD5E1",
             fontSize: "0.9rem",
         },
-
         primaryButton: {
             border: "none",
             borderRadius: "999px",
@@ -197,12 +231,9 @@ function Profile() {
             fontSize: "0.95rem",
             cursor: "pointer",
             color: "white",
-            background:
-                "linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)",
+            background: "linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)",
             boxShadow: "0 12px 28px rgba(124,58,237,0.35)",
-            transition: "0.25s ease",
         },
-
         secondaryButton: {
             border: "1px solid rgba(255,255,255,0.15)",
             borderRadius: "999px",
@@ -212,10 +243,7 @@ function Profile() {
             cursor: "pointer",
             color: "#F8FAFC",
             background: "rgba(255,255,255,0.06)",
-            backdropFilter: "blur(10px)",
-            transition: "0.25s ease",
         },
-
         dangerButton: {
             border: "none",
             borderRadius: "999px",
@@ -224,11 +252,9 @@ function Profile() {
             fontSize: "0.95rem",
             cursor: "pointer",
             color: "white",
-            background:
-                "linear-gradient(135deg, #ef4444 0%, #f97316 100%)",
+            background: "linear-gradient(135deg, #ef4444 0%, #f97316 100%)",
             boxShadow: "0 12px 28px rgba(239,68,68,0.3)",
         },
-
         tabs: {
             marginTop: "2rem",
             display: "flex",
@@ -236,11 +262,8 @@ function Profile() {
             gap: "1rem",
             flexWrap: "wrap",
         },
-
         tabButton: (active) => ({
-            border: active
-                ? "none"
-                : "1px solid rgba(255,255,255,0.12)",
+            border: active ? "none" : "1px solid rgba(255,255,255,0.12)",
             borderRadius: "999px",
             padding: "0.85rem 1.5rem",
             fontWeight: "700",
@@ -250,16 +273,11 @@ function Profile() {
             background: active
                 ? "linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)"
                 : "rgba(255,255,255,0.06)",
-            boxShadow: active
-                ? "0 12px 28px rgba(124,58,237,0.3)"
-                : "none",
-            transition: "0.25s ease",
+            boxShadow: active ? "0 12px 28px rgba(124,58,237,0.3)" : "none",
         }),
-
         content: {
             marginTop: "1.8rem",
         },
-
         empty: {
             background: "rgba(255,255,255,0.06)",
             border: "1px dashed rgba(255,255,255,0.15)",
@@ -267,9 +285,7 @@ function Profile() {
             padding: "2.5rem",
             textAlign: "center",
             color: "#CBD5E1",
-            backdropFilter: "blur(12px)",
         },
-
         loading: {
             minHeight: "100vh",
             display: "flex",
@@ -280,7 +296,6 @@ function Profile() {
             fontWeight: "700",
             fontSize: "1.2rem",
         },
-
         error: {
             minHeight: "100vh",
             display: "flex",
@@ -303,8 +318,11 @@ function Profile() {
         return <div style={styles.error}>{error}</div>;
     }
 
-    const isOwnProfile = user?.username === profile.username;
-    const firstLetter = profile.username?.charAt(0)?.toUpperCase() || "F";
+    const isOwnProfile =
+        currentUser?.username === profile?.username ||
+        auth?.user?.username === profile?.username;
+
+    const firstLetter = profile?.username?.charAt(0)?.toUpperCase() || "F";
 
     return (
         <div style={styles.page}>
@@ -312,9 +330,7 @@ function Profile() {
                 <div style={styles.card}>
                     <div style={styles.avatar}>{firstLetter}</div>
 
-                    <h2 style={styles.username}>
-                        @{profile.username}
-                    </h2>
+                    <h2 style={styles.username}>@{profile.username}</h2>
 
                     <p style={styles.subtitle}>
                         Fısıltı topluluğunda aktif kullanıcı
@@ -325,20 +341,14 @@ function Profile() {
                             <span style={styles.statNumber}>
                                 {profile.followers_count}
                             </span>
-
-                            <span style={styles.statLabel}>
-                                Takipçi
-                            </span>
+                            <span style={styles.statLabel}>Takipçi</span>
                         </div>
 
                         <div style={styles.statBox}>
                             <span style={styles.statNumber}>
                                 {profile.following_count}
                             </span>
-
-                            <span style={styles.statLabel}>
-                                Takip edilen
-                            </span>
+                            <span style={styles.statLabel}>Takip edilen</span>
                         </div>
                     </div>
 
@@ -388,22 +398,18 @@ function Profile() {
                             <h3 style={{ marginTop: 0 }}>
                                 Bu sekmede gönderi yok.
                             </h3>
-
                             <p style={{ marginBottom: 0 }}>
-                                Kullanıcı paylaşım yaptığında burada
-                                görünecek.
+                                Kullanıcı paylaşım yaptığında burada görünecek.
                             </p>
                         </div>
                     ) : (
                         posts.map((post) => (
                             <PostCard
                                 key={post.id}
-                                item={
-                                    post.post
-                                        ? post
-                                        : { type: "post", post }
+                                item={post.post ? post : { type: "post", post }}
+                                currentUser={
+                                    currentUser?.username || auth?.user?.username
                                 }
-                                currentUser={user?.username}
                             />
                         ))
                     )}
