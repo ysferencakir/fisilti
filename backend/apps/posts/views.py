@@ -61,18 +61,8 @@ class PostUpdateView(generics.UpdateAPIView):
 
         return self.partial_update(request, *args, **kwargs)
 
-
-class PostDeleteView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def delete(self, request, pk):
-        try:
-            post = Post.objects.get(pk=pk, is_active=True)
-        except Post.DoesNotExist:
-            return Response(
-                {"detail": "Gönderi bulunamadı."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+    def delete(self, request, *args, **kwargs):
+        post = self.get_object()
 
         if post.author != request.user:
             return Response(

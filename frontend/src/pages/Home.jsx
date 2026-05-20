@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
+import api from "../api";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
-
-  const currentUser = "gorkem"; // sonra login sisteminden gelecek
+  const { user } = useAuth();
 
   const fetchFeed = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/posts/feed/");
-      const data = await response.json();
+      const { data } = await api.get("/posts/feed/");
       setPosts(data.results || data);
     } catch (error) {
       console.error("Feed alınamadı:", error);
@@ -27,14 +27,7 @@ const Home = () => {
     if (!content.trim()) return;
 
     try {
-      await fetch("http://localhost:8000/api/posts/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content }),
-      });
-
+      await api.post("/posts/", { content });
       setContent("");
       fetchFeed();
     } catch (error) {
@@ -65,8 +58,8 @@ const Home = () => {
       {posts.length === 0 ? (
         <p>Henüz gönderi yok.</p>
       ) : (
-        posts.map((item, index) => (
-          <PostCard key={index} item={item} currentUser={currentUser} />
+        posts.map((item) => (
+          <PostCard key={item.post.id} item={item} currentUser={user?.username} />
         ))
       )}
     </div>
