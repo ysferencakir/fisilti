@@ -9,8 +9,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN python manage.py collectstatic --noinput
+RUN DATABASE_URL=sqlite:///tmp/build.db python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD ["gunicorn", "fisilti.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "120"]
+CMD ["gunicorn", "fisilti.wsgi:application", "--bind", "0.0.0.0:$PORT", "--workers", "2", "--timeout", "120"]
