@@ -103,26 +103,30 @@ const styles = {
     container: {
         display: 'flex', justifyContent: 'center',
         alignItems: 'center', minHeight: '100vh',
-        backgroundColor: '#f0f2f5'
+        width: '100%',
+        backgroundColor: 'var(--bg)',
     },
     card: {
-        background: 'white', padding: '40px',
-        borderRadius: '12px', width: '100%',
-        maxWidth: '400px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        background: 'var(--card-bg)', padding: '40px',
+        borderRadius: '16px', width: '100%',
+        maxWidth: '400px', boxShadow: 'var(--shadow)',
+        border: '1px solid var(--border)',
     },
-    title: { textAlign: 'center', marginBottom: '24px', color: '#1a1a2e' },
+    title: { textAlign: 'center', marginBottom: '24px', color: 'var(--text-h)', fontFamily: 'var(--heading)' },
     input: {
         width: '100%', padding: '12px', marginBottom: '12px',
-        border: '1px solid #ddd', borderRadius: '8px',
-        fontSize: '14px', boxSizing: 'border-box'
+        border: '1px solid var(--border)', borderRadius: '8px',
+        fontSize: '14px', boxSizing: 'border-box', outline: 'none',
+        background: 'var(--bg)', color: 'var(--text-h)',
+        fontFamily: 'var(--sans)',
     },
     forgotRow: { textAlign: 'right', marginBottom: '16px' },
     button: {
-        width: '100%', padding: '12px', background: '#7c3aed',
-        color: 'white', border: 'none', borderRadius: '8px',
-        fontSize: '16px', cursor: 'pointer'
+        width: '100%', padding: '12px', background: '#F97316',
+        color: 'white', border: 'none', borderRadius: '9999px',
+        fontSize: '16px', cursor: 'pointer', fontWeight: 700
     },
-    error: { color: 'red', marginBottom: '8px', fontSize: '14px' },
-    link: { color: '#7c3aed', fontSize: '13px' },
-    registerText: { textAlign: 'center', marginTop: '16px', fontSize: '14px', color: '#555' }
+    error: { color: '#EF4444', marginBottom: '8px', fontSize: '14px' },
+    link: { color: '#F97316', fontSize: '13px' },
+    registerText: { textAlign: 'center', marginTop: '16px', fontSize: '14px', color: '#78716C' }
 };

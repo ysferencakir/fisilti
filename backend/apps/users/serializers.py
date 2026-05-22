@@ -65,7 +65,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'username', 'role', 'is_email_verified',
             'is_banned', 'created_at', 'followers_count',
-            'following_count', 'is_following'
+            'following_count', 'is_following', 'animal_avatar',
         ]
 
     def get_followers_count(self, obj):

@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 
-import Navbar from './components/Navbar';
+import AppLayout from './components/AppLayout';
 
 import Register from './pages/Register';
 import VerifyEmail from './pages/VerifyEmail';
@@ -57,16 +58,17 @@ function GuestRoute({ children }) {
 
 export default function App() {
     return (
+        <ThemeProvider>
         <AuthProvider>
             <BrowserRouter>
-                <Navbar />
-
                 <Routes>
                     <Route
                         path="/"
                         element={
                             <ProtectedRoute>
-                                <Home />
+                                <AppLayout>
+                                    <Home />
+                                </AppLayout>
                             </ProtectedRoute>
                         }
                     />
@@ -101,14 +103,20 @@ export default function App() {
 
                     <Route
                         path="/profile/:username"
-                        element={<Profile />}
+                        element={
+                            <AppLayout>
+                                <Profile />
+                            </AppLayout>
+                        }
                     />
 
                     <Route
                         path="/admin"
                         element={
                             <AdminRoute>
-                                <Admin />
+                                <AppLayout>
+                                    <Admin />
+                                </AppLayout>
                             </AdminRoute>
                         }
                     />
@@ -120,5 +128,6 @@ export default function App() {
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
+        </ThemeProvider>
     );
 }

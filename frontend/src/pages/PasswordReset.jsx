@@ -142,29 +142,30 @@ const styles = {
     container: {
         display: 'flex', justifyContent: 'center',
         alignItems: 'center', minHeight: '100vh',
-        backgroundColor: '#f0f2f5'
+        width: '100%',
+        backgroundColor: 'var(--bg)',
     },
     card: {
         background: 'white', padding: '40px',
-        borderRadius: '12px', width: '100%',
-        maxWidth: '400px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        borderRadius: '16px', width: '100%',
+        maxWidth: '400px', boxShadow: '0 4px 24px rgba(249,115,22,0.1)'
     },
-    title: { textAlign: 'center', marginBottom: '16px', color: '#1a1a2e' },
-    subtitle: { color: '#666', marginBottom: '16px', fontSize: '14px', textAlign: 'center' },
+    title: { textAlign: 'center', marginBottom: '16px', color: '#1C1917' },
+    subtitle: { color: '#78716C', marginBottom: '16px', fontSize: '14px', textAlign: 'center' },
     input: {
         width: '100%', padding: '12px', marginBottom: '4px',
-        border: '1px solid #ddd', borderRadius: '8px',
-        fontSize: '14px', boxSizing: 'border-box'
+        border: '1px solid #FDE8D0', borderRadius: '8px',
+        fontSize: '14px', boxSizing: 'border-box', outline: 'none'
     },
-    charCount: { fontSize: '12px', color: '#888', marginBottom: '12px' },
+    charCount: { fontSize: '12px', color: '#9CA3AF', marginBottom: '12px' },
     button: {
-        width: '100%', padding: '12px', background: '#7c3aed',
-        color: 'white', border: 'none', borderRadius: '8px',
-        fontSize: '16px', cursor: 'pointer', marginBottom: '12px'
+        width: '100%', padding: '12px', background: '#F97316',
+        color: 'white', border: 'none', borderRadius: '9999px',
+        fontSize: '16px', cursor: 'pointer', marginBottom: '12px', fontWeight: 700
     },
-    error: { color: 'red', marginBottom: '12px', fontSize: '14px' },
-    success: { color: 'green', marginBottom: '12px', fontSize: '14px' },
-    fieldError: { color: 'red', fontSize: '12px', marginTop: '-8px', marginBottom: '8px' },
+    error: { color: '#EF4444', marginBottom: '12px', fontSize: '14px' },
+    success: { color: '#16a34a', marginBottom: '12px', fontSize: '14px' },
+    fieldError: { color: '#EF4444', fontSize: '12px', marginTop: '-8px', marginBottom: '8px' },
     backText: { textAlign: 'center', marginTop: '8px' },
-    link: { color: '#7c3aed', fontSize: '13px' }
+    link: { color: '#F97316', fontSize: '13px' }
 };

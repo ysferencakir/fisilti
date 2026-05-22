@@ -5,6 +5,13 @@ from django.utils import timezone
 import random
 
 
+ANIMAL_CHOICES = [
+    ('fox',    'Fennec'),
+    ('owl',    'Baykuş'),
+    ('rabbit', 'Tavşan'),
+    ('cat',    'Kedi'),
+]
+
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=50, unique=True)
@@ -14,6 +21,7 @@ class User(AbstractUser):
     banned_until = models.DateTimeField(null=True, blank=True)
     country = models.CharField(max_length=100, blank=True)
     ad_soyad = models.CharField(max_length=100, blank=True)
+    animal_avatar = models.CharField(max_length=10, choices=ANIMAL_CHOICES, default='fox')
     created_at = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'

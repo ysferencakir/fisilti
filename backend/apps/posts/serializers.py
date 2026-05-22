@@ -5,6 +5,7 @@ from .models import Post, Repost
 
 class PostSerializer(serializers.ModelSerializer):
     author_username = serializers.CharField(source="author.username", read_only=True)
+    author_animal_avatar = serializers.CharField(source="author.animal_avatar", read_only=True)
     repost_count = serializers.SerializerMethodField()
     is_reposted = serializers.SerializerMethodField()
 
@@ -13,6 +14,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "author_username",
+            "author_animal_avatar",
             "content",
             "is_active",
             "created_at",
@@ -23,6 +25,7 @@ class PostSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
             "author_username",
+            "author_animal_avatar",
             "is_active",
             "created_at",
             "updated_at",

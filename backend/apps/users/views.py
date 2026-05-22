@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenBlacklistView
 from django.contrib.auth import authenticate
-from django.core.mail import send_mail
+from .emails import send_verification_email, send_password_reset_email
 from datetime import timedelta
 import logging
 
@@ -29,23 +29,21 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            if settings.DEBUG:
-                # Geliştirme ortamında email doğrulamasını atla (DNS bekleniyor)
+
+            # E-posta doğrulaması gerekli mi?
+            if not settings.REQUIRE_EMAIL_VERIFICATION:
                 user.is_email_verified = True
                 user.save()
                 return Response({'message': 'Kayıt başarılı.'}, status=201)
+
             verification = EmailVerification.create_for_user(user)
-            try:
-                send_mail(
-                    subject='Fısıltı — E-posta Doğrulama',
-                    message=f'Doğrulama kodunuz: {verification.code}\n\n(Bu kod 10 dakika geçerlidir.)',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                )
-                return Response({'message': 'Kayıt başarılı.'}, status=201)
-            except Exception:
-                logger.error(f'[MAIL_ERROR] Verification email failed: user_id={user.id}')
-                return Response({'message': 'Kayıt başarılı. E-posta gönderilemedi, lütfen "Kodu Tekrar Gönder" butonunu kullanın.'}, status=201)
+            ok = send_verification_email(user.email, verification.code)
+            if ok:
+                return Response({'message': 'Kayıt başarılı. Doğrulama kodu e-postanıza gönderildi.'}, status=201)
+            else:
+                return Response({
+                    'message': 'Kayıt başarılı. E-posta gönderilemedi, lütfen "Kodu Tekrar Gönder" butonunu kullanın.'
+                }, status=201)
         return Response(serializer.errors, status=400)
 
 
@@ -105,15 +103,8 @@ class ResendVerificationView(APIView):
             if user.is_email_verified:
                 return Response({'detail': 'E-posta zaten doğrulanmış.'}, status=400)
             verification = EmailVerification.create_for_user(user)
-            try:
-                send_mail(
-                    subject='Fısıltı — Yeni Doğrulama Kodu',
-                    message=f'Yeni doğrulama kodunuz: {verification.code}\n\n(Bu kod 10 dakika geçerlidir.)',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                )
-            except Exception:
-                logger.error(f'[MAIL_ERROR] Resend verification email failed: user_id={user.id}')
+            ok = send_verification_email(user.email, verification.code)
+            if not ok:
                 return Response({'detail': 'E-posta gönderilemedi. Lütfen tekrar deneyin.'}, status=500)
             return Response({'message': 'Yeni kod gönderildi.'})
         except User.DoesNotExist:
@@ -188,15 +179,7 @@ class PasswordResetRequestView(APIView):
                 expires_at=timezone.now() + timedelta(hours=1)
             )
             reset_link = f"{settings.PASSWORD_RESET_FRONTEND_URL}?token={token.token}"
-            try:
-                send_mail(
-                    subject='Fısıltı — Şifre Sıfırlama',
-                    message=f'Şifrenizi sıfırlamak için aşağıdaki linke tıklayın:\n\n{reset_link}\n\n(Bu link 1 saat geçerlidir.)',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                )
-            except Exception:
-                logger.error(f'[MAIL_ERROR] Password reset email failed: user_id={user.id}')
+            send_password_reset_email(user.email, reset_link)
             log_security_event('PASSWORD_RESET_REQUESTED', user=user)
         except User.DoesNotExist:
             pass  # E-posta yoksa bile aynı yanıtı dön (enum attack'ı önlemek için)
@@ -245,6 +228,8 @@ class UserListView(APIView):
         return Response(serializer.data)
 
 
+ALLOWED_ANIMALS = {'fox', 'owl', 'rabbit', 'cat'}
+
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -252,6 +237,15 @@ class MeView(APIView):
         if not request.user.is_active:
             return Response({'detail': 'Hesap pasife alınmıştır.'}, status=403)
         serializer = MeSerializer(request.user)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        user = request.user
+        animal = request.data.get('animal_avatar')
+        if animal and animal in ALLOWED_ANIMALS:
+            user.animal_avatar = animal
+            user.save(update_fields=['animal_avatar'])
+        serializer = MeSerializer(user)
         return Response(serializer.data)
 
     def delete(self, request):

@@ -82,8 +82,7 @@ export default function Register() {
 
         try {
             await api.post('/auth/register/', form);
-            // TODO: DNS doğrulaması tamamlanınca navigate('/verify-email?email=' + form.email) yap
-            navigate('/login');
+            navigate('/verify-email?email=' + encodeURIComponent(form.email));
         } catch (err) {
             const response = err.response?.data || {};
             if (typeof response === 'object') {
@@ -206,27 +205,31 @@ const styles = {
     container: {
         display: 'flex', justifyContent: 'center',
         alignItems: 'center', minHeight: '100vh',
-        backgroundColor: '#f0f2f5'
+        width: '100%',
+        backgroundColor: 'var(--bg)',
     },
     card: {
-        background: 'white', padding: '40px',
-        borderRadius: '12px', width: '100%',
-        maxWidth: '450px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        background: 'var(--card-bg)', padding: '40px',
+        borderRadius: '16px', width: '100%',
+        maxWidth: '450px', boxShadow: 'var(--shadow)',
+        border: '1px solid var(--border)',
     },
-    title: { textAlign: 'center', marginBottom: '24px', color: '#1a1a2e' },
+    title: { textAlign: 'center', marginBottom: '24px', color: 'var(--text-h)', fontFamily: 'var(--heading)' },
     input: {
         width: '100%', padding: '12px', marginBottom: '4px',
-        border: '1px solid #ddd', borderRadius: '8px',
-        fontSize: '14px', boxSizing: 'border-box'
+        border: '1px solid var(--border)', borderRadius: '8px',
+        fontSize: '14px', boxSizing: 'border-box', outline: 'none',
+        background: 'var(--bg)', color: 'var(--text-h)',
+        fontFamily: 'var(--sans)',
     },
     passwordRules: { marginBottom: '12px', marginTop: '4px' },
     checkboxRow: { display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' },
-    checkboxLabel: { fontSize: '13px', color: '#555', paddingTop: '2px' },
+    checkboxLabel: { fontSize: '13px', color: '#78716C', paddingTop: '2px' },
     button: {
-        width: '100%', padding: '12px', background: '#7c3aed',
-        color: 'white', border: 'none', borderRadius: '8px',
-        fontSize: '16px', cursor: 'pointer', marginTop: '8px'
+        width: '100%', padding: '12px', background: '#F97316',
+        color: 'white', border: 'none', borderRadius: '9999px',
+        fontSize: '16px', cursor: 'pointer', marginTop: '8px', fontWeight: 700
     },
-    error: { color: 'red', marginBottom: '12px', fontSize: '14px' },
-    fieldError: { color: 'red', fontSize: '12px', marginTop: '-8px', marginBottom: '8px' }
+    error: { color: '#EF4444', marginBottom: '12px', fontSize: '14px' },
+    fieldError: { color: '#EF4444', fontSize: '12px', marginTop: '-8px', marginBottom: '8px' }
 };
