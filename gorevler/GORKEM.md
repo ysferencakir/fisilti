@@ -294,21 +294,21 @@ Bu sekmeleri Kaan ile koordineli geliştir — Profile.jsx Kaan'ın modülünde 
 ## Tamamlanma Kontrol Listesi
 
 **Backend:**
-- [ ] `models.py` — Post (indexes dahil), Repost
-- [ ] `serializers.py` — PostSerializer (repost_count, is_reposted), FeedItemSerializer
-- [ ] `views.py` — 8 view (FeedView, PostCreate, PostUpdate, UserPosts, UserReposts, PostDelete, RepostView×2)
-- [ ] `urls.py` — 8 endpoint
-- [ ] Migration: `makemigrations posts` + `migrate`
+- [x] `models.py` — Post (indexes dahil), Repost
+- [x] `serializers.py` — PostSerializer (repost_count, is_reposted), FeedItemSerializer
+- [x] `views.py` — 8 view (FeedView, PostCreate, PostUpdate, UserPosts, UserReposts, PostDelete, RepostView×2)
+- [x] `urls.py` — 8 endpoint
+- [x] Migration: `makemigrations posts` + `migrate`
 
 **Frontend:**
-- [ ] `components/PostCard.jsx` — repost header, düzenle/sil/rapor/repost butonları
-- [ ] `pages/Home.jsx` — feed + gönderi oluşturma + sayfalama
+- [x] `components/PostCard.jsx` — repost header, düzenle/sil/rapor/repost butonları
+- [x] `pages/Home.jsx` — feed + gönderi oluşturma + sayfalama
 
 **Test (temel):**
-- [ ] Gönderi oluştur → feed'de görünüyor mu?
-- [ ] Kendi gönderisini düzenle → "(düzenlendi)" etiketi çıkıyor mu?
-- [ ] Başkasının gönderisini silmeye çalış → 403 geliyor mu?
-- [ ] Repost et → sayaç artıyor mu?
-- [ ] Repost geri al → sayaç azalıyor mu?
-- [ ] Pasif gönderiye repost denemesi → 400 geliyor mu?
-- [ ] Rapor modal açılıyor mu, gerekçe seçilebiliyor mu?
+- [x] Gönderi oluştur → feed'de görünüyor mu?
+- [x] Kendi gönderisini düzenle → "(düzenlendi)" etiketi çıkıyor mu?
+- [x] Başkasının gönderisini silmeye çalış → 403 geliyor mu?
+- [x] Repost et → sayaç artıyor mu?
+- [x] Repost geri al → sayaç azalıyor mu?
+- [x] Pasif gönderiye repost denemesi → 400 geliyor mu?
+- [x] Rapor modal açılıyor mu, gerekçe seçilebiliyor mu?
