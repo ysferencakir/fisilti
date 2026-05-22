@@ -1,3 +1,7 @@
 from django.urls import path
 
-urlpatterns = []
+from .views import ReportCreateView
+
+urlpatterns = [
+    path("", ReportCreateView.as_view(), name="report-create"),
+]
