@@ -10,8 +10,8 @@ const Home = () => {
 
   const fetchFeed = async () => {
     try {
-      const { data } = await api.get("/posts/feed/");
-      setPosts(data.results || data);
+      const response = await api.get("/posts/feed/")
+      setPosts(response.data.results || response.data);
     } catch (error) {
       console.error("Feed alınamadı:", error);
     }
@@ -36,7 +36,13 @@ const Home = () => {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "30px auto" }}>
+    <div
+  style={{
+    maxWidth: "650px",
+    margin: "40px auto",
+    padding: "0 16px",
+  }}
+>
       <h2>Ana Sayfa</h2>
 
       <form onSubmit={handleSubmit}>

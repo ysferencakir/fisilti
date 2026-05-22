@@ -1,3 +1,4 @@
+from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -5,7 +6,8 @@ from rest_framework.views import APIView
 from .models import Post, Repost
 from .serializers import PostSerializer, FeedItemSerializer
 
-
+class FeedPagination(PageNumberPagination):
+    page_size = 5
 class FeedView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -13,6 +15,9 @@ class FeedView(APIView):
         posts = Post.objects.filter(
             is_active=True
         ).select_related("author")
+        reposts = Repost.objects.filter(
+    post__is_active=True
+).select_related("user", "post", "post__author")
 
         items = []
 
@@ -25,15 +30,27 @@ class FeedView(APIView):
                 "post": post
             })
 
+        for repost in reposts:
+            items.append({
+                "type": "repost",
+                "timestamp": repost.created_at,
+                "reposted_by": repost.user.username,
+                "reposted_at": repost.created_at,
+                "post": repost.post
+            })
+
         items.sort(key=lambda x: x["timestamp"], reverse=True)
 
+        pagination = FeedPagination()
+        paginated_items = pagination.paginate_queryset(items, request)
+
         serializer = FeedItemSerializer(
-            items,
+            paginated_items,
             many=True,
             context={"request": request}
         )
 
-        return Response(serializer.data)
+        return pagination.get_paginated_response(serializer.data)
 
 
 class PostCreateView(generics.CreateAPIView):
@@ -90,6 +107,37 @@ class UserPostsView(APIView):
 
         serializer = PostSerializer(
             posts,
+            many=True,
+            context={"request": request}
+        )
+
+        return Response(serializer.data)
+
+
+class UserRepostsView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, username):
+        reposts = Repost.objects.filter(
+            user__username=username,
+            post__is_active=True
+        ).select_related("user", "post", "post__author")
+
+        items = []
+
+        for repost in reposts:
+            items.append({
+                "type": "repost",
+                "timestamp": repost.created_at,
+                "reposted_by": repost.user.username,
+                "reposted_at": repost.created_at,
+                "post": repost.post
+            })
+
+        items.sort(key=lambda x: x["timestamp"], reverse=True)
+
+        serializer = FeedItemSerializer(
+            items,
             many=True,
             context={"request": request}
         )

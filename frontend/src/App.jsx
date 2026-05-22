@@ -6,9 +6,10 @@ import VerifyEmail from './pages/VerifyEmail';
 import Login from './pages/Login';
 import PasswordReset from './pages/PasswordReset';
 import Home from './pages/Home';
+import Profile from './pages/Profile';
 
 
-const Profile = () => <div style={{ padding: '2rem' }}><h2>Profil</h2><p>Bu sayfa geliştiriliyor...</p></div>;
+
 const Admin = () => <div style={{ padding: '2rem' }}><h2>Admin Paneli</h2><p>Bu sayfa geliştiriliyor...</p></div>;
 
 function ProtectedRoute({ children }) {
