@@ -32,6 +32,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,9 +80,10 @@ TIME_ZONE = 'Europe/Istanbul'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
@@ -103,11 +105,17 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-PASSWORD_RESET_FRONTEND_URL = config('PASSWORD_RESET_FRONTEND_URL', default='http://localhost:5173/password-reset')
+PASSWORD_RESET_FRONTEND_URL = config(
+    'PASSWORD_RESET_FRONTEND_URL',
+    default='http://localhost:5173/password-reset'
+)
 
-CORS_ALLOWED_ORIGINS = [
-    config('FRONTEND_URL', default='http://localhost:5173'),
-]
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
+
+CORS_ALLOWED_ORIGINS = [o.strip() for o in config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174'
+).split(',')]
 CORS_ALLOW_CREDENTIALS = True
 
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
@@ -116,30 +124,26 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Fısıltı <noreply@fisilti.com>')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Fisilti <noreply@fisilti.com>')
 
-RESEND_API_KEY = config('RESEND_API_KEY', default='')
 REQUIRE_EMAIL_VERIFICATION = config('REQUIRE_EMAIL_VERIFICATION', default=True, cast=bool)
 
-# Loglama — hatalar logs/django.log dosyasına yazılır (PV-11: şifre/token loglama)
+# Loglama
 LOGS_DIR = BASE_DIR / 'logs'
 os.makedirs(LOGS_DIR, exist_ok=True)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
+        'console': {'class': 'logging.StreamHandler'},
         'file': {
             'class': 'logging.FileHandler',
             'filename': LOGS_DIR / 'django.log',
         },
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
     },
     'loggers': {
-        'django': {'handlers': ['file'], 'level': 'ERROR'},
-        # Security event'leri hem dosyaya hem terminale yaz
-        'apps': {'handlers': ['file', 'console'], 'level': 'WARNING', 'propagate': False},
+        'django': {'handlers': ['console'], 'level': 'ERROR'},
+        'apps': {'handlers': ['console', 'file'], 'level': 'WARNING', 'propagate': False},
     },
 }
 
@@ -148,10 +152,3 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
-]
-CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_ALLOW_CREDENTIALS = True

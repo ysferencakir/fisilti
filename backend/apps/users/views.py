@@ -41,9 +41,11 @@ class RegisterView(APIView):
             if ok:
                 return Response({'message': 'Kayıt başarılı. Doğrulama kodu e-postanıza gönderildi.'}, status=201)
             else:
-                return Response({
-                    'message': 'Kayıt başarılı. E-posta gönderilemedi, lütfen "Kodu Tekrar Gönder" butonunu kullanın.'
-                }, status=201)
+                # E-posta gönderilemedi — DEBUG modunda kodu response'a ekle
+                response_data = {'message': 'Kayıt başarılı.'}
+                if settings.DEBUG:
+                    response_data['debug_code'] = verification.code
+                return Response(response_data, status=201)
         return Response(serializer.errors, status=400)
 
 
@@ -104,9 +106,13 @@ class ResendVerificationView(APIView):
                 return Response({'detail': 'E-posta zaten doğrulanmış.'}, status=400)
             verification = EmailVerification.create_for_user(user)
             ok = send_verification_email(user.email, verification.code)
-            if not ok:
-                return Response({'detail': 'E-posta gönderilemedi. Lütfen tekrar deneyin.'}, status=500)
-            return Response({'message': 'Yeni kod gönderildi.'})
+            if ok:
+                return Response({'message': 'Yeni kod gönderildi.'})
+            else:
+                response_data = {'message': 'E-posta gönderilemedi.'}
+                if settings.DEBUG:
+                    response_data['debug_code'] = verification.code
+                return Response(response_data, status=200)
         except User.DoesNotExist:
             return Response({'detail': 'Kullanıcı bulunamadı.'}, status=404)
 
