@@ -9,7 +9,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ .
 
-RUN DATABASE_URL=sqlite:///tmp/build.db python manage.py collectstatic --noinput
+RUN DATABASE_URL=sqlite:///tmp/build.db \
+    SECRET_KEY=build-only-secret \
+    python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
