@@ -2,6 +2,14 @@
 
 > Düşüncelerinizi paylaşın, insanları takip edin, topluluk oluşturun.
 
+---
+
+## 🌐 Canlı Platform
+
+### ✨ **[fisilti.ysferencakir.info.tr](https://fisilti.ysferencakir.info.tr)** ← Buraya Tıkla!
+
+---
+
 Fısıltı, gönderiler paylaşabileceğiniz, diğer kullanıcıları takip edebileceğiniz ve uygunsuz içerikleri raporlayabileceğiniz güvenli bir mikro-blog platformudur. 
 
 **Temel Özellikler:**
@@ -45,6 +53,22 @@ docker-compose up --build
 - 🌐 Frontend: http://localhost:5173
 - 🔌 Backend API: http://localhost:8000
 - 📋 Admin Paneli: http://localhost:8000/admin
+
+---
+
+## 🌍 Production Deployment
+
+**Live URLs:**
+- 🎤 **Frontend:** https://fisilti-zeta.vercel.app
+- 🔌 **Backend API:** https://fisilti-production.up.railway.app
+- 📋 **Admin Panel:** https://fisilti-production.up.railway.app/admin
+- 🌐 **Custom Domain:** https://fisilti.ysferencakir.info.tr (routing in progress)
+
+**Stack:**
+- Frontend: React + Vite → Vercel
+- Backend: Django + DRF → Railway
+- Database: PostgreSQL (Neon)
+- Authentication: JWT (SimpleJWT)
 
 ---
 
