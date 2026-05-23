@@ -22,6 +22,8 @@ class User(AbstractUser):
     country = models.CharField(max_length=100, blank=True)
     ad_soyad = models.CharField(max_length=100, blank=True)
     animal_avatar = models.CharField(max_length=10, choices=ANIMAL_CHOICES, default='fox')
+    data_processing_consent = models.BooleanField(default=False)
+    data_processing_consent_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'

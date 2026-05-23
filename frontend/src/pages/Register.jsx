@@ -11,7 +11,7 @@ export default function Register() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
         ad_soyad: '', username: '', email: '',
-        password: '', country: ''
+        password: '', country: '', data_processing_consent: false
     });
     const [agreed, setAgreed] = useState(false);
     const [errors, setErrors] = useState({});
@@ -48,6 +48,10 @@ export default function Register() {
 
         if (!agreed) {
             newErrors.agreed = 'Kullanım şartlarını kabul etmelisiniz';
+        }
+
+        if (!form.data_processing_consent) {
+            newErrors.data_processing_consent = 'Veri işleme rızası zorunludur';
         }
 
         return newErrors;
@@ -194,6 +198,25 @@ export default function Register() {
                         </label>
                     </div>
                     {errors.agreed && <p style={styles.fieldError}>{errors.agreed}</p>}
+
+                    <div style={styles.checkboxRow}>
+                        <input
+                            type="checkbox"
+                            checked={form.data_processing_consent}
+                            onChange={e => {
+                                setForm({ ...form, data_processing_consent: e.target.checked });
+                                if (errors.data_processing_consent) {
+                                    setErrors({ ...errors, data_processing_consent: '' });
+                                }
+                            }}
+                            id="consent"
+                            disabled={loading}
+                        />
+                        <label htmlFor="consent" style={styles.checkboxLabel}>
+                            KVKK kapsamında kişisel verilerimin işlenmesine rıza veriyorum
+                        </label>
+                    </div>
+                    {errors.data_processing_consent && <p style={styles.fieldError}>{errors.data_processing_consent}</p>}
 
                     <button style={styles.button} type="submit" disabled={loading}>
                         {loading ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}

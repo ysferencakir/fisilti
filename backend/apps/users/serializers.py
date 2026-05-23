@@ -1,16 +1,18 @@
 from rest_framework import serializers
 from .models import User
 from .utils import validate_username, validate_password_strength
+from django.utils import timezone
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
     country = serializers.CharField(required=False, allow_blank=True)
     ad_soyad = serializers.CharField(required=False, allow_blank=True)
+    data_processing_consent = serializers.BooleanField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'country', 'ad_soyad']
+        fields = ['username', 'email', 'password', 'country', 'ad_soyad', 'data_processing_consent']
 
     def validate_username(self, value):
         is_valid, error = validate_username(value)
@@ -24,13 +26,20 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(error)
         return value
 
+    def validate_data_processing_consent(self, value):
+        if not value:
+            raise serializers.ValidationError('Veri işleme rızası zorunludur.')
+        return value
+
     def create(self, validated_data):
         user = User.objects.create_user(
             email=validated_data['email'],
             username=validated_data['username'],
             password=validated_data['password'],
             country=validated_data.get('country', ''),
-            ad_soyad=validated_data.get('ad_soyad', '')
+            ad_soyad=validated_data.get('ad_soyad', ''),
+            data_processing_consent=validated_data['data_processing_consent'],
+            data_processing_consent_date=timezone.now()
         )
         return user
 
