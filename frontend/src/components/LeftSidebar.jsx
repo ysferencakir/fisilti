@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, User, Shield, LogOut, Sun, Moon } from 'lucide-react';
+import { Home, User, Shield, LogOut, Sun, Moon, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import FennecLogo from './FennecLogo';
@@ -91,7 +91,10 @@ export default function LeftSidebar() {
       <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <NavItem to="/" icon={Home} label="Ana Sayfa" end />
         {user && (
-          <NavItem to={`/profile/${user.username}`} icon={User} label="Profil" />
+          <>
+            <NavItem to="/search" icon={Search} label="Arama" />
+            <NavItem to={`/profile/${user.username}`} icon={User} label="Profil" />
+          </>
         )}
         {user?.role === 'admin' && (
           <NavItem to="/admin" icon={Shield} label="Admin Paneli" />

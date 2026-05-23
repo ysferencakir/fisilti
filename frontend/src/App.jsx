@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import PasswordReset from './pages/PasswordReset';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import Search from './pages/Search';
 import Admin from './pages/Admin';
 import Legal from './pages/Legal';
 
@@ -102,6 +103,17 @@ export default function App() {
                             <AppLayout>
                                 <Profile />
                             </AppLayout>
+                        }
+                    />
+
+                    <Route
+                        path="/search"
+                        element={
+                            <ProtectedRoute>
+                                <AppLayout>
+                                    <Search />
+                                </AppLayout>
+                            </ProtectedRoute>
                         }
                     />
 
