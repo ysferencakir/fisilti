@@ -4,7 +4,7 @@ dockerfilePath = "backend/Dockerfile"
 context = "backend"
 
 [deploy]
-startCommand = "python manage.py migrate && python -u -m gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120 --access-logfile - --error-logfile - fisilti.wsgi:application"
+startCommand = "echo 'Starting app...' && python manage.py migrate && echo 'Migrations done' && gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120 --access-logfile - --error-logfile - fisilti.wsgi:application"
 healthcheckPath = "/health/"
 healthcheckTimeout = 120
 restartPolicyType = "on_failure"
