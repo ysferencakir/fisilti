@@ -18,11 +18,12 @@ Fısıltı, gönderiler paylaşabileceğiniz, diğer kullanıcıları takip edeb
 ## 📑 İçindekiler
 
 1. [Hızlı Başlangıç](#hızlı-başlangıç)
-2. [Kurulum](#kurulum)
-3. [Kullanıcı Kılavuzu](#kullanıcı-kılavuzu)
-4. [Admin Rehberi](#admin-rehberi)
-5. [Teknik Bilgiler](#teknik-bilgiler)
-6. [Sıkça Sorulan Sorular](#sıkça-sorulan-sorular)
+2. [Ekran Görüntüleri](#ekran-görüntüleri)
+3. [Kurulum](#kurulum)
+4. [Kullanıcı Kılavuzu](#kullanıcı-kılavuzu)
+5. [Admin Rehberi](#admin-rehberi)
+6. [Teknik Bilgiler](#teknik-bilgiler)
+7. [Sıkça Sorulan Sorular](#sıkça-sorulan-sorular)
 
 ---
 
@@ -44,6 +45,20 @@ docker-compose up --build
 - 🌐 Frontend: http://localhost:5173
 - 🔌 Backend API: http://localhost:8000
 - 📋 Admin Paneli: http://localhost:8000/admin
+
+---
+
+## 📸 Ekran Görüntüleri
+
+### Ana Sayfa
+![Ana Sayfa](documentation/screenshots/home.png)
+Kullanıcıların takip ettikleri kişilerin gönderilerini ve kendi gönderilerini görebildiği ana feed.
+
+### Arama
+Kullanıcıları kolayca bulabilmek için arama özelliği.
+
+### Admin Paneli
+Admin kullanıcılarının sistem yönetimini yapabileceği kontrol paneli.
 
 ---
 

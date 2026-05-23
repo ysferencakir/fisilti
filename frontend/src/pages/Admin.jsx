@@ -89,7 +89,7 @@ function StatsSection() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        api.get('/admin/stats/')
+        api.get('/reports/admin/stats/')
             .then(r => setStats(r.data))
             .catch(() => setError('İstatistikler yüklenemedi.'));
     }, []);
@@ -144,7 +144,7 @@ function PostStatsSection() {
     const load = () => {
         setLoading(true);
         setError('');
-        api.get(`/admin/stats/posts/?start=${start}&end=${end}`)
+        api.get(`/reports/admin/stats/posts/?start=${start}&end=${end}`)
             .then(r => setResult(r.data))
             .catch(() => setError('Veri yüklenemedi.'))
             .finally(() => setLoading(false));
@@ -189,7 +189,7 @@ function ReportsSection() {
     const [loading, setLoading] = useState(true);
 
     const fetchReports = () => {
-        api.get('/admin/reports/')
+        api.get('/reports/admin/reports/')
             .then(r => setPosts(r.data))
             .finally(() => setLoading(false));
     };
@@ -199,13 +199,13 @@ function ReportsSection() {
     const toggle = id => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
 
     const deactivate = id => {
-        api.post(`/admin/posts/${id}/deactivate/`).then(() => {
+        api.post(`/reports/admin/posts/${id}/deactivate/`).then(() => {
             setPosts(prev => prev.map(p => p.post_id === id ? { ...p, post_is_active: false } : p));
         });
     };
 
     const activate = id => {
-        api.post(`/admin/posts/${id}/activate/`).then(() => {
+        api.post(`/reports/admin/posts/${id}/activate/`).then(() => {
             setPosts(prev => prev.map(p => p.post_id === id ? { ...p, post_is_active: true } : p));
         });
     };
@@ -278,7 +278,7 @@ function UsersSection() {
 
     const fetchUsers = (q = '') => {
         setLoading(true);
-        api.get(`/admin/users/${q ? `?search=${q}` : ''}`)
+        api.get(`/reports/admin/users/${q ? `?search=${q}` : ''}`)
             .then(r => setUsers(r.data))
             .finally(() => setLoading(false));
     };
@@ -287,14 +287,14 @@ function UsersSection() {
 
     const ban = (username) => {
         const body = banType === 'temporary' && banDays ? { duration_days: parseInt(banDays) } : {};
-        api.post(`/admin/users/${username}/ban/`, body).then(() => {
+        api.post(`/reports/admin/users/${username}/ban/`, body).then(() => {
             setBanForm(null);
             fetchUsers(search);
         });
     };
 
     const unban = (username) => {
-        api.post(`/admin/users/${username}/unban/`).then(() => fetchUsers(search));
+        api.post(`/reports/admin/users/${username}/unban/`).then(() => fetchUsers(search));
     };
 
     return (
@@ -380,7 +380,7 @@ function AuditLogSection() {
     const PAGE_SIZE = 20;
 
     const loadMore = () => {
-        api.get(`/admin/audit-log/?page=${page}`).then(r => {
+        api.get(`/reports/admin/audit-log/?page=${page}`).then(r => {
             const data = Array.isArray(r.data) ? r.data : (r.data.results || []);
             setLogs(prev => [...prev, ...data]);
             if (data.length < PAGE_SIZE) setHasMore(false);
@@ -421,6 +421,54 @@ function AuditLogSection() {
 }
 
 // ─────────────────────────────────────────────
+// Pasif Gönderiler Bölümü
+// ─────────────────────────────────────────────
+
+function PassivePostsSection() {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [expanded, setExpanded] = useState({});
+
+    useEffect(() => {
+        setLoading(true);
+        api.get('/reports/admin/posts/?is_active=false')
+            .then(r => setPosts(r.data || []))
+            .finally(() => setLoading(false));
+    }, []);
+
+    const toggle = id => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+
+    const activate = id => {
+        api.post(`/reports/admin/posts/${id}/activate/`).then(() => {
+            setPosts(prev => prev.filter(p => p.id !== id));
+        });
+    };
+
+    if (loading) return <Section title="Pasif Gönderiler"><p>Yükleniyor…</p></Section>;
+    if (!posts.length) return <Section title="Pasif Gönderiler"><p style={{ color: '#6b7280' }}>Pasif gönderi yok.</p></Section>;
+
+    return (
+        <Section title="Pasif Gönderiler">
+            <Table
+                columns={['İçerik', 'Yazar', 'İşlemler']}
+                rows={posts}
+                renderRow={(post, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                        <td style={{ padding: '6px 10px', borderBottom: '1px solid #f3f4f6', maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {post.content}
+                        </td>
+                        <td style={{ padding: '6px 10px', borderBottom: '1px solid #f3f4f6' }}>{post.author_username}</td>
+                        <td style={{ padding: '6px 10px', borderBottom: '1px solid #f3f4f6' }}>
+                            <Btn variant="success" onClick={() => activate(post.id)}>Aktife Al</Btn>
+                        </td>
+                    </tr>
+                )}
+            />
+        </Section>
+    );
+}
+
+// ─────────────────────────────────────────────
 // Ana Admin Sayfası
 // ─────────────────────────────────────────────
 
@@ -431,6 +479,7 @@ export default function Admin() {
             <StatsSection />
             <PostStatsSection />
             <ReportsSection />
+            <PassivePostsSection />
             <UsersSection />
             <AuditLogSection />
         </div>

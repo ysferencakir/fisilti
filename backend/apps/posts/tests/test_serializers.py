@@ -60,6 +60,7 @@ class PostSerializerTests(TestCase):
 
         self.assertIn('id', serializer.data)
         self.assertIn('content', serializer.data)
-        self.assertIn('author', serializer.data)
+        self.assertIn('author_username', serializer.data)
+        self.assertIn('author_animal_avatar', serializer.data)
         self.assertIn('created_at', serializer.data)
         self.assertIn('is_active', serializer.data)

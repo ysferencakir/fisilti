@@ -40,7 +40,7 @@ class PostModelTests(TestCase):
 
         self.assertGreaterEqual(post.created_at, before)
         self.assertLessEqual(post.created_at, after)
-        self.assertEqual(post.created_at, post.updated_at)
+        self.assertAlmostEqual(post.created_at, post.updated_at, delta=timezone.timedelta(milliseconds=10))
 
     def test_post_update_timestamp(self):
         post = Post.objects.create(

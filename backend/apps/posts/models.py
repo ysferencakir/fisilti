@@ -25,7 +25,7 @@ class Post(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.author.username}: {self.content[:30]}"
+        return f"Post by {self.author.username}"
 
 
 class Repost(models.Model):

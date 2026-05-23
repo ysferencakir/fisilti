@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from .models import Post, Repost
 from .serializers import PostSerializer, FeedItemSerializer
+from apps.users.permissions import IsEmailVerified
 
 class FeedPagination(PageNumberPagination):
     page_size = 5
@@ -15,13 +16,16 @@ class FeedView(APIView):
         from apps.follows.models import Follow
         followed_ids = Follow.objects.filter(follower=request.user).values_list('following_id', flat=True)
 
+        # Takip ettiği kullanıcıların gönderileri + kendi gönderileri
+        author_ids = list(followed_ids) + [request.user.id]
+
         posts = Post.objects.filter(
             is_active=True,
-            author_id__in=followed_ids,
+            author_id__in=author_ids,
         ).select_related("author").prefetch_related("reposts")
         reposts = Repost.objects.filter(
             post__is_active=True,
-            user_id__in=followed_ids,
+            user_id__in=author_ids,
         ).select_related("user", "post", "post__author")
 
         items = []
@@ -60,7 +64,7 @@ class FeedView(APIView):
 
 class PostCreateView(generics.CreateAPIView):
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsEmailVerified]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -95,10 +99,7 @@ class PostUpdateView(generics.UpdateAPIView):
         post.is_active = False
         post.save()
 
-        return Response(
-            {"detail": "Gönderi silindi."},
-            status=status.HTTP_200_OK
-        )
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserPostsView(APIView):
@@ -203,7 +204,4 @@ class RepostView(APIView):
 
         repost.delete()
 
-        return Response(
-            {"detail": "Repost kaldırıldı."},
-            status=status.HTTP_200_OK
-        )
+        return Response(status=status.HTTP_204_NO_CONTENT)

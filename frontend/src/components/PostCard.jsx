@@ -1,6 +1,6 @@
 import api from "../api";
 import React, { useState } from "react";
-import { Repeat2, Pencil, Trash2, Flag, MessageSquare, Heart, Share2 } from "lucide-react";
+import { Repeat2, Pencil, Trash2, Flag } from "lucide-react";
 import { getAnimal, avatarStyle } from "../utils/animals";
 
 const ACCENT = 'var(--accent)';
@@ -196,7 +196,6 @@ const PostCard = ({ item, currentUser }) => {
 
           {/* Action row */}
           <div style={{ display: 'flex', alignItems: 'center', marginTop: 8, marginLeft: -10, gap: 0 }}>
-            <ActionBtn icon={MessageSquare} label="Yorum" count={0} />
             <ActionBtn
               icon={Repeat2}
               label={post.is_reposted ? "Geri Al" : "Yeniden Paylaş"}
@@ -204,8 +203,6 @@ const PostCard = ({ item, currentUser }) => {
               active={post.is_reposted}
               onClick={handleRepost}
             />
-            <ActionBtn icon={Heart} label="Beğen" count={0} />
-            <ActionBtn icon={Share2} label="Paylaş" />
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: 0 }}>
               {isAuthor && (
