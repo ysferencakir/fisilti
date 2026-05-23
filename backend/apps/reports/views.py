@@ -1,6 +1,7 @@
 from datetime import timedelta
 
-from django.db.models import Count, Value
+from django.db import models
+from django.db.models import Count, Value, Q
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from rest_framework import generics, permissions
@@ -34,11 +35,12 @@ class AdminReportedPostsView(APIView):
     permission_classes = [IsAdmin]
 
     def get(self, request):
+        status_filter = request.query_params.get('status', 'pending')
         reported_posts = (
             Post.objects
-            .filter(reports__isnull=False)
-            .annotate(report_count=Count('reports'))
-            .prefetch_related('reports__reporter')
+            .filter(reports__status=status_filter)
+            .annotate(report_count=Count('reports', filter=models.Q(reports__status=status_filter)))
+            .prefetch_related('reports')
             .select_related('author')
             .distinct()
             .order_by('-report_count')
@@ -72,6 +74,10 @@ class AdminPostDeactivateView(APIView):
             return Response({'detail': 'Gönderi bulunamadı.'}, status=404)
         post.is_active = False
         post.save()
+        Report.objects.filter(post=post, status='pending').update(
+            status='resolved',
+            resolved_at=timezone.now()
+        )
         AuditLog.objects.create(
             admin=request.user,
             action='deactivate',
@@ -223,6 +229,50 @@ class AdminPostStatsView(APIView):
             'daily': daily,
             'total': sum(row['count'] for row in daily),
         })
+
+
+class AdminReportResolveView(APIView):
+    permission_classes = [IsAdmin]
+
+    def post(self, request, report_id):
+        try:
+            report = Report.objects.get(pk=report_id)
+        except Report.DoesNotExist:
+            return Response({'detail': 'Rapor bulunamadı.'}, status=404)
+
+        report.status = 'resolved'
+        report.resolved_at = timezone.now()
+        report.save()
+
+        AuditLog.objects.create(
+            admin=request.user,
+            action='deactivate',
+            target_post=report.post,
+            detail=f'Rapor {report.id} çözüldü.',
+        )
+        return Response({'detail': 'Rapor çözüldü.'})
+
+
+class AdminReportDismissView(APIView):
+    permission_classes = [IsAdmin]
+
+    def post(self, request, report_id):
+        try:
+            report = Report.objects.get(pk=report_id)
+        except Report.DoesNotExist:
+            return Response({'detail': 'Rapor bulunamadı.'}, status=404)
+
+        report.status = 'dismissed'
+        report.resolved_at = timezone.now()
+        report.save()
+
+        AuditLog.objects.create(
+            admin=request.user,
+            action='activate',
+            target_post=report.post,
+            detail=f'Rapor {report.id} reddedildi.',
+        )
+        return Response({'detail': 'Rapor reddedildi.'})
 
 
 class AdminAuditLogView(generics.ListAPIView):

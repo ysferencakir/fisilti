@@ -11,6 +11,12 @@ class Report(models.Model):
         ('other', 'Diğer'),
     ]
 
+    STATUS_CHOICES = [
+        ('pending', 'Beklemede'),
+        ('resolved', 'Çözüldü'),
+        ('dismissed', 'Reddedildi'),
+    ]
+
     reporter = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -22,13 +28,19 @@ class Report(models.Model):
         related_name='reports',
     )
     reason = models.CharField(max_length=50, choices=REASON_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = ('reporter', 'post')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['status', '-created_at']),
+        ]
 
     def __str__(self):
-        return f'{self.reporter} reported post {self.post_id}'
+        return f'{self.reporter} reported post {self.post_id} ({self.status})'
 
 
 class AuditLog(models.Model):

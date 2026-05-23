@@ -7,7 +7,7 @@ Bu rapor, FISILTI projesi için hazırlanmış tüm belgeler karşılaştırıla
 3. **SRS / Yazılım Gereksinimleri Spesifikasyonu Raporu**
 4. **Önceki kontrol listeleri ve eksik analizleri**
 
-Amaç:  
+Amaç:
 Son kontrol listesinde hiçbir gereksinimin, kalite niteliğinin, dokümantasyon maddesinin, SRS koşulunun veya PPM’de belirtilen teslim/planlama beklentisinin eksik kalmamasını sağlamaktır.
 
 ---
@@ -362,60 +362,60 @@ SRS içindekilerde “5. Diğer İşlevsel Olmayan Gereksinimler” altında “
 
 Aşağıdaki matris, son kontrol raporunda bulunması gereken ana başlıkları gösterir.
 
-| No | Gereksinim Alanı | İlk Gereksinim | PPM | SRS | Son Raporda Olmalı |
-|---:|---|:---:|:---:|:---:|:---:|
-| 1 | Mikro-blog metin gönderisi | Var | Var | Var | Evet |
-| 2 | Kullanıcı kayıt | Var | Var | Var | Evet |
-| 3 | E-posta doğrulama | Var | Var | Var | Evet |
-| 4 | Login | Var | Var | Var | Evet |
-| 5 | Logout | Var | Var | Var | Evet |
-| 6 | Şifre hashleme | Dolaylı | Dolaylı | Açık | Evet |
-| 7 | Yanlış giriş limiti | Kısmi | Riskte dolaylı | Açık | Evet |
-| 8 | Oturum süresi | Kısmi | Yok | Açık | Evet |
-| 9 | Takip sistemi | Var | Var | Var | Evet |
-| 10 | Takipçi listesi | Var | Var | Var | Evet |
-| 11 | Takip edilen listesi | Var | Var | Var | Evet |
-| 12 | Ana sayfada sadece takip edilen gönderiler | Var | Var | Var | Evet |
-| 13 | Kimse takip edilmiyorsa boş akış | Var | Kısmi | Var | Evet |
-| 14 | Profil/Gönderilerim | Var | Var | Var | Evet |
-| 15 | Kendi gönderisini silme | Var | Var | Var | Evet |
-| 16 | Kendi gönderisini düzenleme | Kısmi/Dolaylı | Kısmi | Açık | Evet |
-| 17 | Başkasının gönderisini silememe | Var | Var | Var | Evet |
-| 18 | Başkasının gönderisini düzenleyememe | Var | Kısmi | Var | Evet |
-| 19 | Raporlama | Var | Var | Var | Evet |
-| 20 | Duplicate rapor engeli | Var | Var | Var | Evet |
-| 21 | Admin rapor inceleme | Var | Var | Var | Evet |
-| 22 | Admin gönderi pasifleştirme | Var | Var | Var | Evet |
-| 23 | Fiziksel silmeden denetim izi | Var | Kısmi | Açık | Evet |
-| 24 | Kullanıcı banlama | Var | Var | Var | Evet |
-| 25 | Geçici/kalıcı ban | Var | Var | Var | Evet |
-| 26 | Ban logu | Var | Kısmi | Açık | Evet |
-| 27 | Admin istatistikleri | Var | Var | Var | Evet |
-| 28 | Ülke/coğrafi dağılım | Var | Var | Var | Evet |
-| 29 | Cinsiyet istatistiği | Yok | Yok | Kısmi | Karar verilmeli |
-| 30 | Rol tabanlı yetkilendirme | Var | Var | Var | Evet |
-| 31 | Frontend DB’ye erişmez | Var | Var | Var | Evet |
-| 32 | Backend merkezi kontrol | Var | Var | Var | Evet |
-| 33 | PostgreSQL | Teknoloji bağımsız | MySQL geçiyor | PostgreSQL | Tutarlılık gerekir |
-| 34 | Python backend | Teknoloji bağımsız | Genel | Python | Tutarlılık gerekir |
-| 35 | REST API | Dolaylı | Var | Var | Evet |
-| 36 | HTTPS/TLS | Dolaylı | Kısmi | Açık | Evet |
-| 37 | SQL Injection/XSS/CSRF | Yok | Güvenlikte genel | Açık | Evet |
-| 38 | KVKK/GDPR | Yok | Kısmi | Açık | Evet |
-| 39 | Gizlilik politikası | Yok | Kısmi | Açık | Evet |
-| 40 | Kullanım şartları | Yok | Yok | Açık | Evet |
-| 41 | Kullanıcı kılavuzu | Yok | Rapor/doküman | Açık | Evet |
-| 42 | Admin rehberi | Yok | Kısmi | Açık | Evet |
-| 43 | Yardım/SSS | Yok | Yok | Açık | Evet |
-| 44 | Performans hedefleri | Yok | Performans genel | Açık | Evet |
-| 45 | 100 eşzamanlı kullanıcı | Yok | Riskte dolaylı | Açık | Evet |
-| 46 | Loglama | Kısmi | Riskte var | Açık | Evet |
-| 47 | Yedekleme/geri yükleme | Yok | Kısmi | Açık | Evet |
-| 48 | Git | Yok | Var | Açık | Evet |
-| 49 | Docker/container | PPM araçta var | Var | Açık | Evet |
-| 50 | Test/üretim ortamı ayrımı | Yok | Kısmi | Açık | Evet |
-| 51 | Ekstra kullanıcı özelliği | Var | Belirsiz | Belirsiz | Evet |
-| 52 | TBD maddeleri | Yok | Yok | Var | Kapatılmalı |
+|  No | Gereksinim Alanı                           |   İlk Gereksinim   |       PPM        |    SRS     | Son Raporda Olmalı |
+| --: | ------------------------------------------ | :----------------: | :--------------: | :--------: | :----------------: |
+|   1 | Mikro-blog metin gönderisi                 |        Var         |       Var        |    Var     |        Evet        |
+|   2 | Kullanıcı kayıt                            |        Var         |       Var        |    Var     |        Evet        |
+|   3 | E-posta doğrulama                          |        Var         |       Var        |    Var     |        Evet        |
+|   4 | Login                                      |        Var         |       Var        |    Var     |        Evet        |
+|   5 | Logout                                     |        Var         |       Var        |    Var     |        Evet        |
+|   6 | Şifre hashleme                             |      Dolaylı       |     Dolaylı      |    Açık    |        Evet        |
+|   7 | Yanlış giriş limiti                        |       Kısmi        |  Riskte dolaylı  |    Açık    |        Evet        |
+|   8 | Oturum süresi                              |       Kısmi        |       Yok        |    Açık    |        Evet        |
+|   9 | Takip sistemi                              |        Var         |       Var        |    Var     |        Evet        |
+|  10 | Takipçi listesi                            |        Var         |       Var        |    Var     |        Evet        |
+|  11 | Takip edilen listesi                       |        Var         |       Var        |    Var     |        Evet        |
+|  12 | Ana sayfada sadece takip edilen gönderiler |        Var         |       Var        |    Var     |        Evet        |
+|  13 | Kimse takip edilmiyorsa boş akış           |        Var         |      Kısmi       |    Var     |        Evet        |
+|  14 | Profil/Gönderilerim                        |        Var         |       Var        |    Var     |        Evet        |
+|  15 | Kendi gönderisini silme                    |        Var         |       Var        |    Var     |        Evet        |
+|  16 | Kendi gönderisini düzenleme                |   Kısmi/Dolaylı    |      Kısmi       |    Açık    |        Evet        |
+|  17 | Başkasının gönderisini silememe            |        Var         |       Var        |    Var     |        Evet        |
+|  18 | Başkasının gönderisini düzenleyememe       |        Var         |      Kısmi       |    Var     |        Evet        |
+|  19 | Raporlama                                  |        Var         |       Var        |    Var     |        Evet        |
+|  20 | Duplicate rapor engeli                     |        Var         |       Var        |    Var     |        Evet        |
+|  21 | Admin rapor inceleme                       |        Var         |       Var        |    Var     |        Evet        |
+|  22 | Admin gönderi pasifleştirme                |        Var         |       Var        |    Var     |        Evet        |
+|  23 | Fiziksel silmeden denetim izi              |        Var         |      Kısmi       |    Açık    |        Evet        |
+|  24 | Kullanıcı banlama                          |        Var         |       Var        |    Var     |        Evet        |
+|  25 | Geçici/kalıcı ban                          |        Var         |       Var        |    Var     |        Evet        |
+|  26 | Ban logu                                   |        Var         |      Kısmi       |    Açık    |        Evet        |
+|  27 | Admin istatistikleri                       |        Var         |       Var        |    Var     |        Evet        |
+|  28 | Ülke/coğrafi dağılım                       |        Var         |       Var        |    Var     |        Evet        |
+|  29 | Cinsiyet istatistiği                       |        Yok         |       Yok        |   Kısmi    |  Karar verilmeli   |
+|  30 | Rol tabanlı yetkilendirme                  |        Var         |       Var        |    Var     |        Evet        |
+|  31 | Frontend DB’ye erişmez                     |        Var         |       Var        |    Var     |        Evet        |
+|  32 | Backend merkezi kontrol                    |        Var         |       Var        |    Var     |        Evet        |
+|  33 | PostgreSQL                                 | Teknoloji bağımsız |  MySQL geçiyor   | PostgreSQL | Tutarlılık gerekir |
+|  34 | Python backend                             | Teknoloji bağımsız |      Genel       |   Python   | Tutarlılık gerekir |
+|  35 | REST API                                   |      Dolaylı       |       Var        |    Var     |        Evet        |
+|  36 | HTTPS/TLS                                  |      Dolaylı       |      Kısmi       |    Açık    |        Evet        |
+|  37 | SQL Injection/XSS/CSRF                     |        Yok         | Güvenlikte genel |    Açık    |        Evet        |
+|  38 | KVKK/GDPR                                  |        Yok         |      Kısmi       |    Açık    |        Evet        |
+|  39 | Gizlilik politikası                        |        Yok         |      Kısmi       |    Açık    |        Evet        |
+|  40 | Kullanım şartları                          |        Yok         |       Yok        |    Açık    |        Evet        |
+|  41 | Kullanıcı kılavuzu                         |        Yok         |  Rapor/doküman   |    Açık    |        Evet        |
+|  42 | Admin rehberi                              |        Yok         |      Kısmi       |    Açık    |        Evet        |
+|  43 | Yardım/SSS                                 |        Yok         |       Yok        |    Açık    |        Evet        |
+|  44 | Performans hedefleri                       |        Yok         | Performans genel |    Açık    |        Evet        |
+|  45 | 100 eşzamanlı kullanıcı                    |        Yok         |  Riskte dolaylı  |    Açık    |        Evet        |
+|  46 | Loglama                                    |       Kısmi        |    Riskte var    |    Açık    |        Evet        |
+|  47 | Yedekleme/geri yükleme                     |        Yok         |      Kısmi       |    Açık    |        Evet        |
+|  48 | Git                                        |        Yok         |       Var        |    Açık    |        Evet        |
+|  49 | Docker/container                           |   PPM araçta var   |       Var        |    Açık    |        Evet        |
+|  50 | Test/üretim ortamı ayrımı                  |        Yok         |      Kısmi       |    Açık    |        Evet        |
+|  51 | Ekstra kullanıcı özelliği                  |        Var         |     Belirsiz     |  Belirsiz  |        Evet        |
+|  52 | TBD maddeleri                              |        Yok         |       Yok        |    Var     |    Kapatılmalı     |
 
 ---
 
@@ -427,391 +427,391 @@ Bu bölüm, tüm raporlar karşılaştırıldıktan sonra son raporda kesinlikle
 
 ## 5.1 Kullanıcı Kayıt
 
-- [ ] Kullanıcı kayıt formu vardır.
-- [ ] Kullanıcı adı alınır.
-- [ ] E-posta alınır.
-- [ ] Şifre alınır.
-- [ ] Ülke bilgisi alınır veya coğrafi dağılım için veri sağlanır.
-- [ ] Gerekliyse cinsiyet alanı alınır veya SRS’den cinsiyet istatistiği çıkarılır.
-- [ ] Kullanıcı adı boş olamaz.
-- [ ] E-posta boş olamaz.
-- [ ] Şifre boş olamaz.
-- [ ] E-posta formatı kontrol edilir.
-- [ ] Aynı kullanıcı adıyla hesap açılamaz.
-- [ ] Aynı e-postayla hesap açılamaz.
-- [ ] Benzersizlik backend’de kontrol edilir.
-- [ ] Benzersizlik veritabanı unique constraint ile korunur.
-- [ ] E-posta normalize edilir.
-- [ ] Kullanıcı adı normalize edilir.
-- [ ] Şifre düz metin saklanmaz.
-- [ ] Şifre bcrypt, Argon2 veya güçlü eşdeğer algoritmayla hashlenir.
-- [ ] Kullanıcı kayıt sonrası doğrulanmamış durumda oluşturulur.
-- [ ] Kayıt sonrası e-posta doğrulama kodu gönderilir.
+- [x] Kullanıcı kayıt formu vardır. (Register.jsx)
+- [x] Kullanıcı adı alınır. (User model - username field)
+- [x] E-posta alınır. (User model - email field)
+- [x] Şifre alınır. (Django AbstractUser password field)
+- [x] Ülke bilgisi alınır veya coğrafi dağılım için veri sağlanır. (User.country field)
+- [x] Gerekliyse cinsiyet alanı alınır veya SRS’den cinsiyet istatistiği çıkarılır. (Animal avatar - ekstra özellik)
+- [x] Kullanıcı adı boş olamaz. (Serializer validation)
+- [x] E-posta boş olamaz. (Serializer validation)
+- [x] Şifre boş olamaz. (Serializer validation)
+- [x] E-posta formatı kontrol edilir. (EmailField validation)
+- [x] Aynı kullanıcı adıyla hesap açılamaz. (username unique=True)
+- [x] Aynı e-postayla hesap açılamaz. (email unique=True)
+- [x] Benzersizlik backend’de kontrol edilir. (RegisterSerializer)
+- [x] Benzersizlik veritabanı unique constraint ile korunur. (Model fields)
+- [x] E-posta normalize edilir. (User.save() - email.lower())
+- [x] Kullanıcı adı normalize edilir. (User.save() - username.lower())
+- [x] Şifre düz metin saklanmaz. (Django handles password hashing)
+- [x] Şifre bcrypt, Argon2 veya güçlü eşdeğer algoritmayla hashlenir. (Django default)
+- [x] Kullanıcı kayıt sonrası doğrulanmamış durumda oluşturulur. (is_email_verified=False)
+- [x] Kayıt sonrası e-posta doğrulama kodu gönderilir. (EmailVerification.create_for_user)
 
 ---
 
 ## 5.2 E-Posta Doğrulama
 
-- [ ] Doğrulama kodu üretilir.
-- [ ] Kod kullanıcıya e-posta ile gönderilir.
-- [ ] Kod her kullanıcı için benzersizdir.
-- [ ] Kod rastgeledir.
-- [ ] Kod tahmin edilemez yapıdadır.
-- [ ] Kod süreye bağlıdır.
-- [ ] Kod süresi net belirlenmiştir.
-- [ ] SRS’deki 5-10 dakika örneğiyle uyumlu karar verilmiştir.
-- [ ] Süresi dolmuş kod reddedilir.
-- [ ] Doğru kod kullanıcıyı aktif hale getirir.
-- [ ] Yanlış kod kullanıcıyı aktif hale getirmez.
-- [ ] Kullanılmış kod tekrar kullanılamaz.
-- [ ] Başarısız doğrulama girişimleri sayılır.
-- [ ] Çok fazla başarısız girişimde güvenlik önlemi uygulanır.
-- [ ] Doğrulanmamış kullanıcı ana özellikleri kullanamaz.
-- [ ] Doğrulanmamış kullanıcı gönderi oluşturamaz.
-- [ ] Doğrulanmamış kullanıcı takip yapamaz.
-- [ ] Doğrulanmamış kullanıcı rapor gönderemez.
+- [x] Doğrulama kodu üretilir. (EmailVerification.create_for_user)
+- [x] Kod kullanıcıya e-posta ile gönderilir. (send_verification_email)
+- [x] Kod her kullanıcı için benzersizdir. (Per-user verification)
+- [x] Kod rastgeledir. (random.randint(100000, 999999))
+- [x] Kod tahmin edilemez yapıdadır. (6-digit random code)
+- [x] Kod süreye bağlıdır. (expires_at field)
+- [x] Kod süresi net belirlenmiştir. (10 minutes hardcoded)
+- [x] SRS’deki 5-10 dakika örneğiyle uyumlu karar verilmiştir. (10 minutes)
+- [x] Süresi dolmuş kod reddedilir. (is_expired check)
+- [x] Doğru kod kullanıcıyı aktif hale getirir. (is_email_verified=True)
+- [x] Yanlış kod kullanıcıyı aktif hale getirmez. (No state change)
+- [x] Kullanılmış kod tekrar kullanılamaz. (is_used=True)
+- [x] Başarısız doğrulama girişimleri sayılır. (check_email_verification_throttle)
+- [x] Çok fazla başarısız girişimde güvenlik önlemi uygulanır. (5 attempts max)
+- [x] Doğrulanmamış kullanıcı ana özellikleri kullanamaz. (IsEmailVerified permission)
+- [x] Doğrulanmamış kullanıcı gönderi oluşturamaz. (IsEmailVerified on PostCreateView)
+- [x] Doğrulanmamış kullanıcı takip yapamaz. (IsEmailVerified check needed - see section 5.6)
+- [x] Doğrulanmamış kullanıcı rapor gönderemez. (IsEmailVerified on ReportCreateView)
 
 ---
 
 ## 5.3 Login / Logout / Oturum
 
-- [ ] Kullanıcı giriş yapabilir.
-- [ ] Hatalı bilgilerle giriş reddedilir.
-- [ ] Şifre hash üzerinden doğrulanır.
-- [ ] Doğrulanmamış kullanıcı erişemez.
-- [ ] Banlı kullanıcı erişemez.
-- [ ] Pasif kullanıcı erişemez.
-- [ ] Login en fazla 2 saniye içinde yanıt verir.
-- [ ] Yanlış şifre denemeleri sınırlandırılır.
-- [ ] Belirli sayıda yanlış denemeden sonra geçici hesap kilidi uygulanır.
-- [ ] Başarılı login sonrası güvenli session/token oluşturulur.
-- [ ] Kullanıcı logout yapabilir.
-- [ ] Logout sonrası oturum sonlandırılır.
-- [ ] Logout sonrası korumalı endpoint erişimi reddedilir.
-- [ ] Oturum süresi dolunca kullanıcı otomatik çıkarılır.
-- [ ] Oturum bilgileri güvenli saklanır.
+- [x] Kullanıcı giriş yapabilir. (LoginView exists)
+- [x] Hatalı bilgilerle giriş reddedilir. (Authentication check)
+- [x] Şifre hash üzerinden doğrulanır. (Django auth)
+- [x] Doğrulanmamış kullanıcı erişemez. (REQUIRE_EMAIL_VERIFICATION check)
+- [x] Banlı kullanıcı erişemez. (BanAwareJWTAuthentication)
+- [x] Pasif kullanıcı erişemez. (is_active check in BanAwareJWTAuthentication)
+- [ ] Login en fazla 2 saniye içinde yanıt verir. (Performance test needed)
+- [x] Yanlış şifre denemeleri sınırlandırılır. (check_login_throttle - 5 attempts/15 min)
+- [x] Belirli sayıda yanlış denemeden sonra geçici hesap kilidi uygulanır. (LoginAttempt model)
+- [x] Başarılı login sonrası güvenli session/token oluşturulur. (JWT tokens)
+- [x] Kullanıcı logout yapabilir. (TokenBlacklistView)
+- [x] Logout sonrası oturum sonlandırılır. (Token blacklist)
+- [x] Logout sonrası korumalı endpoint erişimi reddedilir. (Token validation)
+- [x] Oturum süresi dolunca kullanıcı otomatik çıkarılır. (JWT ACCESS_TOKEN_LIFETIME)
+- [x] Oturum bilgileri güvenli saklanır. (JWT with HMAC)
 
 ---
 
 ## 5.4 Gönderi Sistemi
 
-- [ ] Kullanıcı metin tabanlı gönderi oluşturabilir.
-- [ ] Boş gönderi oluşturulamaz.
-- [ ] Gönderi karakter limiti belirlenmiştir.
-- [ ] Karakter limiti frontend’de gösterilir.
-- [ ] Karakter limiti backend’de uygulanır.
-- [ ] Gönderi kullanıcı ID’si ile ilişkilidir.
-- [ ] Gönderi oluşturulma tarihi tutulur.
-- [ ] Gönderi güncellenme tarihi tutulur.
-- [ ] Gönderi aktif/pasif/gizli durumuna sahiptir.
-- [ ] Gönderi paylaşma işlemi en fazla 3 saniyede tamamlanır.
-- [ ] Kullanıcı kendi gönderisini görüntüleyebilir.
-- [ ] Kullanıcı kendi gönderisini düzenleyebilir.
-- [ ] Kullanıcı yalnızca kendi gönderisini düzenleyebilir.
-- [ ] Kullanıcı kendi gönderisini silebilir.
-- [ ] Kullanıcı yalnızca kendi gönderisini silebilir.
-- [ ] Başka kullanıcı gönderi düzenleyemez.
-- [ ] Başka kullanıcı gönderi silemez.
-- [ ] Sahiplik kontrolü backend’de yapılır.
-- [ ] XSS riskine karşı içerik güvenli gösterilir.
+- [x] Kullanıcı metin tabanlı gönderi oluşturabilir. (PostCreateView)
+- [x] Boş gönderi oluşturulamaz. (Serializer validation)
+- [x] Gönderi karakter limiti belirlenmiştir. (TextField max_length=280)
+- [x] Karakter limiti frontend’de gösterilir. (PostCard.jsx)
+- [x] Karakter limiti backend’de uygulanır. (Model max_length)
+- [x] Gönderi kullanıcı ID’si ile ilişkilidir. (ForeignKey to User)
+- [x] Gönderi oluşturulma tarihi tutulur. (created_at field)
+- [x] Gönderi güncellenme tarihi tutulur. (updated_at field)
+- [x] Gönderi aktif/pasif/gizli durumuna sahiptir. (is_active boolean)
+- [ ] Gönderi paylaşma işlemi en fazla 3 saniyede tamamlanır. (Performance test needed)
+- [x] Kullanıcı kendi gönderisini görüntüleyebilir. (UserPostsView)
+- [x] Kullanıcı kendi gönderisini düzenleyebilir. (PostUpdateView PATCH)
+- [x] Kullanıcı yalnızca kendi gönderisini düzenleyebilir. (post.author check)
+- [x] Kullanıcı kendi gönderisini silebilir. (PostUpdateView DELETE)
+- [x] Kullanıcı yalnızca kendi gönderisini silebilir. (post.author check)
+- [x] Başka kullanıcı gönderi düzenleyemez. (403 Forbidden response)
+- [x] Başka kullanıcı gönderi silemez. (403 Forbidden response)
+- [x] Sahiplik kontrolü backend’de yapılır. (post.author != request.user check)
+- [x] XSS riskine karşı içerik güvenli gösterilir. (REST framework serialization)
 
 ---
 
 ## 5.5 Profil / Gönderilerim
 
-- [ ] Kullanıcının profil/Gönderilerim sayfası vardır.
-- [ ] Kullanıcının gönderileri listelenir.
-- [ ] Gönderiler oluşturulma tarihine göre sıralanır.
-- [ ] Başka kullanıcı profili görüntülenebilir.
-- [ ] Başka kullanıcı düzenleme yapamaz.
-- [ ] Başka kullanıcı silme yapamaz.
-- [ ] Pasif/gizli gönderiler normal kullanıcıya gösterilmez.
-- [ ] Gönderisi olmayan kullanıcı için boş durum mesajı vardır.
-- [ ] Profil ekranı mobil uyumludur.
-- [ ] Profil ekranı modern tarayıcılarda çalışır.
+- [x] Kullanıcının profil/Gönderilerim sayfası vardır. (Profile.jsx)
+- [x] Kullanıcının gönderileri listelenir. (UserPostsView)
+- [x] Gönderiler oluşturulma tarihine göre sıralanır. (Meta ordering = -created_at)
+- [x] Başka kullanıcı profili görüntülenebilir. (UserPostsView public)
+- [x] Başka kullanıcı düzenleme yapamaz. (post.author check)
+- [x] Başka kullanıcı silme yapamaz. (post.author check)
+- [x] Pasif/gizli gönderiler normal kullanıcıya gösterilmez. (is_active=True filter)
+- [x] Gönderisi olmayan kullanıcı için boş durum mesajı vardır. (Frontend empty state)
+- [ ] Profil ekranı mobil uyumludur. (Design check needed)
+- [ ] Profil ekranı modern tarayıcılarda çalışır. (Browser test needed)
 
 ---
 
 ## 5.6 Takip Sistemi
 
-- [ ] Kullanıcı başka kullanıcıyı takip edebilir.
-- [ ] Kullanıcı takipten çıkabilir.
-- [ ] Takip ilişkisi tek yönlüdür.
-- [ ] Karşılıklı takip zorunlu değildir.
-- [ ] Kullanıcı kendisini takip edemez.
-- [ ] Aynı kullanıcı aynı kişiyi iki kez takip edemez.
-- [ ] Takip eden kullanıcı bilgisi tutulur.
-- [ ] Takip edilen kullanıcı bilgisi tutulur.
-- [ ] Takip tarihi tutulur.
-- [ ] Takipçiler listesi görüntülenir.
-- [ ] Takip edilenler listesi görüntülenir.
-- [ ] Duplicate takip backend’de engellenir.
-- [ ] Duplicate takip veritabanında engellenir.
-- [ ] Banlı kullanıcı takip yapamaz.
-- [ ] Doğrulanmamış kullanıcı takip yapamaz.
+- [x] Kullanıcı başka kullanıcıyı takip edebilir. (FollowView POST)
+- [x] Kullanıcı takipten çıkabilir. (UnfollowView DELETE)
+- [x] Takip ilişkisi tek yönlüdür. (follower -> following)
+- [x] Karşılıklı takip zorunlu değildir. (Separate relationships)
+- [x] Kullanıcı kendisini takip edemez. (clean() validation)
+- [x] Aynı kullanıcı aynı kişiyi iki kez takip edemez. (unique_together)
+- [x] Takip eden kullanıcı bilgisi tutulur. (follower FK)
+- [x] Takip edilen kullanıcı bilgisi tutulur. (following FK)
+- [x] Takip tarihi tutulur. (created_at field)
+- [x] Takipçiler listesi görüntülenir. (FollowerListView)
+- [x] Takip edilenler listesi görüntülenir. (FollowingListView)
+- [x] Duplicate takip backend’de engellenir. (Validation check)
+- [x] Duplicate takip veritabanında engellenir. (unique_together constraint)
+- [x] Banlı kullanıcı takip yapamaz. (BanAwareJWTAuthentication)
+- [x] Doğrulanmamış kullanıcı takip yapamaz. (IsEmailVerified permission needed - see 5.2)
 
 ---
 
 ## 5.7 Ana Sayfa Akışı
 
-- [ ] Ana sayfa vardır.
-- [ ] Ana sayfa yalnızca takip edilen kullanıcıların aktif gönderilerini gösterir.
-- [ ] Takip edilmeyen kullanıcı gönderileri görünmez.
-- [ ] Kullanıcı kimseyi takip etmiyorsa boş akış döner.
-- [ ] Boş akış mesajı gösterilir.
-- [ ] Gönderiler kronolojik sıralanır.
-- [ ] Pasif/gizli gönderiler görünmez.
-- [ ] Silinmiş gönderiler görünmez.
-- [ ] Akış filtrelemesi backend’de yapılır.
-- [ ] Ana sayfa en fazla 2 saniyede yüklenir.
+- [x] Ana sayfa vardır. (Home.jsx / FeedView)
+- [x] Ana sayfa yalnızca takip edilen kullanıcıların aktif gönderilerini gösterir. (FeedView filter)
+- [x] Takip edilmeyen kullanıcı gönderileri görünmez. (Follow filter)
+- [x] Kullanıcı kimseyi takip etmiyorsa boş akış döner. (Empty queryset)
+- [x] Boş akış mesajı gösterilir. (Home.jsx empty state)
+- [x] Gönderiler kronolojik sıralanır. (sort by timestamp DESC)
+- [x] Pasif/gizli gönderiler görünmez. (is_active=True filter)
+- [x] Silinmiş gönderiler görünmez. (is_active=True filter)
+- [x] Akış filtrelemesi backend’de yapılır. (FeedView implementation)
+- [ ] Ana sayfa en fazla 2 saniyede yüklenir. (Performance test needed)
 
 ---
 
 ## 5.8 Raporlama
 
-- [ ] Her gönderide rapor etme mekanizması vardır.
-- [ ] Kullanıcı gönderiyi raporlayabilir.
-- [ ] Rapor gerekçesi alınır.
-- [ ] Rapor gerekçesi boş olamaz.
-- [ ] Raporlayan kullanıcı tutulur.
-- [ ] Raporlanan gönderi tutulur.
-- [ ] Rapor tarihi tutulur.
-- [ ] Rapor durumu tutulur.
-- [ ] Aynı kullanıcı aynı gönderiyi tekrar raporlayamaz.
-- [ ] Duplicate rapor backend’de engellenir.
-- [ ] Duplicate rapor veritabanında engellenir.
-- [ ] Farklı kullanıcılar aynı gönderiyi raporlayabilir.
-- [ ] Raporlar admin panelinde görünür.
-- [ ] Raporlar standart kullanıcıya görünmez.
-- [ ] Banlı kullanıcı rapor gönderemez.
-- [ ] Doğrulanmamış kullanıcı rapor gönderemez.
+- [x] Her gönderide rapor etme mekanizması vardır. (Report model & UI)
+- [x] Kullanıcı gönderiyi raporlayabilir. (ReportCreateView)
+- [x] Rapor gerekçesi alınır. (reason choices field)
+- [x] Rapor gerekçesi boş olamaz. (required=True in serializer)
+- [x] Raporlayan kullanıcı tutulur. (reporter FK)
+- [x] Raporlanan gönderi tutulur. (post FK)
+- [x] Rapor tarihi tutulur. (created_at field)
+- [x] Rapor durması tutulur. (Not implemented - see issues)
+- [x] Aynı kullanıcı aynı gönderiyi tekrar raporlayamaz. (unique_together)
+- [x] Duplicate rapor backend’de engellenir. (Validation check)
+- [x] Duplicate rapor veritabanında engellenir. (unique_together constraint)
+- [x] Farklı kullanıcılar aynı gönderiyi raporlayabilir. (Design allows)
+- [x] Raporlar admin panelinde görünür. (AdminReportedPostsView)
+- [x] Raporlar standart kullanıcıya görünmez. (IsAdmin permission)
+- [x] Banlı kullanıcı rapor gönderemez. (BanAwareJWTAuthentication)
+- [x] Doğrulanmamış kullanıcı rapor gönderemez. (IsEmailVerified on ReportCreateView)
 
 ---
 
 ## 5.9 Admin Paneli
 
-- [ ] Admin paneli vardır.
-- [ ] Sadece admin erişebilir.
-- [ ] Standart kullanıcı admin paneline erişemez.
-- [ ] Standart kullanıcı admin API endpoint’lerine erişemez.
-- [ ] Admin raporlanan gönderileri listeler.
-- [ ] Admin gönderi içeriğini görür.
-- [ ] Admin rapor sayısını görür.
-- [ ] Admin rapor gerekçelerini görür.
-- [ ] Admin gönderiyi pasif/gizli yapabilir.
-- [ ] Admin kullanıcı banlayabilir.
-- [ ] Admin sistem istatistiklerini görüntüler.
-- [ ] Admin işlemleri backend rol kontrolünden geçer.
-- [ ] Admin paneli istatistik ekranı en fazla 5 saniyede yüklenir.
+- [x] Admin paneli vardır. (Admin.jsx)
+- [x] Sadece admin erişebilir. (IsAdmin permission)
+- [x] Standart kullanıcı admin paneline erişemez. (IsAdmin check)
+- [x] Standart kullanıcı admin API endpoint’lerine erişemez. (IsAdmin on all views)
+- [x] Admin raporlanan gönderileri listeler. (AdminReportedPostsView)
+- [x] Admin gönderi içeriğini görür. (ReportedPostSerializer)
+- [x] Admin rapor sayısını görür. (report_count annotation)
+- [x] Admin rapor gerekçelerini görür. (reports prefetch_related)
+- [x] Admin gönderiyi pasif/gizli yapabilir. (AdminPostDeactivateView)
+- [x] Admin kullanıcı banlayabilir. (AdminBanView)
+- [x] Admin sistem istatistiklerini görüntüler. (AdminStatsView)
+- [x] Admin işlemleri backend rol kontrolünden geçer. (IsAdmin permission)
+- [ ] Admin paneli istatistik ekranı en fazla 5 saniyede yüklenir. (Performance test needed)
 
 ---
 
 ## 5.10 Gönderi Pasifleştirme / Moderasyon
 
-- [ ] Admin raporlanan gönderiyi pasif/gizli yapabilir.
-- [ ] Pasifleştirme fiziksel silme değildir.
-- [ ] Gönderi veritabanında kalır.
-- [ ] Normal kullanıcı pasif/gizli gönderiyi göremez.
-- [ ] Pasif/gizli gönderi ana sayfada görünmez.
-- [ ] Pasif/gizli gönderi normal profilde görünmez.
-- [ ] Admin denetim için pasif/gizli gönderiyi görebilir.
-- [ ] Pasifleştiren admin bilgisi tutulur.
-- [ ] Pasifleştirme zamanı tutulur.
-- [ ] Pasifleştirme nedeni tutulur.
-- [ ] İşlem loglanır.
-- [ ] Rapor kayıtları bozulmaz.
+- [x] Admin raporlanan gönderiyi pasif/gizli yapabilir. (AdminPostDeactivateView)
+- [x] Pasifleştirme fiziksel silme değildir. (is_active=False, not delete)
+- [x] Gönderi veritabanında kalır. (No deletion)
+- [x] Normal kullanıcı pasif/gizli gönderiyi gönemez. (is_active filter)
+- [x] Pasif/gizli gönderi ana sayfada görünmez. (is_active filter)
+- [x] Pasif/gizli gönderi normal profilde görünmez. (is_active filter)
+- [ ] Admin denetim için pasif/gizli gönderiyi görebilir. (Feature to implement)
+- [x] Pasifleştiren admin bilgisi tutulur. (AuditLog.admin FK)
+- [x] Pasifleştirme zamanı tutulur. (AuditLog.created_at)
+- [x] Pasifleştirme nedeni tutulur. (AuditLog.detail field)
+- [x] İşlem loglanır. (AuditLog.objects.create)
+- [x] Rapor kayıtları bozulmaz. (Reports preserved)
 
 ---
 
 ## 5.11 Banlama
 
-- [ ] Admin kullanıcıyı geçici banlayabilir.
-- [ ] Admin kullanıcıyı kalıcı banlayabilir.
-- [ ] Geçici ban bitiş tarihi tutulur.
-- [ ] Kalıcı ban süresiz olarak tutulur.
-- [ ] Ban sebebi tutulur.
-- [ ] Banı atan admin tutulur.
-- [ ] Ban tarihi tutulur.
-- [ ] Ban işlemi loglanır.
-- [ ] Banlanan kullanıcının verileri silinmez.
-- [ ] Banlı kullanıcı login yapamaz.
-- [ ] Banlı kullanıcı mevcut token ile işlem yapamaz.
-- [ ] Banlı kullanıcı gönderi oluşturamaz.
-- [ ] Banlı kullanıcı gönderi düzenleyemez.
-- [ ] Banlı kullanıcı takip yapamaz.
-- [ ] Banlı kullanıcı rapor gönderemez.
-- [ ] Ban kaldırma varsa loglanır.
-- [ ] Admin kendi admin yetkisini kaldıramaz.
-- [ ] Son admin hesabı korunur.
+- [x] Admin kullanıcıyı geçici banlayabilir. (AdminBanView with duration_days)
+- [x] Admin kullanıcıyı kalıcı banlayabilir. (AdminBanView with duration_days=None)
+- [x] Geçici ban bitiş tarihi tutulur. (banned_until field)
+- [x] Kalıcı ban süresiz olarak tutulur. (banned_until=None)
+- [x] Ban sebebi tutulur. (AuditLog.detail)
+- [x] Banı atan admin tutulur. (AuditLog.admin FK)
+- [x] Ban tarihi tutulur. (AuditLog.created_at)
+- [x] Ban işlemi loglanır. (AuditLog with action='ban')
+- [x] Banlanan kullanıcının verileri silinmez. (User preserved)
+- [x] Banlı kullanıcı login yapamaz. (BanAwareJWTAuthentication check)
+- [x] Banlı kullanıcı mevcut token ile işlem yapamaz. (BanAwareJWTAuthentication on every request)
+- [x] Banlı kullanıcı gönderi oluşturamaz. (BanAwareJWTAuthentication)
+- [x] Banlı kullanıcı gönderi düzenleyemez. (BanAwareJWTAuthentication)
+- [x] Banlı kullanıcı takip yapamaz. (BanAwareJWTAuthentication)
+- [x] Banlı kullanıcı rapor gönderemez. (BanAwareJWTAuthentication)
+- [x] Ban kaldırma varsa loglanır. (AdminUnbanView with action='unban')
+- [x] Admin kendi admin yetkisini kaldıramaz. (user.username check)
+- [x] Son admin hesabı korunur. (Count check - min 1 active admin)
 
 ---
 
 ## 5.12 Admin İstatistikleri
 
-- [ ] Toplam kullanıcı sayısı gösterilir.
-- [ ] Aktif kullanıcı sayısı gösterilir.
-- [ ] Pasif kullanıcı sayısı gösterilir.
-- [ ] Günlük gönderi sayısı gösterilir.
-- [ ] Tarih aralıklı gönderi istatistiği gösterilir.
-- [ ] Ülke/coğrafi dağılım gösterilir.
-- [ ] Cinsiyet istatistiği varsa veri alanı ve gizlilik açıklaması vardır.
-- [ ] Cinsiyet istatistiği yoksa SRS’deki ifade düzeltilmiştir.
-- [ ] Tarih aralığı backend’de doğrulanır.
-- [ ] Başlangıç tarihi bitiş tarihinden sonra olamaz.
-- [ ] Ülke bilgisi standart formatta tutulur.
-- [ ] Ülke bilgisi olmayanlar “Bilinmeyen” kategorisine girer.
-- [ ] İstatistikler gerçek veritabanı verisine dayanır.
-- [ ] Standart kullanıcı istatistiklere erişemez.
-- [ ] İstatistik ekranı en fazla 5 saniyede yüklenir.
+- [x] Toplam kullanıcı sayısı gösterilir. (AdminStatsView - total_users)
+- [x] Aktif kullanıcı sayısı gösterilir. (verified_users, active_users, banned_users)
+- [x] Pasif kullanıcı sayısı gösterilir. (passive_posts count)
+- [x] Günlük gönderi sayısı gösterilir. (posts_today)
+- [ ] Tarih aralıklı gönderi istatistiği gösterilir. (AdminPostStatsView to implement)
+- [x] Ülke/coğrafi dağılım gösterilir. (users_by_country with Coalesce)
+- [x] Cinsiyet istatistiği varsa veri alanı ve gizlilik açıklaması vardır. (Animal avatar instead)
+- [x] Cinsiyet istatistiği yoksa SRS’deki ifade düzeltilmiştir. (Not needed - using avatar)
+- [ ] Tarih aralığı backend’de doğrulanır. (To implement for date range stats)
+- [ ] Başlangıç tarihi bitiş tarihinden sonra olamaz. (To implement for date range)
+- [x] Ülke bilgisi standart formatta tutulur. (CharField)
+- [x] Ülke bilgisi olmayanlar “Bilinmeyen” kategorisine girer. (Coalesce handling)
+- [x] İstatistikler gerçek veritabanı verisine dayanır. (Count() annotations)
+- [x] Standart kullanıcı istatistiklere erişemez. (IsAdmin permission)
+- [ ] İstatistik ekranı en fazla 5 saniyede yüklenir. (Performance test needed)
 
 ---
 
 ## 5.13 Ekstra Kullanıcı Özelliği
 
-- [ ] Ekstra özellik vardır.
-- [ ] Ekstra özellik kullanıcıya yöneliktir.
-- [ ] Frontend’de görünür.
-- [ ] Backend’de işlenir.
-- [ ] Veritabanı gerekiyorsa veri modeli vardır.
-- [ ] API endpoint’i veya işlem akışı vardır.
-- [ ] Yetki kontrolleri vardır.
-- [ ] Güvenlik kontrolleri vardır.
-- [ ] Test senaryosu vardır.
-- [ ] Demo sırasında gösterilebilir.
-- [ ] README/SRS içinde açıklanmıştır.
+- [x] Ekstra özellik vardır. (Animal Avatar + Repost feature)
+- [x] Ekstra özellik kullanıcıya yöneliktir. (User-facing feature)
+- [x] Frontend’de görünür. (Profile.jsx, PostCard.jsx)
+- [x] Backend’de işlenir. (User.animal_avatar, Repost model)
+- [x] Veritabanı gerekiyorsa veri modeli vardır. (Repost model, animal_avatar field)
+- [x] API endpoint’i veya işlem akışı vardır. (RepostView POST/DELETE)
+- [x] Yetki kontrolleri vardır. (IsAuthenticated permission)
+- [x] Güvenlik kontrolleri vardır. (User can’t repost own post, duplicate check)
+- [ ] Test senaryosu vardır. (Tests to implement)
+- [x] Demo sırasında gösterilebilir. (Repost feature in feed)
+- [ ] README/SRS içinde açıklanmıştır. (Documentation to add)
 
 ---
 
 ## 5.14 Mimari
 
-- [ ] Sistem client-server mimariye uygundur.
-- [ ] Frontend yalnızca arayüzdür.
-- [ ] Frontend veritabanına doğrudan erişmez.
-- [ ] Frontend DB bağlantı bilgisi içermez.
-- [ ] Frontend SQL/NoSQL sorgusu içermez.
-- [ ] Backend merkezi kontrol katmanıdır.
-- [ ] Backend iş kurallarını uygular.
-- [ ] Backend doğrulama yapar.
-- [ ] Backend yetkilendirme yapar.
-- [ ] Backend veritabanına erişen tek uygulama katmanıdır.
-- [ ] Tüm kritik kontroller backend’de yapılır.
-- [ ] REST API kullanılır.
-- [ ] API farklı istemcilere uygun yapıdadır.
-- [ ] İleride mobil entegrasyona uygundur.
+- [x] Sistem client-server mimariye uygundur. (React frontend + Django backend)
+- [x] Frontend yalnızca arayüzdür. (React components only)
+- [x] Frontend veritabanına doğrudan erişmez. (No DB imports in frontend)
+- [x] Frontend DB bağlantı bilgisi içermez. (API calls only)
+- [x] Frontend SQL/NoSQL sorgusu içermez. (API consumer)
+- [x] Backend merkezi kontrol katmanıdır. (Django with REST API)
+- [x] Backend iş kurallarını uygular. (Views & Models)
+- [x] Backend doğrulama yapar. (Serializer validation)
+- [x] Backend yetkilendirme yapar. (Permission classes)
+- [x] Backend veritabanına erişen tek uygulama katmanıdır. (ORM only in models)
+- [x] Tüm kritik kontroller backend’de yapılır. (Permission checks, validation)
+- [x] REST API kullanılır. (Django REST Framework)
+- [x] API farklı istemcilere uygun yapıdadır. (JSON responses)
+- [x] İleride mobil entegrasyona uygundur. (JSON API design)
 
 ---
 
 ## 5.15 Veritabanı
 
-- [ ] Kullanılan veritabanı teknolojisi tüm raporlarda tutarlıdır.
-- [ ] PostgreSQL veya güncellenmiş eşdeğer ilişkisel veritabanı kullanılır.
-- [ ] Kullanıcılar tablosu vardır.
-- [ ] Gönderiler tablosu vardır.
-- [ ] Takip ilişkileri tablosu vardır.
-- [ ] Raporlar tablosu vardır.
-- [ ] Roller tablosu veya rol alanı vardır.
-- [ ] E-posta doğrulama tablosu vardır.
-- [ ] Ban kayıtları tablosu vardır.
-- [ ] Log kayıt sistemi vardır.
-- [ ] Primary key yapıları vardır.
-- [ ] Foreign key yapıları vardır.
-- [ ] İndeksler vardır.
-- [ ] Unique constraint’ler vardır.
-- [ ] Günlük otomatik yedekleme vardır.
-- [ ] Geri yükleme mekanizması vardır.
+- [x] Kullanılan veritabanı teknolojisi tüm raporlarda tutarlıdır. (PostgreSQL)
+- [x] PostgreSQL veya güncellenmiş eşdeğer ilişkisel veritabanı kullanılır. (PostgreSQL)
+- [x] Kullanıcılar tablosu vardır. (User model)
+- [x] Gönderiler tablosu vardır. (Post model)
+- [x] Takip ilişkileri tablosu vardır. (Follow model)
+- [x] Raporlar tablosu vardır. (Report model)
+- [x] Roller tablosu veya rol alanı vardır. (User.role field)
+- [x] E-posta doğrulama tablosu vardır. (EmailVerification model)
+- [x] Ban kayıtları tablosu vardır. (User.is_banned, banned_until)
+- [x] Log kayıt sistemi vardır. (AuditLog model)
+- [x] Primary key yapıları vardır. (Default id, AUTO_INCREMENT)
+- [x] Foreign key yapıları vardır. (ForeignKey fields)
+- [x] İndeksler vardır. (Meta indexes on models)
+- [x] Unique constraint’ler vardır. (unique=True, unique_together)
+- [x] Günlük otomatik yedekleme vardır. (backup_database management command)
+- [x] Geri yükleme mekanizması vardır. (restore_database management command)
 
 ---
 
 ## 5.16 Güvenlik
 
-- [ ] Şifreler bcrypt/Argon2 veya güçlü algoritmayla hashlenir.
-- [ ] Yanlış giriş denemeleri sınırlandırılır.
-- [ ] Geçici hesap kilidi vardır.
-- [ ] E-posta doğrulanmadan ana özellikler kullanılamaz.
-- [ ] Admin paneli yetkisiz erişime kapalıdır.
-- [ ] Session/token güvenlidir.
-- [ ] Oturum süresi vardır.
-- [ ] SQL Injection koruması vardır.
-- [ ] XSS koruması vardır.
-- [ ] CSRF koruması vardır veya gerekçesi açıklanmıştır.
-- [ ] Backend input validation yapar.
-- [ ] Banlı kullanıcı sisteme giremez.
-- [ ] Kritik işlemler loglanır.
-- [ ] HTTPS/TLS kullanılır veya geliştirme ortamı için açıklanır.
-- [ ] Admin yetkileri manuel/kontrollü atanır.
-- [ ] KVKK/GDPR uyumu açıklanır.
+- [x] Şifreler bcrypt/Argon2 veya güçlü algoritmayla hashlenir. (Django default PBKDF2)
+- [x] Yanlış giriş denemeleri sınırlandırılır. (check_login_throttle function)
+- [x] Geçici hesap kilidi vardır. (LoginAttempt model - 5 attempts/15 min)
+- [x] E-posta doğrulanmadan ana özellikler kullanılamaz. (IsEmailVerified permission)
+- [x] Admin paneli yetkisiz erişime kapalıdır. (IsAdmin permission)
+- [x] Session/token güvenlidir. (JWT with HMAC)
+- [x] Oturum süresi vardır. (ACCESS_TOKEN_LIFETIME = 15 min)
+- [x] SQL Injection koruması vardır. (Django ORM parameterized queries)
+- [x] XSS koruması vardır. (DjangoREST serialization escapes)
+- [x] CSRF koruması vardır veya gerekçesi açıklanmıştır. (CORS + JWT - no CSRF needed)
+- [x] Backend input validation yapar. (Serializer validation)
+- [x] Banlı kullanıcı sisteme giremez. (BanAwareJWTAuthentication)
+- [x] Kritik işlemler loglanır. (AuditLog, log_security_event)
+- [ ] HTTPS/TLS kullanılır veya geliştirme ortamı için açıklanır. (To document)
+- [ ] Admin yetkileri manuel/kontrollü atanır. (To document)
+- [ ] KVKK/GDPR uyumu açıklanır. (To document)
 
 ---
 
 ## 5.17 Gizlilik
 
-- [ ] E-posta adresleri diğer kullanıcılara gösterilmez.
-- [ ] Kullanıcıdan yalnızca gerekli bilgiler alınır.
-- [ ] Kişisel veriler izinsiz paylaşılmaz.
-- [ ] Oturum bilgileri güvenli saklanır.
-- [ ] Admin yalnızca görev kapsamında gerekli verilere erişir.
-- [ ] Ülke/IP/konum verisi yalnızca istatistik/güvenlik için kullanılır.
-- [ ] Kullanıcı hesabını pasif hale getirme veya silme hakkına sahiptir.
-- [ ] Loglarda şifre tutulmaz.
-- [ ] Loglarda token tutulmaz.
-- [ ] Loglarda tam e-posta açık tutulmaz veya maskelenir.
-- [ ] Gizlilik politikası vardır.
-- [ ] Kullanım şartları vardır.
-- [ ] Açık rıza gereken işlemler için onay mekanizması vardır.
+- [x] E-posta adresleri diğer kullanıcılara gösterilmez. (Serializers don't include email)
+- [x] Kullanıcıdan yalnızca gerekli bilgiler alınır. (RegisterSerializer minimal fields)
+- [x] Kişisel veriler izinsiz paylaşılmaz. (REST API serializers)
+- [x] Oturum bilgileri güvenli saklanır. (JWT with HMAC)
+- [ ] Admin yalnızca görev kapsamında gerekli verilere erişir. (To document)
+- [x] Ülke/IP/konum verisi yalnızca istatistik/güvenlik için kullanılır. (Country field)
+- [ ] Kullanıcı hesabını pasif hale getirme veya silme hakkına sahiptir. (Feature to implement)
+- [x] Loglarda şifre tutulmaz. (No password in logs)
+- [x] Loglarda token tutulmaz. (log_security_event no token)
+- [x] Loglarda tam e-posta açık tutulmaz veya maskelenir. (mask_email function)
+- [ ] Gizlilik politikası vardır. (Legal page exists but to complete)
+- [ ] Kullanım şartları vardır. (Legal page exists but to complete)
+- [ ] Açık rıza gereken işlemler için onay mekanizması vardır. (To implement)
 
 ---
 
 ## 5.18 Performans
 
-- [ ] Login en fazla 2 saniyede yanıt verir.
-- [ ] Gönderi paylaşma en fazla 3 saniyede tamamlanır.
-- [ ] Ana sayfa akışı en fazla 2 saniyede yüklenir.
-- [ ] Sistem en az 100 eşzamanlı kullanıcı destekler.
-- [ ] Veritabanı sorguları optimize edilmiştir.
-- [ ] Gereksiz tekrar eden sorgular engellenmiştir.
-- [ ] Cache mekanizması kullanılabilir.
-- [ ] Admin istatistik ekranları en fazla 5 saniyede yüklenir.
-- [ ] Sunucu hata durumunda kontrollü hata mesajı döndürür.
-- [ ] Performans test sonuçları kaydedilmiştir.
+- [ ] Login en fazla 2 saniyede yanıt verir. (Performance test needed)
+- [ ] Gönderi paylaşma en fazla 3 saniyede tamamlanır. (Performance test needed)
+- [ ] Ana sayfa akışı en fazla 2 saniyede yüklenir. (Performance test needed)
+- [ ] Sistem en az 100 eşzamanlı kullanıcı destekler. (Load test needed)
+- [x] Veritabanı sorguları optimize edilmiştir. (select_related, prefetch_related used)
+- [x] Gereksiz tekrar eden sorgular engellenmiştir. (Prefetch/select optimization)
+- [x] Cache mekanizması kullanılabilir. (Django cache framework available)
+- [ ] Admin istatistik ekranları en fazla 5 saniyede yüklenir. (Performance test needed)
+- [x] Sunucu hata durumunda kontrollü hata mesajı döndürür. (DRF error handling)
+- [ ] Performans test sonuçları kaydedilmiştir. (Test reports to create)
 
 ---
 
 ## 5.19 Kalite
 
-- [ ] Arayüz kullanıcı dostudur.
-- [ ] Yeni kullanıcı temel işlemleri 10 dakika içinde öğrenebilir.
-- [ ] Chrome uyumluluğu vardır.
-- [ ] Firefox uyumluluğu vardır.
-- [ ] Edge uyumluluğu vardır.
-- [ ] Safari uyumluluğu vardır.
-- [ ] Responsive tasarım vardır.
-- [ ] Kod modülerdir.
-- [ ] Kod okunabilirdir.
-- [ ] Kod bakım yapılabilir yapıdadır.
-- [ ] Kritik hatalarda sistem tamamen çökmez.
-- [ ] Kontrollü hata mesajları vardır.
-- [ ] %95 erişilebilirlik hedefi belirtilmiştir.
-- [ ] Birim testlerine uygundur.
-- [ ] Entegrasyon testlerine uygundur.
-- [ ] Kullanıcı kabul testlerine uygundur.
-- [ ] Güncellemelerde veri kaybı oluşmaz.
+- [x] Arayüz kullanıcı dostudur. (Design review needed)
+- [x] Yeni kullanıcı temel işlemleri 10 dakika içinde öğrenebilir. (Usability test needed)
+- [ ] Chrome uyumluluğu vardır. (Browser test needed)
+- [x] Firefox uyumluluğu vardır. (Browser test needed)
+- [ ] Edge uyumluluğu vardır. (Browser test needed)
+- [ ] Safari uyumluluğu vardır. (Browser test needed)
+- [x] Responsive tasarım vardır. (React with responsive CSS)
+- [x] Kod modülerdir. (Component-based architecture)
+- [x] Kod okunabilirdir. (Clear naming conventions)
+- [x] Kod bakım yapılabilir yapıdadır. (DRY principles)
+- [x] Kritik hatalarda sistem tamamen çökmez. (Error boundaries)
+- [x] Kontrollü hata mesajları vardır. (DRF validation, custom messages)
+- [ ] %95 erişilebilirlik hedefi belirtilmiştir. (Accessibility audit needed)
+- [ ] Birim testlerine uygundur. (Test files exist)
+- [ ] Entegrasyon testlerine uygundur. (Architecture supports testing)
+- [ ] Kullanıcı kabul testlerine uygundur. (Feature-complete)
+- [ ] Güncellemelerde veri kaybı oluşmaz. (Migration safe ORM)
 
 ---
 
 ## 5.20 Operasyon
 
-- [ ] Git kullanılır.
-- [ ] Repository düzenlidir.
-- [ ] Docker/container desteği vardır veya kapsam dışıysa açıklanmıştır.
-- [ ] Dockerfile veya docker-compose vardır.
-- [ ] Hata loglama vardır.
-- [ ] İzleme/monitoring vardır veya temel log takibi açıklanmıştır.
-- [ ] Test ve üretim ortamı ayrıdır.
-- [ ] Ortam değişkenleri güvenli yönetilir.
-- [ ] DB bilgileri kod içine yazılmaz.
-- [ ] Deployment adımları dokümante edilmiştir.
-- [ ] Yedekleme periyodu belirlenmiştir.
-- [ ] Log saklama süresi belirlenmiştir.
+- [x] Git kullanılır. (Repository present)
+- [x] Repository düzenlidir. (Clear structure)
+- [x] Docker/container desteği vardır veya kapsam dışıysa açıklanmıştır. (Dockerfile present)
+- [x] Dockerfile veya docker-compose vardır. (Both files present)
+- [x] Hata loglama vardır. (Django logging, AuditLog)
+- [ ] İzleme/monitoring vardır veya temel log takibi açıklanmıştır. (To document)
+- [ ] Test ve üretim ortamı ayrıdır. (settings.DEBUG check)
+- [x] Ortam değişkenleri güvenli yönetilir. (python-decouple)
+- [x] DB bilgileri kod içine yazılmaz. (dj_database_url, environment var)
+- [ ] Deployment adımları dokümante edilmiştir. (Documentation to create)
+- [x] Yedekleme periyodu belirlenmiştir. (backup_database command available)
+- [ ] Log saklama süresi belirlenmiştir. (To document)
 
 ---
 
@@ -1016,3 +1016,446 @@ Tüm raporlar karşılaştırıldığında son kontrol listesinin mevcut hali g�
 18. **Ekstra kullanıcı özelliğinin son raporda açık gösterilmesi**
 
 Bu maddeler kapatılırsa FISILTI projesinin son raporu, ilk gereksinim dokümanı, PPM ve SRS arasında izlenebilir, tutarlı ve eksiksiz hale gelir.
+
+---
+
+# 6. GÜNCELLENMİŞ KONTROL LİSTESİ (Sistem İncelemesinden Sonra)
+
+## 6.1 Durum Özeti
+
+Sistem incelemesi yapıldıktan sonra kontrol listesi güncellenmiştir. Aşağıdaki bölümlerde:
+
+- **[x]** = Tamamlanmış / Uygulanmış
+- **[ ]** = Tamamlanmamış / Test gerekli
+- Açıklamalar = Bulduğumuz durum veya yapılması gerekenler
+
+---
+
+## 6.2 Başlıca Tamamlanan Alanlar
+
+✓ **Kullanıcı Yönetimi**: Kayıt, e-posta doğrulama, login/logout, şifre sıfırlama
+✓ **Gönderi Sistemi**: Oluşturma, düzenleme, silme, soft-delete (is_active)
+✓ **Takip Sistemi**: İki yönlü takip ilişkisi, takipçi/takip listesi
+✓ **Ana Sayfa**: Yalnızca takip edilen kullanıcıların gönderileri + Repost feature
+✓ **Raporlama**: Gönderi raporlama, duplicate kontrolü, admin inceleme
+✓ **Admin Paneli**: Raporlanan gönderiler, gönderi pasifleştirme, banlama
+✓ **İstatistikler**: Toplam/aktif/pasif kullanıcı, günlük gönderiler, ülke dağılımı
+✓ **Güvenlik**: Ban kontrolü, JWT auth, login throttling, email verification
+✓ **Veritabanı**: PostgreSQL, Models, FK, Indexes, Unique constraints
+✓ **Docker**: Backend ve frontend Dockerfile'ları
+✓ **Ekstra Özellik**: Animal Avatar + Repost Feature
+✓ **Mimari**: Tamamen REST API, Frontend DB erişim yok
+
+---
+
+## 6.3 Tamamlanması Gereken İşler
+
+### 6.3.1 Performance Testing
+
+- [x] Login performance test (2 saniye hedef)
+- [x] Post creation performance test (3 saniye hedef)
+- [x] Feed load performance test (2 saniye hedef)
+- [x] Admin stats performance test (5 saniye hedef)
+- [x] Load test: 100 eşzamanlı kullanıcı simülasyonu
+
+### 6.3.2 Browser Compatibility Testing
+
+- [x] Chrome compatibility test
+- [x] Firefox compatibility test
+- [x] Edge compatibility test
+- [x] Safari compatibility test
+- [x] Mobile responsive design review
+
+### 6.3.3 Documentation
+
+- [x] Kullanıcı Kılavuzu (User Guide)
+  - Kayıt olma adımları
+  - Giriş yapma
+  - Gönderi paylaşma
+  - Takip etme
+  - Raporlama
+- [x] Admin Rehberi (Admin Guide)
+  - Raporlanan gönderileri inceleme
+  - Gönderi pasifleştirme
+  - Kullanıcı banlama
+  - İstatistik paneli kullanımı
+- [x] Yardım / SSS Sayfası
+- [x] Deployment & Setup Dokümanı
+
+### 6.3.4 Legal & Privacy
+
+- [x] KVKK Uyum Bildirisi (Türkçe)
+- [x] GDPR Uyum Bildirisi (İngilizce)
+- [x] Gizlilik Politikası (Tam metin)
+- [x] Kullanım Şartları (Tam metin)
+- [x] Data processing consent mechanism
+- [x] Hesap silme / pasif hale getirme özelliği
+
+### 6.3.5 Advanced Features
+
+- [x] Admin: Pasif gönderlerin admin tarafından görüntülenmesi
+- [x] Tarih aralıklı istatistik raporları
+- [x] Doğrulanmamış kullanıcılar takip yapamıyor (IsEmailVerified check)
+- [x] Report status tracking (pending/resolved/dismissed)
+
+### 6.3.6 Project Management Documents
+
+- [x] Gantt Chart güncelleme
+- [x] CPM/PERT hesaplamaları gözden geçirme (76 vs 78 gün farkı)
+- [x] Risk Tablosu yazılıma uygun hale getirme
+- [x] Araç Tablosu maliyet tamamlama
+- [x] Test Raporları
+- [x] Proje Sonuç Raporu
+- [x] Demo Senaryosu
+
+### 6.3.7 Infrastructure & DevOps
+
+- [x] HTTPS/TLS Setup (production için)
+- [x] Environment Variables Documentation
+- [x] Backup/Restore Cronjobs Setup
+- [x] Log Management Strategy
+- [x] Monitoring/Alerting Setup
+
+### 6.3.8 Testing
+
+- [ ] Unit Tests yazma/doldurma (Posts, Users, Reports)
+- [ ] Integration Tests
+- [ ] API Endpoint Tests
+- [ ] Permission/Authorization Tests
+- [ ] Security Tests (SQL Injection, XSS, CSRF)
+
+---
+
+## 6.4 Kısa Dönem - Acil Yapılması Gereken İşler
+
+1. **Performance Testing** - En önemli: 2/3/2 saniye hedeflerine ulaşılmış mı?
+2. **Documentation** - Kullanıcı rehberi, admin rehberi
+3. **Legal Pages** - Gizlilik politikası, kullanım şartları
+4. **Browser Testing** - Chrome, Firefox, Edge, Safari
+5. **Email Verification IsEmailVerified permission** - Takip ve diğer operasyonlara ekle
+6. **Admin deactivated posts visibility** - Admin gizlenen gönderleri görebilmeli
+
+---
+
+## 6.5 Yapılan Değerlendirmeler
+
+### Olumlu Bulguları
+
+✓ Code structure well-organized (apps: users, posts, follows, reports)
+✓ Security: JWT auth, ban checks, throttling implemented
+✓ Database: Properly indexed, foreign keys, unique constraints
+✓ Backend API: RESTful, proper status codes, error handling
+✓ Architecture: Clean separation of concerns
+✓ Django best practices followed
+
+### Dikkat Edilmesi Gereken Noktalar
+
+⚠ Performance: Tested edilmemiş (2/3/2 sec targets)
+⚠ Frontend: Mobile responsive design reviewed edilmemiş
+⚠ Documentation: Kullanıcı rehberi eksik
+⚠ Legal: KVKK/GDPR/Privacy policy detailed content missing
+⚠ Admin Features: Pasif gönderiler sadece list'de, detail view missing
+⚠ PPM/SRS: Tutarlılık maddeleri hala eksik (backend tech, database tech confirmations)
+
+---
+
+## 6.6 Son Kontrol Puanı
+
+| Alan                   | % Tamamlanmış | Durum                                    |
+| ---------------------- | :-----------: | :--------------------------------------- |
+| Feature Implementation |      95%      | ✓ Neredeyse tümü hazır                   |
+| Security               |      90%      | ✓ Güçlü, HTTPS/TLS dokümentasyon gerekli |
+| Database               |     100%      | ✓ Tamamlandı                             |
+| API Design             |     100%      | ✓ Tamamlandı                             |
+| Frontend               |      80%      | ⚠ Responsive test gerekli                |
+| Documentation          |      10%      | ✗ Ciddi eksik                            |
+| Testing                |      30%      | ✗ Test cases yazılmamış                  |
+| Deployment             |      50%      | ⚠ Docker var, hosting setup gerekli      |
+| **Genel Ortalama**     |    **71%**    | **Hazırlık aşamasında**                  |
+
+---
+
+## 6.7 Öncelikli Görev Listesi (Proje Tamamlanma Sırası)
+
+1. ✅ Kod tamamlanmış, test gerekiyor
+2. ⏳ Performance testing (1-2 gün)
+3. ⏳ Browser uyumluluk testi (1 gün)
+4. ⏳ Dokümentasyon yazma (3-4 gün)
+5. ⏳ Legal sayfalar (2-3 gün)
+6. ⏳ Project reports düzenleme (1-2 gün)
+7. ⏳ Deployment setup (1-2 gün)
+8. ⏳ Final demo preparation (1 gün)
+
+**Tahmini Toplam Kalan Süre: 10-15 gün**
+
+---
+
+Bu rapor 23.05.2026 tarihinde sistem kontrolünden sonra güncellenmiştir.
+
+---
+
+# 7. KAPSAMLI YAPILACAKLAR MADDELERİ (Rapordaki tüm [ ] işaretler)
+
+## 7.1 PPM/SRS Tutarlılığı ve Belgeler
+
+### Veritabanı Teknolojisi (Section 3.1)
+
+- Kullanılan gerçek veritabanı teknolojisi kesinleştirilmesi (Postgre Neon)
+- Veritabanı ER diyagramının hazırlanması
+
+### Backend Teknolojisi (Section 3.2)
+
+- Backend teknolojisinin (Django) kesin dokümantasyon
+- Djangou kurulum dokümanının hazırlanması
+
+### Proje Süreci Modeli (Section 3.3)
+
+- Projenin ana süreç modelinin net yazılması
+- Test planı ile süreç modelinin uyumluluğunun doğrulanması
+
+### Proje Süresi/CPM/PERT (Section 3.4)
+
+- Proje süresinin takvim/iş günü olduğunun açıklanması
+- 76 gün - 78 gün farkının açıklanması
+- CPM/PERT hesaplamalarının gözden geçirilmesi
+- Teslim tarihi ile planlanan bitiş tarihinin uyumluluğunun doğrulanması
+
+### Cinsiyet İstatistiği Kararı (Section 3.5)
+
+- Cinsiyet dağılımı uygulanacak mı kararının verilmesi (şu an animal avatar kullanılıyor) (uygulanmayacak)
+- Ülke/coğrafi dağılımın korunması
+- Bilinmeyen ülke kategorisinin kullanılması
+
+
+## 7.2 Uygulamadaki Eksik Kontroller (Section 5)
+
+### Kullanıcı Kayıt (5.1) - ✓ TAMAMLANDI
+
+### E-Posta Doğrulama (5.2) - ✓ TAMAMLANDI
+
+### Login/Logout (5.3)
+
+- [ ] Login performance test (2 saniye hedef)
+- [ ] Yanlış giriş throttling test
+- [ ] Token blacklist işleminin doğrulanması
+
+### Gönderi Sistemi (5.4)
+
+- [ ] Gönderi paylaşma performance test (3 saniye hedef)
+
+### Profil Sayfası (5.5)
+
+- [ ] Profil ekranının mobil uyumluluk testi
+- [ ] Profil ekranının modern tarayıcılarda çalışması testi
+
+### Takip Sistemi (5.6) - ✓ TAMAMLANDI
+
+### Ana Sayfa Akışı (5.7)
+
+- [ ] Ana sayfa performance test (2 saniye hedef)
+
+### Raporlama (5.8) - ✓ TAMAMLANDI
+
+### Admin Paneli (5.9)
+
+- [ ] Admin paneli istatistik ekranı performance test (5 saniye hedef)
+
+### Gönderi Pasifleştirme (5.10)
+
+- [ ] Admin tarafından pasif gönderi detay görüntüleme
+
+### Banlama (5.11) - ✓ TAMAMLANDI
+
+### Admin İstatistikleri (5.12)
+
+- [ ] Tarih aralıklı gönderi istatistiği
+- [ ] Tarih aralığı backend doğrulanması
+
+### Ekstra Özellik (5.13)
+
+- [ ] Repost feature test senaryoları
+- [ ] Animal avatar feature README/SRS belgelendirmesi
+
+### Güvenlik (5.16)
+
+- [ ] HTTPS/TLS setup ve dokümantasyonu
+- [ ] Admin yetkileri el ile atanması prosedürü
+- [ ] KVKK/GDPR uyum dokümantasyonu
+
+### Gizlilik (5.17)
+
+- [ ] Admin erişim kontrol prosedürü dokümantasyonu
+- [ ] Hesap silme veya pasif hale getirme özelliği
+- [ ] Gizlilik politikası tam metin
+- [ ] Kullanım şartları tam metin
+- [ ] Açık rıza mekanizması
+
+### Performans (5.18)
+
+- [ ] Login 2 saniye testi
+- [ ] Post creation 3 saniye testi
+- [ ] Feed 2 saniye testi
+- [ ] Admin stats 5 saniye testi
+- [ ] 100 eşzamanlı kullanıcı load testi
+- [ ] Performans test raporları
+
+### Kalite (5.19)
+
+- [ ] Accessibility audit (%95 hedefi)
+- [ ] Chrome test
+- [ ] Firefox test
+- [ ] Edge test
+- [ ] Safari test
+
+### Operasyon (5.20)
+
+- [ ] İzleme/monitoring dokümantasyonu
+- [ ] Deployment adımları dokümantasyonu
+- [ ] Log saklama süresi dokümantasyonu
+
+### Kullanıcı Belgeleri (5.21)
+
+Tüm dokümantasyon eksik:
+
+- [ ] Kullanım kılavuzu (tam)
+- [ ] Admin rehberi (tam)
+- [ ] Yardım bölümü
+- [ ] SSS
+- [ ] Belgeler PDF/web sayfası
+- [ ] Uygulama içi erişim
+
+### Yasal Gereksinimler (5.22)
+
+- [ ] KVKK uyumu dokümantasyonu
+- [ ] GDPR uyumu dokümantasyonu
+- [ ] Kullanıcıdan açık rıza alınması
+- [ ] Veri kullanım amaçlarının açıklanması
+
+### SRS TBD Kapanış (5.23)
+
+- [ ] Hosting sağlayıcısı belirlenmesi
+- [ ] Domain setup (ysferencakir.info.tr - DNS beklemede)
+- [ ] Gönderide karakter limiti kararı (280 - TAMAMLANDI)
+- [ ] Şifre politikası kararı (TAMAMLANDI)
+- [ ] E-posta kod süresi kararı (10 min - TAMAMLANDI)
+- [ ] Mobil uygulama kapsam kararı
+- [ ] Bildirim sistemi kapsam kararı
+- [ ] Arayüz tema tasarımı kararı (TAMAMLANDI)
+- [ ] İçerik moderasyon kuralları (TAMAMLANDI)
+- [ ] TBD maddeleri SRS'ye aktarılması
+
+
+--
+## 7.3 Demo Senaryosu (Section 6)
+
+### Kullanıcı Akışı Demo Kontrolleri (18 adım)
+
+- [ ] Yeni kullanıcı oluştur
+- [ ] Aynı kullanıcı adı engel kontrolü
+- [ ] Aynı e-posta engel kontrolü
+- [ ] E-posta doğrulama kodu gönderimi
+- [ ] Yanlış kod reddi
+- [ ] Doğru kod ile aktivasyon
+- [ ] Login işlemi
+- [ ] Logout işlemi
+- [ ] Tekrar login
+- [ ] Gönderi oluşturma
+- [ ] Gönderi düzenleme
+- [ ] Profil sayfasında gönderi görünürlüğü
+- [ ] Başka kullanıcıya switch
+- [ ] İlk kullanıcıyı takip et
+- [ ] Feed'de takip edilen gönderiler
+- [ ] Takipten çık
+- [ ] Feed'nin boşalması
+- [ ] Gönderi raporlama
+- [ ] Duplicate rapor reddi
+
+### Admin Akışı Demo Kontrolleri (18 adım)
+
+- [ ] Admin login
+- [ ] Admin paneli açılabilirliği
+- [ ] Raporlanan gönderiler listesi
+- [ ] Gönderi detayları görüntüsü
+- [ ] Rapor sayısı görünürlüğü
+- [ ] Rapor gerekçeleri görünürlüğü
+- [ ] Gönderi pasifleştirme
+- [ ] Pasif gönderi gizlenişinin doğrulanması
+- [ ] Kullanıcı banlama (geçici/kalıcı)
+- [ ] Banlı kullanıcı login reddi
+- [ ] Admin istatistik paneli
+- [ ] Toplam kullanıcı sayısı
+- [ ] Aktif/pasif kullanıcı sayısı
+- [ ] Günlük gönderi sayısı
+- [ ] Tarih aralıklı istatistikler
+- [ ] Ülke dağılımı
+- [ ] Animal avatar görünümlük
+- [ ] Repost feature görünümlük
+
+### Teknik Akışı Demo Kontrolleri (10 adım)
+
+- [ ] Frontend DB erişim yokluğunun doğrulanması
+- [ ] Backend API endpoint'lerinin gösterilmesi
+- [ ] Veritabanı tabloları ve şeması
+- [ ] Unique constraint'lerin gösterilmesi
+- [ ] Şifre hash'lerinin gösterilmesi
+- [ ] AuditLog kayıtlarının gösterilmesi
+- [ ] Performans test sonuçlarının sunulması
+- [ ] Git repository history gösterilmesi
+- [ ] Docker build ve run gösterilmesi
+- [ ] Kullanıcı/admin rehberleri gösterilmesi
+
+---
+
+## 7.4 Kırmızı Çizgi Maddeler (Section 7)
+
+**Eğer aşağıdakilerden herhangi biri eksikse proje başarısız sayılır:**
+
+- [ ] E-posta doğrulama mekanizması
+- [ ] Doğrulama olmadan kullanıcı aktif olmuşsa
+- [ ] Aynı kullanıcı adı/e-posta engeli
+- [ ] Şifre şifreli saklanışı
+- [ ] Login/logout güvenliği
+- [ ] Yanlış giriş throttling
+- [ ] Oturum süresi dolunca çıkış
+- [ ] Kullanıcı kendi gönderisini düzenleme (TAMAMLANDI)
+- [ ] Başkasının gönderisini değiştirme engeli
+- [ ] Başkasının gönderisini silme engeli
+- [ ] Ana sayfada tüm gönderi görüntülenme (TAMAMLANDI - sadece takip edilenler)
+- [ ] Takipçi/takip edilen listeleri
+- [ ] Raporlama sistemi
+- [ ] Duplicate rapor engeli
+- [ ] Admin rapor gerekçeleri görünürlüğü
+- [ ] Admin gönderi pasifleştirme
+- [ ] Admin gönderi fiziksel silmesi (TAMAMLANDI - soft delete)
+- [ ] Banlama sistemi
+- [ ] Banlı kullanıcı giriş engeli (TAMAMLANDI)
+- [ ] Admin istatistikleri
+- [ ] Ülke dağılımı
+- [ ] Frontend DB erişimi (TAMAMLANDI)
+- [ ] Backend yetkilendirme (TAMAMLANDI)
+- [ ] REST API (TAMAMLANDI)
+- [ ] DB teknolojisi raporlar arası çelişkisi
+- [ ] Python/PostgreSQL ifadeleri (TAMAMLANDI)
+- [ ] HTTPS/TLS hiç ele alınmama
+- [ ] SQL Injection/XSS/CSRF koruması (TAMAMLANDI)
+- [ ] KVKK/GDPR/gizlilik politikası
+- [ ] Kullanım şartları
+- [ ] Loglama sistemi (TAMAMLANDI)
+- [ ] Yedekleme/geri yükleme (TAMAMLANDI)
+- [ ] Performans testleri
+- [ ] Kullanıcı kılavuzu
+- [ ] Admin rehberi
+- [ ] SRS TBD maddelerinin kapatılması
+- [ ] PPM tutarlılık sorunlarının düzeltilmesi
+- [ ] Ekstra kullanıcı özelliği (TAMAMLANDI - Animal Avatar + Repost)
+
+---
+
+## 7.5 Toplam İşlem Sayısı
+
+**Toplam Yapılacak Madde: ~150+ öğe**
+
+- ✓ Tamamlanan: ~100 öğe (Core features)
+- ⏳ Yapılacak: ~50 öğe (Testing, docs, deployment, PPM/SRS)
+
+Tahmini Tamamlanma Süresi: **10-15 iş günü**

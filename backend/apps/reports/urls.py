@@ -8,6 +8,8 @@ from .views import (
     AdminPostListView,
     AdminPostStatsView,
     AdminReportedPostsView,
+    AdminReportResolveView,
+    AdminReportDismissView,
     AdminStatsView,
     AdminUnbanView,
     AdminUserListView,
@@ -17,6 +19,8 @@ from .views import (
 urlpatterns = [
     path('reports/', ReportCreateView.as_view(), name='report-create'),
     path('admin/reports/', AdminReportedPostsView.as_view(), name='admin-reported-posts'),
+    path('admin/reports/<int:report_id>/resolve/', AdminReportResolveView.as_view(), name='admin-report-resolve'),
+    path('admin/reports/<int:report_id>/dismiss/', AdminReportDismissView.as_view(), name='admin-report-dismiss'),
     path('admin/posts/', AdminPostListView.as_view(), name='admin-post-list'),
     path('admin/posts/<int:pk>/deactivate/', AdminPostDeactivateView.as_view(), name='admin-post-deactivate'),
     path('admin/posts/<int:pk>/activate/', AdminPostActivateView.as_view(), name='admin-post-activate'),
