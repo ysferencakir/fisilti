@@ -60,7 +60,7 @@ class VerifyEmailView(APIView):
         email = serializer.validated_data['email']
         code = serializer.validated_data['code']
 
-        throttle_ok, _ = check_email_verification_throttle(email)
+        throttle_ok, fail_count = check_email_verification_throttle(email)
         if not throttle_ok:
             log_security_event('EMAIL_VERIFY_THROTTLE', email=email)
             return Response({'detail': 'Çok fazla deneme.'}, status=429)
@@ -77,7 +77,9 @@ class VerifyEmailView(APIView):
 
             if verification.code != code:
                 record_verify_fail(email)
-                return Response({'detail': 'Kod hatalı.'}, status=400)
+                _, updated_fail_count = check_email_verification_throttle(email)
+                remaining = max(0, 5 - updated_fail_count)
+                return Response({'detail': f'Kod hatalı. {remaining} deneme kaldı.'}, status=400)
 
             verification.is_used = True
             verification.save()

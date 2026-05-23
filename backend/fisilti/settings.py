@@ -128,22 +128,43 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Fisilti <noreply@fisi
 
 REQUIRE_EMAIL_VERIFICATION = config('REQUIRE_EMAIL_VERIFICATION', default=True, cast=bool)
 
-# Loglama
+# Loglama — Log rotation ile
 LOGS_DIR = BASE_DIR / 'logs'
 os.makedirs(LOGS_DIR, exist_ok=True)
+
+# Log dosya yönetimi: RotatingFileHandler — 10MB dosya boyutunda rotate et, max 5 dosya tut
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
     'handlers': {
-        'console': {'class': 'logging.StreamHandler'},
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        },
         'file': {
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOGS_DIR / 'django.log',
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'standard',
+        },
+        'security': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGS_DIR / 'security.log',
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 10,
+            'formatter': 'standard',
         },
     },
     'loggers': {
         'django': {'handlers': ['console'], 'level': 'ERROR'},
-        'apps': {'handlers': ['console', 'file'], 'level': 'WARNING', 'propagate': False},
+        'apps': {'handlers': ['console', 'file', 'security'], 'level': 'WARNING', 'propagate': False},
     },
 }
 

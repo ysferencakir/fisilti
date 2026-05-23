@@ -18,7 +18,7 @@ class FeedView(APIView):
         posts = Post.objects.filter(
             is_active=True,
             author_id__in=followed_ids,
-        ).select_related("author")
+        ).select_related("author").prefetch_related("reposts")
         reposts = Repost.objects.filter(
             post__is_active=True,
             user_id__in=followed_ids,

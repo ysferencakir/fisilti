@@ -45,12 +45,21 @@ def record_verify_fail(email, minutes=10):
     except ValueError:
         cache.set(cache_key, 1, timeout=minutes * 60)
 
+def mask_email(email):
+    """Email adresini güvenlik loglama için maskelenmiş hale getir"""
+    if not email or '@' not in email:
+        return 'invalid'
+    local, domain = email.split('@', 1)
+    masked = f"{local[:2]}***@{domain}"
+    return masked
+
 def log_security_event(event_type, user=None, email=None, ip_address=None, details=None):
+    """Güvenlik olaylarını logla — hassas bilgileri maskelenmiş halde kaydet"""
     msg = f"[{event_type}]"
     if user:
         msg += f" user_id={user.id}"
     if email:
-        msg += f" email={email}"
+        msg += f" email={mask_email(email)}"
     if ip_address:
         msg += f" ip={ip_address}"
     if details:

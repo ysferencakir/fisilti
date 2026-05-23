@@ -103,3 +103,58 @@ class FeedTests(TestCase):
         client = auth_client(self.alice)
         resp = client.get('/api/posts/feed/')
         self.assertEqual(resp.data['count'], 0)
+
+
+class RepostTests(TestCase):
+    def setUp(self):
+        self.alice = make_user('alice', 'alice@example.com')
+        self.bob = make_user('bob', 'bob@example.com')
+        self.eve = make_user('eve', 'eve@example.com')
+        self.post = Post.objects.create(author=self.bob, content='Test post')
+        self.alice_client = auth_client(self.alice)
+        self.bob_client = auth_client(self.bob)
+        self.eve_client = auth_client(self.eve)
+
+    def test_repost_post(self):
+        resp = self.alice_client.post(f'/api/posts/{self.post.id}/repost/')
+        self.assertEqual(resp.status_code, 201)
+
+    def test_self_repost_forbidden(self):
+        resp = self.bob_client.post(f'/api/posts/{self.post.id}/repost/')
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn('Kendi gönderinizi repost edemezsiniz', str(resp.data))
+
+    def test_duplicate_repost_prevented(self):
+        self.alice_client.post(f'/api/posts/{self.post.id}/repost/')
+        resp = self.alice_client.post(f'/api/posts/{self.post.id}/repost/')
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn('zaten repost edildi', str(resp.data))
+
+    def test_unrepost(self):
+        self.alice_client.post(f'/api/posts/{self.post.id}/repost/')
+        resp = self.alice_client.delete(f'/api/posts/{self.post.id}/repost/')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_unrepost_nonexistent(self):
+        resp = self.alice_client.delete(f'/api/posts/{self.post.id}/repost/')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_repost_inactive_post_forbidden(self):
+        self.post.is_active = False
+        self.post.save()
+        resp = self.alice_client.post(f'/api/posts/{self.post.id}/repost/')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_feed_includes_reposts(self):
+        Follow.objects.create(follower=self.alice, following=self.bob)
+        Follow.objects.create(follower=self.alice, following=self.eve)
+        self.eve_client.post(f'/api/posts/{self.post.id}/repost/')
+
+        resp = self.alice_client.get('/api/posts/feed/')
+        self.assertEqual(resp.status_code, 200)
+        results = resp.data['results']
+
+        # Should have both the original post and the repost
+        types = [item['type'] for item in results]
+        self.assertIn('post', types)
+        self.assertIn('repost', types)

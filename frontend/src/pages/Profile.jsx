@@ -344,6 +344,34 @@ const Profile = () => {
         ) : (
           <div style={{ fontSize: 14, color: 'var(--text)', marginTop: 10 }}>Yükleniyor…</div>
         )}
+
+        {/* Kendi profili: Hesabı deaktive et */}
+        {isOwnProfile && (
+          <button
+            onClick={() => {
+              if (!window.confirm('Hesabınız deaktive edilecek. Emin misiniz?')) return;
+              api.delete('/users/me/').then(() => {
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                window.location.href = '/login';
+              }).catch(err => alert('Deaktivation hata: ' + err.message));
+            }}
+            style={{
+              marginTop: 16,
+              padding: '8px 16px',
+              background: '#ef4444',
+              color: 'white',
+              border: 'none',
+              borderRadius: 6,
+              cursor: 'pointer',
+              fontSize: 13,
+              fontFamily: 'var(--sans)',
+              fontWeight: 500
+            }}
+          >
+            Hesabı Deaktive Et
+          </button>
+        )}
       </div>
 
       {/* Feed */}

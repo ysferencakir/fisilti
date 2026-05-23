@@ -53,7 +53,7 @@ class AdminPostListView(APIView):
     def get(self, request):
         from apps.posts.serializers import PostSerializer
         is_active_param = request.query_params.get('is_active')
-        qs = Post.objects.select_related('author').all()
+        qs = Post.objects.select_related('author').prefetch_related('reports').all()
         if is_active_param == 'false':
             qs = qs.filter(is_active=False)
         elif is_active_param == 'true':
@@ -105,9 +105,11 @@ class AdminUserListView(APIView):
 
     def get(self, request):
         search = request.query_params.get('search', '').strip()
+        if search and len(search) > 100:
+            return Response({'detail': 'Arama kriteri çok uzun.'}, status=400)
         qs = User.objects.all()
         if search:
-            qs = qs.filter(username__icontains=search)
+            qs = qs.filter(username__icontains=search)[:100]
         serializer = AdminUserSerializer(qs, many=True)
         return Response(serializer.data)
 
