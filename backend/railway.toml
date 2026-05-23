@@ -2,8 +2,3 @@
 builder = "dockerfile"
 dockerfilePath = "backend/Dockerfile"
 context = "backend"
-
-[deploy]
-startCommand = "gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120 fisilti.wsgi:application"
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 3
