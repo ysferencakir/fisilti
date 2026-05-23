@@ -78,7 +78,7 @@ Evet, aynı metni birden fazla kez yayınlayabilirsiniz. Ancak spamdan kaçını
 
 ## Takip ve Profil
 
-### Biri Beni Takip Ettiyse, Ben Onu Takip Etmeliyim miyle?
+### Biri Beni Takip Ettiyse, Ben Onu Takip Etmeli miyim?
 
 **Hayır.** Takip sistemi tek yönlüdür:
 - Birinin sizi takip etmesi, sizin onu takip etmek zorunda olduğu anlamına gelmez
