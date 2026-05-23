@@ -65,6 +65,7 @@ api.interceptors.response.use(
         isRefreshing = false;
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
+        alert('Oturum süresi dolmuş. Lütfen tekrar giriş yapınız.');
         window.location.href = '/login';
         return Promise.reject(err);
       }

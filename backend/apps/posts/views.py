@@ -12,12 +12,17 @@ class FeedView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
+        from apps.follows.models import Follow
+        followed_ids = Follow.objects.filter(follower=request.user).values_list('following_id', flat=True)
+
         posts = Post.objects.filter(
-            is_active=True
+            is_active=True,
+            author_id__in=followed_ids,
         ).select_related("author")
         reposts = Repost.objects.filter(
-    post__is_active=True
-).select_related("user", "post", "post__author")
+            post__is_active=True,
+            user_id__in=followed_ids,
+        ).select_related("user", "post", "post__author")
 
         items = []
 

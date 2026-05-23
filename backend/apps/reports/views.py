@@ -1,6 +1,7 @@
 from datetime import timedelta
 
-from django.db.models import Count
+from django.db.models import Count, Value
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -123,6 +124,10 @@ class AdminBanView(APIView):
         if user.username == request.user.username:
             return Response({'detail': 'Kendi hesabınıza işlem yapamazsınız.'}, status=400)
 
+        # Son admin koruması
+        if user.role == 'admin' and User.objects.filter(role='admin', is_active=True).count() <= 1:
+            return Response({'detail': 'Son admin hesabı banlanamaz.'}, status=400)
+
         duration_days = request.data.get('duration_days')
         user.is_banned = True
         user.banned_until = timezone.now() + timedelta(days=int(duration_days)) if duration_days else None
@@ -159,8 +164,18 @@ class AdminStatsView(APIView):
     def get(self, request):
         today = timezone.now().date()
         users_by_country = list(
-            User.objects.values('country').annotate(count=Count('id')).order_by('-count')
+            User.objects
+            .annotate(country_label=Coalesce('country', Value('Bilinmeyen')))
+            .values('country_label')
+            .annotate(count=Count('id'))
+            .order_by('-count')
         )
+        # Boş string'leri de "Bilinmeyen" olarak birleştir
+        merged = {}
+        for row in users_by_country:
+            key = row['country_label'] if row['country_label'] else 'Bilinmeyen'
+            merged[key] = merged.get(key, 0) + row['count']
+        users_by_country = [{'country': k, 'count': v} for k, v in sorted(merged.items(), key=lambda x: -x[1])]
         data = {
             'total_users': User.objects.count(),
             'verified_users': User.objects.filter(is_email_verified=True).count(),
@@ -171,7 +186,7 @@ class AdminStatsView(APIView):
             'passive_posts': Post.objects.filter(is_active=False).count(),
             'total_reports': Report.objects.count(),
             'posts_today': Post.objects.filter(created_at__date=today).count(),
-            'users_by_country': users_by_country,
+            'users_by_country': users_by_country,  # [{'country': ..., 'count': ...}]
         }
         return Response(data)
 
@@ -188,6 +203,9 @@ class AdminPostStatsView(APIView):
             end_date = date.fromisoformat(end_str)
         except (TypeError, ValueError):
             return Response({'detail': 'Geçerli start ve end tarihi girin (YYYY-MM-DD).'}, status=400)
+
+        if start_date > end_date:
+            return Response({'detail': 'Başlangıç tarihi bitiş tarihinden sonra olamaz.'}, status=400)
 
         daily_qs = (
             Post.objects

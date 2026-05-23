@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../api';
 
 const COUNTRIES = [
@@ -187,7 +187,10 @@ export default function Register() {
                             disabled={loading}
                         />
                         <label htmlFor="terms" style={styles.checkboxLabel}>
-                            Kullanım Şartları ve Gizlilik Politikasını kabul ediyorum
+                            <Link to="/legal/kullanim_sartlari" target="_blank" style={styles.link}>Kullanım Şartları</Link>
+                            {' '}ve{' '}
+                            <Link to="/legal/gizlilik_politikasi" target="_blank" style={styles.link}>Gizlilik Politikası</Link>
+                            'nı okudum ve kabul ediyorum
                         </label>
                     </div>
                     {errors.agreed && <p style={styles.fieldError}>{errors.agreed}</p>}
@@ -225,6 +228,7 @@ const styles = {
     passwordRules: { marginBottom: '12px', marginTop: '4px' },
     checkboxRow: { display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' },
     checkboxLabel: { fontSize: '13px', color: '#78716C', paddingTop: '2px' },
+    link: { color: '#F97316', textDecoration: 'underline' },
     button: {
         width: '100%', padding: '12px', background: '#F97316',
         color: 'white', border: 'none', borderRadius: '9999px',

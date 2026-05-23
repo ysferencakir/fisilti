@@ -11,6 +11,7 @@ import PasswordReset from './pages/PasswordReset';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
+import Legal from './pages/Legal';
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useAuth();
@@ -114,6 +115,8 @@ export default function App() {
                             </AdminRoute>
                         }
                     />
+
+                    <Route path="/legal/:page" element={<Legal />} />
 
                     <Route
                         path="*"

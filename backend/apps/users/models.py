@@ -30,6 +30,11 @@ class User(AbstractUser):
     class Meta:
         db_table = 'kullanicilar'
 
+    def save(self, *args, **kwargs):
+        self.email = self.email.lower()
+        self.username = self.username.lower()
+        super().save(*args, **kwargs)
+
 
 class EmailVerification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

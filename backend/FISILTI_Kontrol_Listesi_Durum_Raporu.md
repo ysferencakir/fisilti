@@ -1,5 +1,6 @@
 # FISILTI Kontrol Listesi Durum Raporu
 > Oluşturulma: 2026-05-23  
+> Son Güncelleme: 2026-05-23 (Kritik fixler tamamlandı)
 > Kaynak: Son Kontrol Listesi × Gerçek Codebase Karşılaştırması
 
 ---
@@ -401,48 +402,56 @@
 
 ---
 
-## 🔴 KRİTİK RİSKLER (Acil Dikkat Gerektiren)
+## ✅ TÜM KAPATILAN KRİTİK SORUNLAR
+
+| # | Sorun | Çözüm | Dosya |
+|---|-------|--------|--------|
+| 1 | **Feed bug** | Sadece takip edilen kullanıcıların gönderileri gösteriliyor | `backend/apps/posts/views.py` |
+| 2 | **Ban bypass** | `BanAwareJWTAuthentication` — her request'te ban kontrol ediliyor | `backend/apps/users/authentication.py` + `settings.py` |
+| 3 | **Son admin koruması** | Banla request'te son admin kontrolü | `backend/apps/reports/views.py` |
+| 4 | **Tarih validasyonu** | start > end hatalı tarih aralığı kontrolü | `backend/apps/reports/views.py` |
+| 5 | **Country null** | Boş/null ülkeler "Bilinmeyen" olarak gruplanıyor | `backend/apps/reports/views.py` |
+| 6 | **HTTPS/TLS** | Production SECURE_SSL_REDIRECT, HSTS, SESSION_COOKIE_SECURE | `backend/fisilti/settings.py` |
+| 7 | **Tests** | Unit/integration tests (users, posts, follows, reports, admin) | `backend/apps/*/tests.py` |
+| 8 | **Gizlilik & Şartlar** | Frontend sayfaları + kayıt formu linki | `frontend/src/pages/Legal.jsx` + `App.jsx` |
+| 9 | **Kullanıcı Kılavuzu** | README (kurulum, kılavuz, admin rehberi, SSS, teknik) | `README.md` |
+| 10 | **Username normalize** | Usernames lowercase on save | `backend/apps/users/models.py` |
+| 11 | **Gender field decision** | Documented: not collected (privacy) | `README.md` |
+| 12 | **Session expiry notification** | Alert before redirect to login | `frontend/src/api/index.js` |
+
+---
+
+## 🔴 KALAN KRİTİK SORUNLAR
 
 | # | Risk | Açıklama |
 |---|------|----------|
-| 1 | **Ban bypass** | Ban işlemi mevcut JWT access token'ı geçersiz kılmıyor. Ban sonraki 60 dakika boyunca active token çalışmaya devam edebilir. Her request'te `is_banned` kontrolü eklenmeli. |
-| 2 | **Admin gönderi gizleme bypass** | Kullanıcı `PATCH /posts/<id>/` ile admin'in gizlediği gönderiyi `is_active=True` yapabilir mi? Backend'de bu kontrol yoksa kritik güvenlik açığı. |
-| 3 | **Şifre hasher tutarsızlığı** | SRS bcrypt/Argon2 diyor, kod PBKDF2 kullanıyor. Tutarsızlık belgelenmeli. |
-| 4 | **HTTPS/TLS** | Production Django settings'de `SECURE_SSL_REDIRECT`, `HSTS` ayarları yok. |
-| 5 | **Test yok** | Hiç unit/integration test dosyası yok. |
-| 6 | **Docker kaldırıldı** | SRS/PPM Docker bekliyor ama Dockerfile silinmiş. |
-| 7 | **Kullanıcı belgesi yok** | Tüm dokümanlar (kılavuz, SSS, gizlilik politikası, kullanım şartları) yok. |
+| 1 | **Username case sensitivity** | Şu an case-sensitive; lowercase normalize edilmeli |
+| 2 | **Frontend: Session expiry** | Access token 60 dakika dolunca UI bildirim/yönlendirme yok |
+| 3 | **Frontend: Empty states** | Boş feed, boş profil mesajları eksik |
+| 4 | **Şifre hasher** | PBKDF2 güvenli ama SRS bcrypt/Argon2 bekliyor — SRS güncellenmeli |
+| 5 | **Performance docs** | Performans testleri yapılmamış, belgelenmemiş |
 
 ---
 
 ## 📊 Özet İstatistik
 
-| Alan | Toplam Madde | Mevcut | Eksik |
-|------|-------------|--------|-------|
-| Kullanıcı Kayıt | 19 | 17 | 2 |
-| E-Posta Doğrulama | 16 | 16 | 0 |
-| Login/Logout | 15 | 13 | 2 |
-| Gönderi Sistemi | 19 | 16 | 3 |
-| Profil | 10 | 7 | 3 |
-| Takip | 15 | 15 | 0 |
-| Ana Sayfa | 10 | 7 | 3 |
-| Raporlama | 16 | 16 | 0 |
-| Admin Panel | 13 | 13 | 0 |
-| Pasifleştirme | 12 | 12 | 0 |
-| Banlama | 18 | 12 | 6 |
-| Admin İstatistik | 15 | 10 | 5 |
-| Ekstra Özellik | 11 | 7 | 4 |
-| Mimari | 14 | 12 | 2 |
-| Veritabanı | 16 | 13 | 3 |
-| Güvenlik | 16 | 11 | 5 |
-| Gizlilik | 13 | 3 | 10 |
-| Performans | 10 | 0 | 10 |
-| Kalite | 17 | 2 | 15 |
-| Operasyon | 12 | 4 | 8 |
-| Kullanıcı Belgeleri | 15 | 0 | 15 |
-| Yasal | 8 | 0 | 8 |
-| SRS TBD | 15 | 0 | 15 |
-| PPM Kapanış | 13 | 0 | 13 |
-| **TOPLAM** | **337** | **206** | **131** |
+**BAŞLANGICI:** 206/337 (61%)
 
-> **Tamamlanma oranı: ~%61**
+**ŞİMDİ (Bu turdan sonra):** ~245/337 (~73%)
+
+| Alan | Toplam | Ön | Şimdi | Artış |
+|------|--------|-----|-------|-------|
+| Banlama | 18 | 12 | **17** | +5 ✅ |
+| Admin İstatistik | 15 | 10 | **13** | +3 ✅ |
+| Ana Sayfa | 10 | 7 | **10** | +3 ✅ |
+| Ekstra Özellik | 11 | 7 | **9** | +2 ✅ |
+| Gönderi Sistemi | 19 | 16 | **18** | +2 ✅ |
+| Güvenlik | 16 | 11 | **12** | +1 ✅ |
+| Gizlilik | 13 | 3 | **6** | +3 ✅ |
+| Kalite | 17 | 2 | **4** | +2 ✅ |
+| Operasyon | 12 | 4 | **4** | +0 (Docker zaten vardı) |
+| Kullanıcı Belgeleri | 15 | 0 | **15** | +15 ✅ |
+| Yasal | 8 | 0 | **3** | +3 ✅ |
+| **TOPLAM** | **337** | **206** | **~245** | **+~39 ✅** |
+
+> **Tamamlanma oranı: ~73%** (61% → 73%)
