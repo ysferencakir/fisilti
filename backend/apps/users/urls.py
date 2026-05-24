@@ -4,7 +4,7 @@ from .views import (
     RegisterView, VerifyEmailView, ResendVerificationView,
     LoginView, LogoutView,
     PasswordResetRequestView, PasswordResetConfirmView,
-    UserListView, MeView, UserDetailView, AccountReactivateView
+    UserListView, MeView, UserDetailView, AccountReactivateView, DebugCorsView
 )
 
 urlpatterns = [
@@ -17,6 +17,7 @@ urlpatterns = [
     path('auth/token/refresh/', TokenRefreshView.as_view()),
     path('auth/password-reset/', PasswordResetRequestView.as_view()),
     path('auth/password-reset/confirm/', PasswordResetConfirmView.as_view()),
+    path('auth/debug-cors/', DebugCorsView.as_view()),
 
     # Users
     path('users/', UserListView.as_view()),

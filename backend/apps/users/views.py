@@ -304,3 +304,16 @@ class AccountReactivateView(APIView):
                 return Response({'detail': 'E-posta veya şifre hatalı.'}, status=401)
         except User.DoesNotExist:
             return Response({'detail': 'Kullanıcı bulunamadı.'}, status=404)
+
+
+class DebugCorsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({
+            'CORS_ALLOWED_ORIGINS': settings.CORS_ALLOWED_ORIGINS,
+            'Origin_header': request.META.get('HTTP_ORIGIN'),
+            'REQUIRE_EMAIL_VERIFICATION': settings.REQUIRE_EMAIL_VERIFICATION,
+            'DEFAULT_FROM_EMAIL': settings.DEFAULT_FROM_EMAIL,
+            'DEBUG': settings.DEBUG,
+        })
