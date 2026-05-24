@@ -127,7 +127,7 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_TIMEOUT = 30  # SMTP bağlantı timeout
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Fisilti <noreply@fisilti.com>')
 
-REQUIRE_EMAIL_VERIFICATION = config('REQUIRE_EMAIL_VERIFICATION', default=True, cast=bool)
+REQUIRE_EMAIL_VERIFICATION = config('REQUIRE_EMAIL_VERIFICATION', default=False, cast=bool)
 
 # Loglama — Log rotation ile
 LOGS_DIR = BASE_DIR / 'logs'
