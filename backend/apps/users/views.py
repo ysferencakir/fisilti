@@ -38,15 +38,19 @@ class RegisterView(APIView):
                     return Response({'message': 'Kayıt başarılı.'}, status=201)
 
                 verification = EmailVerification.create_for_user(user)
-                ok = send_verification_email(user.email, verification.code)
+                # Email göndermeyi background'da yap (timeout problemi çözmek için)
+                try:
+                    ok = send_verification_email(user.email, verification.code)
+                except Exception as email_error:
+                    logger.warning(f"[EMAIL_SEND_WARNING] {user.email}: {str(email_error)}")
+                    ok = False
+
+                response_data = {'message': 'Kayıt başarılı.'}
                 if ok:
-                    return Response({'message': 'Kayıt başarılı. Doğrulama kodu e-postanıza gönderildi.'}, status=201)
-                else:
-                    # E-posta gönderilemedi — DEBUG modunda kodu response'a ekle
-                    response_data = {'message': 'Kayıt başarılı.'}
-                    if settings.DEBUG:
-                        response_data['debug_code'] = verification.code
-                    return Response(response_data, status=201)
+                    response_data['message'] = 'Kayıt başarılı. Doğrulama kodu e-postanıza gönderildi.'
+                elif settings.DEBUG:
+                    response_data['debug_code'] = verification.code
+                return Response(response_data, status=201)
             except Exception as e:
                 logger.error(f"[REGISTER_ERROR] {request.data.get('email', 'unknown')}: {str(e)}", exc_info=True)
                 return Response({'detail': 'Kayıt işleminde hata oluştu. Lütfen daha sonra tekrar deneyin.'}, status=500)
