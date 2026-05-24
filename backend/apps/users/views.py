@@ -28,24 +28,28 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            try:
+                user = serializer.save()
 
-            # E-posta doğrulaması gerekli mi?
-            if not settings.REQUIRE_EMAIL_VERIFICATION:
-                user.is_email_verified = True
-                user.save()
-                return Response({'message': 'Kayıt başarılı.'}, status=201)
+                # E-posta doğrulaması gerekli mi?
+                if not settings.REQUIRE_EMAIL_VERIFICATION:
+                    user.is_email_verified = True
+                    user.save()
+                    return Response({'message': 'Kayıt başarılı.'}, status=201)
 
-            verification = EmailVerification.create_for_user(user)
-            ok = send_verification_email(user.email, verification.code)
-            if ok:
-                return Response({'message': 'Kayıt başarılı. Doğrulama kodu e-postanıza gönderildi.'}, status=201)
-            else:
-                # E-posta gönderilemedi — DEBUG modunda kodu response'a ekle
-                response_data = {'message': 'Kayıt başarılı.'}
-                if settings.DEBUG:
-                    response_data['debug_code'] = verification.code
-                return Response(response_data, status=201)
+                verification = EmailVerification.create_for_user(user)
+                ok = send_verification_email(user.email, verification.code)
+                if ok:
+                    return Response({'message': 'Kayıt başarılı. Doğrulama kodu e-postanıza gönderildi.'}, status=201)
+                else:
+                    # E-posta gönderilemedi — DEBUG modunda kodu response'a ekle
+                    response_data = {'message': 'Kayıt başarılı.'}
+                    if settings.DEBUG:
+                        response_data['debug_code'] = verification.code
+                    return Response(response_data, status=201)
+            except Exception as e:
+                logger.error(f"[REGISTER_ERROR] {request.data.get('email', 'unknown')}: {str(e)}", exc_info=True)
+                return Response({'detail': 'Kayıt işleminde hata oluştu. Lütfen daha sonra tekrar deneyin.'}, status=500)
         return Response(serializer.errors, status=400)
 
 
