@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Sayfa Bulunamadı | Fısıltı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #FFF7ED 0%, #FECACA 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .emoji-large {
+            font-size: 120px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1C1917;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #78716C;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .description {
+            font-size: 15px;
+            color: #A8A29E;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        a, button {
+            padding: 12px 28px;
+            border-radius: 9999px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #F97316;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: #EA580C;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1C1917;
+            border: 1px solid #E7E5E4;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #F5F5F5;
+            border-color: #D6D3D1;
+            transform: translateY(-2px);
+        }
+
+        .error-code {
+            display: inline-block;
+            background: rgba(249, 115, 22, 0.1);
+            color: #F97316;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .illustration {
+            margin: 40px 0;
+            font-size: 12px;
+            color: #E7E5E4;
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 640px) {
+            .emoji-large {
+                font-size: 80px;
+                margin-bottom: 15px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            a, button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: #F97316;
+            border-radius: 9999px;
+            margin: 0 auto 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji-large">🦊</div>
+
+        <div class="error-code">404 HATA</div>
+
+        <h1>Sayfa Bulunamadı</h1>
+
+        <div class="divider"></div>
+
+        <p class="subtitle">Aradığın sayfa kaybolmuş gibi görünüyor.</p>
+
+        <p class="description">
+            Bu sayfa mevcut değil ya da taşınmış olabilir. Ana sayfaya dön veya yeni bir şey denemek ister misin?
+        </p>
+
+        <div class="illustration">
+            ~ ~ ~ ~ ~
+        </div>
+
+        <div class="button-group">
+            <a href="/" class="btn-primary">
+                <span>🏠</span> Ana Sayfaya Dön
+            </a>
+            <button class="btn-secondary" onclick="history.back()">
+                <span>←</span> Geri Git
+            </button>
+        </div>
+
+        <p style="margin-top: 50px; font-size: 13px; color: #D6D3D1;">
+            Sorunun devam ederse, <a href="/" style="color: #F97316; text-decoration: none;">destek</a> ile iletişime geç.
+        </p>
+    </div>
+</body>
+</html>

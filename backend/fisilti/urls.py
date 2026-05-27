@@ -2,12 +2,23 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.http import JsonResponse
 from django.views.generic import TemplateView
+from django.shortcuts import render
 from django.conf import settings
 from django.conf.urls.static import static
 
 
 def health(request):
     return JsonResponse({"status": "ok"})
+
+
+def handler404(request, exception=None):
+    """Custom 404 error page"""
+    return render(request, '404.html', status=404)
+
+
+def handler500(request):
+    """Custom 500 error page"""
+    return render(request, '500.html', status=500)
 
 
 urlpatterns = [
@@ -38,3 +49,7 @@ else:
 
 # Serve static files
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# Custom error handlers
+handler404 = "fisilti.urls.handler404"
+handler500 = "fisilti.urls.handler500"
