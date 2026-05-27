@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserPlus, UserMinus, X, Check } from "lucide-react";
-import api from "../api";
+import api, { getFollowers, getFollowing, followUser, unfollowUser } from "../api";
 import PostCard from "../components/PostCard";
 import { useAuth } from "../context/AuthContext";
 import { ANIMALS, getAnimal, avatarStyle } from "../utils/animals";
@@ -204,11 +204,9 @@ const Profile = () => {
     setModalUsers([]);
     setModalLoading(true);
     try {
-      // URL: /api/{username}/followers/ veya /api/{username}/following/
-      const endpoint = type === 'followers'
-        ? `/${username}/followers/`
-        : `/${username}/following/`;
-      const { data } = await api.get(endpoint);
+      const { data } = type === 'followers'
+        ? await getFollowers(username)
+        : await getFollowing(username);
       setModalUsers(Array.isArray(data) ? data : (data.results ?? []));
     } catch (err) {
       console.error("Liste alınamadı:", err);
@@ -222,11 +220,10 @@ const Profile = () => {
     setFollowLoading(true);
     try {
       if (profile.is_following) {
-        // URL: /api/{username}/follow/
-        await api.delete(`/${username}/follow/`);
+        await unfollowUser(username);
         setProfile(p => ({ ...p, is_following: false, followers_count: (p.followers_count ?? 1) - 1 }));
       } else {
-        await api.post(`/${username}/follow/`);
+        await followUser(username);
         setProfile(p => ({ ...p, is_following: true, followers_count: (p.followers_count ?? 0) + 1 }));
       }
     } catch (err) {
