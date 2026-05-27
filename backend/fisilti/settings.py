@@ -46,7 +46,10 @@ ROOT_URLCONF = 'fisilti.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR.parent / 'frontend' / 'dist',  # React build output
+            BASE_DIR / 'templates',  # Django templates
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,6 +87,11 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Serve React app assets
+STATICFILES_DIRS = [
+    BASE_DIR.parent / 'frontend' / 'dist' / 'assets',  # React build assets
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
@@ -118,7 +126,16 @@ CORS_ALLOWED_ORIGINS = [o.strip() for o in config(
 ).split(',')]
 CORS_ALLOW_CREDENTIALS = True
 
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+# Email configuration
+if DEBUG:
+    EMAIL_BACKEND = config(
+        'EMAIL_BACKEND',
+        default='django.core.mail.backends.console.EmailBackend'
+    )
+else:
+    # Production: use SMTP (Railway)
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')

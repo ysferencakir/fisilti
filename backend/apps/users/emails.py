@@ -4,6 +4,7 @@ E-posta gönderim yardımcısı — Gmail SMTP + HTML şablon
 import logging
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
+from threading import Thread
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,8 @@ def _base_html(title: str, body: str) -> str:
 """
 
 
-def _send(to: str, subject: str, text: str, html: str) -> bool:
+def _send_sync(to: str, subject: str, text: str, html: str) -> bool:
+    """Send email synchronously (called in background thread)"""
     try:
         msg = EmailMultiAlternatives(
             subject=subject,
@@ -57,11 +59,29 @@ def _send(to: str, subject: str, text: str, html: str) -> bool:
             to=[to],
         )
         msg.attach_alternative(html, "text/html")
-        msg.send()
+        msg.send(fail_silently=False)
+        logger.info(f"[MAIL_SENT] to={to} subject={subject!r}")
         return True
     except Exception as e:
         logger.error(f"[MAIL_ERROR] to={to} subject={subject!r}: {e}")
         return False
+
+
+def _send(to: str, subject: str, text: str, html: str) -> bool:
+    """Send email in background thread to avoid blocking request"""
+    try:
+        # Try to send in background to avoid timeout
+        thread = Thread(
+            target=_send_sync,
+            args=(to, subject, text, html),
+            daemon=True
+        )
+        thread.start()
+        return True
+    except Exception as e:
+        logger.error(f"[MAIL_THREAD_ERROR] to={to}: {e}")
+        # Fallback: send synchronously
+        return _send_sync(to, subject, text, html)
 
 
 def send_verification_email(email: str, code: str) -> bool:
