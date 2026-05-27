@@ -11,6 +11,11 @@ def health(request):
     return JsonResponse({"status": "ok"})
 
 
+def react_app_fallback(request, fallback=''):
+    """Serve React app for all non-API routes (SPA routing)"""
+    return render(request, 'index.html')
+
+
 def handler404(request, exception=None):
     """Custom 404 error page"""
     return render(request, '404.html', status=404)
@@ -29,26 +34,18 @@ urlpatterns = [
     path('api/follows/', include('apps.follows.urls')),
     path('api/reports/', include('apps.reports.urls')),
     path('api/admin/', include('apps.reports.urls')),
-]
 
-# Serve React app for all non-API routes (SPA fallback)
-if settings.DEBUG:
-    # In development, the React dev server handles the SPA routing
-    # This fallback is for testing or when serving built files
-    urlpatterns += [
-        path('', TemplateView.as_view(template_name='index.html'), name='index'),
-        # Catch-all for React Router paths
-        re_path(r'^(?!api|admin|health|static).*$', TemplateView.as_view(template_name='index.html')),
-    ]
-else:
-    # In production, serve the built React app
-    urlpatterns += [
-        path('', TemplateView.as_view(template_name='index.html'), name='index'),
-        re_path(r'^(?!api|admin|health|static).*$', TemplateView.as_view(template_name='index.html')),
-    ]
+    # Serve React app at root
+    path('', react_app_fallback, name='index'),
+]
 
 # Serve static files
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# Catch-all for React Router paths — MUST be last
+urlpatterns.append(
+    re_path(r'^(?!api|admin|health|static)(?P<fallback>.*)$', react_app_fallback)
+)
 
 # Custom error handlers
 handler404 = "fisilti.urls.handler404"
