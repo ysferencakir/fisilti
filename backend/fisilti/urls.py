@@ -13,7 +13,20 @@ def health(request):
 
 def react_app_fallback(request, fallback=''):
     """Serve React app for all non-API routes (SPA routing)"""
-    return render(request, 'index.html')
+    import os
+    from django.http import FileResponse
+
+    # Try to serve from built frontend first
+    index_path = os.path.join(settings.BASE_DIR.parent, 'frontend', 'dist', 'index.html')
+    if os.path.exists(index_path):
+        return FileResponse(open(index_path, 'rb'))
+
+    # Fallback to template
+    try:
+        return render(request, 'index.html')
+    except:
+        # Last resort: return minimal HTML
+        return render(request, '404.html', {'message': 'React app not found. Please rebuild frontend.'}, status=500)
 
 
 def handler404(request, exception=None):
