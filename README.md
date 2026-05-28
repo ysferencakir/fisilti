@@ -1,405 +1,214 @@
-# 🎤 Fısıltı — Mikro-Blog Platformu
+# Fısıltı
 
-> Düşüncelerinizi paylaşın, insanları takip edin, topluluk oluşturun.
+Fısıltı, kullanıcıların gönderi paylaşabildiği, profil oluşturabildiği ve birbirini takip edebildiği modern bir sosyal platformdur. Proje; BLGM312 Dersi için full-stack mimari, güvenli auth akışları ve production deploy deneyimi kazanmak amacıyla geliştirilmiştir.
 
----
-
-## 🌐 Canlı Platform
-
-### ✨ **[fisilti.ysferencakir.info.tr](https://fisilti.ysferencakir.info.tr)** ← Buraya Tıkla!
+**Canlı Demo:** [fisilti.ysferencakir.info.tr](https://fisilti.ysferencakir.info.tr)
+**Backend API:** [fisilti-api-oshl.onrender.com](https://fisilti-api-oshl.onrender.com)
 
 ---
 
-Fısıltı, gönderiler paylaşabileceğiniz, diğer kullanıcıları takip edebileceğiniz ve uygunsuz içerikleri raporlayabileceğiniz güvenli bir mikro-blog platformudur. 
+## Özellikler
 
-**Temel Özellikler:**
-- ✅ Kolay kayıt ve e-posta doğrulama
-- ✅ 280 karakterli gönderiler
-- ✅ Takip sistemi ve feed
-- ✅ Gönderi düzenleme ve silme
-- ✅ İçerik raporlama ve moderasyon
-- ✅ Admin kontrol paneli
-- ✅ Güvenli kimlik doğrulama (JWT)
-
----
-
-## 📑 İçindekiler
-
-1. [Hızlı Başlangıç](#hızlı-başlangıç)
-2. [Ekran Görüntüleri](#ekran-görüntüleri)
-3. [Kurulum](#kurulum)
-4. [Kullanıcı Kılavuzu](#kullanıcı-kılavuzu)
-5. [Admin Rehberi](#admin-rehberi)
-6. [Teknik Bilgiler](#teknik-bilgiler)
-7. [Sıkça Sorulan Sorular](#sıkça-sorulan-sorular)
+- Kullanıcı kaydı, girişi ve email doğrulama
+- JWT tabanlı kimlik doğrulama (access + refresh token)
+- Şifre sıfırlama (email ile)
+- Gönderi oluşturma, düzenleme, silme ve repost
+- Kullanıcı profili ve takip/takipçi sistemi
+- Hesap pasifleştirme
+- Login deneme limiti (rate limiting)
+- Responsive tasarım — mobilde bottom navigation
+- CORS, environment variable ve production güvenlik ayarları
 
 ---
 
-## 🚀 Hızlı Başlangıç
+## Mimari
 
-```bash
-# Projeyi klonlayın
-git clone <repo-url>
-cd fısıltı
-
-# Docker ile başlatın (önerilen)
-docker-compose up --build
-
-# Veya manuel kurulum
-# Backend: python manage.py runserver  (port 8000)
-# Frontend: npm run dev  (port 5173)
+```
+Kullanıcı Tarayıcısı (Vercel)
+        ↓ HTTPS
+Django REST API (Render)
+        ↓
+Neon PostgreSQL (serverless)
+        ↓
+Gmail SMTP (email)
 ```
 
-- 🌐 Frontend: http://localhost:5173
-- 🔌 Backend API: http://localhost:8000
-- 📋 Admin Paneli: http://localhost:8000/admin
+**Frontend** (Vercel): React + Vite SPA. Tüm routing client-side, Vercel SPA rewrite ile destekleniyor.
+
+**Backend** (Render): Django REST Framework, Gunicorn ile servis ediliyor. WhiteNoise static dosya yönetimi.
+
+**Veritabanı** (Neon): Serverless PostgreSQL. SSL ile bağlantı, `dj-database-url` ile parse ediliyor.
 
 ---
 
-## 🌍 Production Deployment
+## Teknolojiler
 
-**Live URLs:**
-- 🎤 **Frontend:** https://fisilti-zeta.vercel.app
-- 🔌 **Backend API:** https://fisilti-production.up.railway.app
-- 📋 **Admin Panel:** https://fisilti-production.up.railway.app/admin
-- 🌐 **Custom Domain:** https://fisilti.ysferencakir.info.tr (routing in progress)
-
-**Stack:**
-- Frontend: React + Vite → Vercel
-- Backend: Django + DRF → Railway
-- Database: PostgreSQL (Neon)
-- Authentication: JWT (SimpleJWT)
+| Katman | Teknolojiler |
+|--------|-------------|
+| Frontend | React, Vite, React Router, Axios |
+| Backend | Python, Django, Django REST Framework |
+| Auth | JWT (SimpleJWT), refresh token rotation |
+| Veritabanı | PostgreSQL (Neon) |
+| Deployment | Vercel (frontend), Render (backend) |
+| Email | Gmail SMTP |
+| Altyapı | Docker Compose (local), Gunicorn, WhiteNoise |
 
 ---
 
-## 📸 Ekran Görüntüleri
+## Auth ve Güvenlik
 
-### Ana Sayfa
-![Ana Sayfa](documentation/screenshots/home.png)
-Kullanıcıların takip ettikleri kişilerin gönderilerini ve kendi gönderilerini görebildiği ana feed.
-
-### Arama
-Kullanıcıları kolayca bulabilmek için arama özelliği.
-
-### Admin Paneli
-Admin kullanıcılarının sistem yönetimini yapabileceği kontrol paneli.
+- **JWT:** Access token (60 dk) + refresh token (7 gün). Token rotation aktif; her refresh'te yeni refresh token üretilip eskisi blacklist'e alınıyor.
+- **Email doğrulama:** Kayıt sonrası 6 haneli OTP kodu email ile gönderiliyor. 10 dakika geçerli, 5 yanlış denemeden sonra kilitleniyor.
+- **Şifre sıfırlama:** UUID token içeren link email'e gönderiliyor. 1 saat geçerli, tek kullanımlık.
+- **Login throttle:** Son 15 dakikada 5 başarısız denemeden sonra hesap geçici olarak kilitleniyor. DB tabanlı, email bazlı.
+- **Public/private endpoint ayrımı:** Axios interceptor auth endpointlerine (`/auth/login/`, `/auth/register/` vb.) token eklemiyor; expired token karışıklığı engelleniyor.
+- **CORS:** `CORS_ALLOWED_ORIGINS` env variable ile yönetiliyor, production'da sadece frontend domain'i açık.
+- **Hesap güvenliği:** Multi-tab token karışıklığına karşı deactivate işleminden önce backend'den canlı kullanıcı doğrulaması yapılıyor.
 
 ---
 
-## 🛠️ Kurulum
+## Production Deploy
 
-### Docker ile (Önerilen)
+Projeyi production'a taşırken karşılaşılan ve çözülen başlıca problemler:
 
-Gereksiz: `docker`, `docker-compose`
-
-```bash
-# 1. Ortam değişkenlerini hazırlayın
-cp backend/.env.example backend/.env
-
-# 2. .env dosyasını düzenleyin
-#    SECRET_KEY, DATABASE_URL, SMTP ayarları, vb.
-
-# 3. Servisleri başlatın
-docker-compose up --build
-
-# 4. Veritabanı migration'ı otomatik çalışır
-```
-
-✅ Hepsi bir komutla hazır!
+- **CORS ve API URL:** Frontend `VITE_API_BASE_URL` ile backend URL'ini alıyor. `/api` prefix'i yanlış ayarlanınca tüm istekler 404 dönüyordu; env variable ve baseURL senkronize edildi.
+- **SPA routing:** Vercel'de sayfa yenilenince 404 alınıyordu. `frontend/vercel.json` ile SPA rewrite eklendi.
+- **Static files:** `STATICFILES_DIRS` frontend build klasörüne işaret ediyordu; Render'da bu klasör olmadığı için `collectstatic` başarısız oluyordu. `exists()` kontrolüyle düzeltildi.
+- **Token yönetimi:** Expired token localStorage'da kalınca login isteği interceptor tarafından engelleniyor ve "oturum süresi doldu" hatası üretiliyordu. Login submit başında token temizleme ve public endpoint ayrımı ile çözüldü.
+- **Environment variables:** Render ve Vercel dashboard'da tüm secret'lar env variable olarak yönetiliyor; kod içinde hardcoded değer yok.
 
 ---
 
-### Manuel Kurulum
+## Kurulum
 
-**Gereksinimler:** Python 3.9+, Node.js 18+, PostgreSQL
+### Gereksinimler
 
-**Backend (Django):**
+- Python 3.11+
+- Node.js 18+
+- PostgreSQL (veya Neon bağlantısı)
+
+### Backend
+
 ```bash
 cd backend
+python -m venv .venv
 
-# Python sanal ortamı
-python -m venv venv
-source venv/bin/activate      # Linux/Mac
-# veya
-venv\Scripts\activate          # Windows
+# Linux/macOS
+source .venv/bin/activate
 
-# Bağımlılıkları yükleyin
+# Windows
+.venv\Scripts\activate
+
 pip install -r requirements.txt
-
-# Veritabanını başlatın
+cp .env.example .env   # .env dosyasını düzenle
 python manage.py migrate
-
-# Sunucuyu başlatın
 python manage.py runserver
 ```
 
-**Frontend (React + Vite):**
+### Frontend
+
 ```bash
 cd frontend
 npm install
+cp .env.example .env   # VITE_API_BASE_URL ayarla
 npm run dev
 ```
 
 ---
 
-## 👤 Kullanıcı Kılavuzu
+## Environment Variables
 
-### 📝 Kayıt Olma
+**Backend** (`backend/.env`):
 
-1. Ana sayfada **Kayıt Ol** butonuna tıklayın.
-2. Ad soyad, kullanıcı adı (3–50 karakter, harf/rakam/_), e-posta ve şifrenizi girin.
-3. Ülke seçimi isteğe bağlıdır.
-4. Kullanım Şartları ve Gizlilik Politikası'nı kabul edin.
-5. **Kayıt Ol** butonuna tıklayın.
-6. E-postanıza gelen 6 haneli kodu doğrulama sayfasına girin. Kod 10 dakika geçerlidir.
-
-> Şifre gereksinimleri: en az 8 karakter, büyük harf, küçük harf ve rakam içermelidir.
-
-### 🔐 Giriş Yapma
-
-1. **Giriş Yap** sayfasına gidin
-2. E-posta ve şifrenizi girin
-3. ⚠️ 5 hatalı girişte hesab 15 dakika kilitlenir
-
-### 🔑 Şifre Sıfırlama
-
-1. Giriş sayfasında **Şifremi Unuttum** bağlantısına tıklayın
-2. E-posta adresinizi girin
-3. E-postanıza gelen bağlantıya tıklayarak yeni şifre belirleyin (bağlantı 1 saat geçerli)
-
-### ✍️ Gönderi Paylaşma
-
-1. Ana sayfada metin kutusuna yazınızı girin (max 280 karakter)
-2. Karakter sayacı kalan hakkı gösterir
-3. **Paylaş** butonuna tıklayın
-
-### ✏️ Gönderi Düzenleme ve Silme
-
-| İşlem | Açıklama |
-|-------|----------|
-| **Düzenle** | Kendi gönderilerinizi değiştirin |
-| **Sil** | Gönderiyi kaldırın (diğer kullanıcılara görünmez) |
-
-### 👥 Profil Yönetimi
-
-- **Profil Sayfası:** Sol menüden veya kullanıcı adına tıklayarak erişin
-- **Gönderiler:** Tüm gönderileriniz ve repostlarınız burada listelenir
-- **Avatar:** Tilki, baykuş, tavşan, kedi arasından seçin
-- **Pasife Alma:** Ayarlardan hesabınızı geçici kapatabilirsiniz
-
-### 👤 Kullanıcı Takip Etme
-
-| İşlem | Adımlar |
-|-------|---------|
-| **Takip Et** | 1. Profil sayfasına gidin<br>2. **Takip Et** butonuna tıklayın<br>3. Gönderileri feed'inizde görün |
-| **Takipten Çık** | **Takipten Çık** butonunu kullanın |
-
-### 🚩 İçerik Raporlama
-
-1. Uygunsuz gönderin altındaki **Raporla** butonuna tıklayın
-2. Neden seçin: Spam, Uygunsuz İçerik, Taciz, Yanlış Bilgi, Diğer
-3. 📌 Her gönderiyi yalnızca bir kez raporlayabilirsiniz
-
----
-
-## 🛡️ Admin Rehberi
-
-**Erişim:** `/admin` adresine gidin (yalnızca admin hesaplar)
-
-### 📊 Kontrol Paneli (İstatistikler)
-
-| Alan | Açıklama |
-|------|----------|
-| Toplam Kullanıcı | Tüm kayıtlı kullanıcı sayısı |
-| Aktif Kullanıcı | Banlı veya pasif olmayan kullanıcılar |
-| Banlı Kullanıcı | Geçici veya kalıcı askıya alınan hesaplar |
-| Günlük Gönderi | Bugün paylaşılan gönderi sayısı |
-| Ülke Dağılımı | Kullanıcıların ülkeye göre dağılımı |
-
-Tarih aralığı seçerek günlük gönderi istatistiklerini görüntüleyebilirsiniz.
-
-### 📋 Raporları İnceleme
-
-| Adım | Açıklama |
-|------|----------|
-| 1️⃣ | **Raporlar** sekmesine gidin |
-| 2️⃣ | Raporlanan gönderileri rapor sayısına göre görün |
-| 3️⃣ | İçerik, neden ve raporlayanları inceleyin |
-| 4️⃣ | **Pasife Al** ile gönderiyi gizleyin (silinmez) |
-| 5️⃣ | **Aktife Al** ile geri getirin |
-
-> 💡 Pasif gönderiler normal kullanıcılara görünmez, yalnızca admin panelinde görüntülenir.
-
-### 👥 Kullanıcı Yönetimi
-
-| İşlem | Talimatlar |
-|-------|-----------|
-| **Arama** | Kullanıcı adına göre ara |
-| **Geçici Ban** | Ban butonuna tıkla → gün sayısı gir |
-| **Kalıcı Ban** | Ban butonuna tıkla (gün yok) |
-| **Ban Kaldır** | Banlı kullanıcı satırında Banı Kaldır butonuna tıkla |
-
-> ⚠️ Kendi hesabınıza ve son admin hesabına işlem yapamazsınız.
-
-### 📖 Denetim Kayıtları (Audit Log)
-
-**Denetim Kaydı** sekmesinde tüm admin işlemleri izlenebilir:
-- ✓ İşlemi yapan admin
-- ✓ İşlem türü
-- ✓ Hedef (kullanıcı/gönderi)
-- ✓ Tarih ve saat
-
----
-
-## ❓ Sıkça Sorulan Sorular (SSS)
-
-<details>
-<summary><b>S: E-posta doğrulama kodunu almadım.</b></summary>
-
-**C:** 
-1. Spam/Junk klasörünü kontrol edin
-2. Doğrulama sayfasında "Kodu tekrar gönder" butonunu kullanın (60 saniye beklemelisiniz)
-3. Hala alamazsanız platform desteğine başvurun
-</details>
-
-<details>
-<summary><b>S: Şifremi unuttum.</b></summary>
-
-**C:** Giriş sayfasındaki **"Şifremi Unuttum"** bağlantısını tıklayın ve sıfırlama linkini e-postanıza alabilirsiniz (1 saat geçerli).
-</details>
-
-<details>
-<summary><b>S: Başkasının gönderisini neden düzenleyemiyorum?</b></summary>
-
-**C:** Yalnızca **kendi gönderilerinizi** düzenleyebilirsiniz. Bu bir güvenlik özelliğidir. 🔒
-</details>
-
-<details>
-<summary><b>S: Bir gönderi neden görünmüyor?</b></summary>
-
-**C:** Gönderi şu nedenlerle gizlenmiş olabilir:
-- Admin tarafından "pasife alınmış"
-- Uygunsuz içerik raporı
-- Silinmiş
-
-Normal kullanıcılara gösterilmez.
-</details>
-
-<details>
-<summary><b>S: Hesabım askıya alındı, ne yapmalıyım?</b></summary>
-
-**C:**
-- **Geçici ban:** Belirlenen süre sonunda otomatik açılır
-- **Kalıcı ban:** Platform yönetimiyle iletişime geçin
-</details>
-
-<details>
-<summary><b>S: Aynı gönderiyi iki kez raporlayabilir miyim?</b></summary>
-
-**C:** Hayır, her kullanıcı aynı gönderiyi yalnızca **bir kez** raporlayabilir. Bu spam raporlamayı önlemek içindir.
-</details>
-
-<details>
-<summary><b>S: Ana sayfamda hiç gönderi yok.</b></summary>
-
-**C:** Henüz kimseyi takip etmiyorsunuz. 👥
-1. Başka kullanıcıları bul
-2. **Takip Et** butonuna tıkla
-3. Feed'inde gönderiler görünmeye başlayacak
-</details>
-
-<details>
-<summary><b>S: Hesabımı tamamen silebilir miyim?</b></summary>
-
-**C:** 
-- **Pasife alma:** Profil ayarlarından hesabı kapatabilirsiniz
-- **Tam silme:** Platform desteğine başvurmanız gerekiyor
-</details>
-
----
-
-## ⚙️ Teknik Bilgiler
-
-### Stack
-
-| Katman | Teknoloji | Versiyon |
-|--------|-----------|----------|
-| **Backend** | Django + Django REST Framework | 4.0+ |
-| **Frontend** | React + Vite | 18+ |
-| **Veritabanı** | PostgreSQL | 12+ |
-| **Kimlik Doğrulama** | JWT (SimpleJWT) | - |
-| **Container** | Docker + docker-compose | - |
-| **E-posta** | SMTP | Gmail, vs. |
-
-### 🔒 Güvenlik Özellikleri
-
-| Başlık | Detay |
-|--------|-------|
-| **E-posta Doğrulama** | Zorunlu, 10 dakika geçerli |
-| **Giriş Sınırlaması** | 5 hatalı / 15 dakika → kilit |
-| **Ban Kontrolü** | Her API isteğinde kontrol (token değil) |
-| **JWT Token** | Access: 60 dk, Refresh: 7 gün |
-| **Denetim Kayıtları** | Tüm admin işlemleri izlenir |
-| **HTTPS/HSTS** | Production'da zorunlu |
-| **SQL Injection** | Django ORM koruması |
-| **XSS** | React DOM escaping |
-| **CSRF** | Django CSRF middleware |
-| **Şifre** | PBKDF2 hashleme (Django varsayılan) |
-
-### 📦 Yedekleme
-
-Production ortamında günlük PostgreSQL yedeklemesi yapılandırılmalıdır:
-
-```bash
-# Manuel yedekleme
-pg_dump $DATABASE_URL > backup_$(date +%Y%m%d).sql
-
-# Geri yükleme
-psql $DATABASE_URL < backup_20260523.sql
+```env
+DEBUG=True
+SECRET_KEY=
+DATABASE_URL=
+ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:5173
+FRONTEND_URL=http://localhost:5173
+PASSWORD_RESET_FRONTEND_URL=http://localhost:5173/password-reset
+REQUIRE_EMAIL_VERIFICATION=True
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+DEFAULT_FROM_EMAIL=
 ```
 
-### 🏗️ Tasarım Kararları
+**Frontend** (`frontend/.env`):
 
-**Gizlilik Odaklı Tasarım:**
-- ❌ Cinsiyet alanı toplanmamaktadır (gizlilik prensibi)
-- ✅ Yalnızca gerekli bilgiler: ad, e-posta, ülke
-- ✅ Admin istatistikleri: ülke/coğrafi dağılım
-
-### 🧪 Testleri Çalıştırma
-
-```bash
-cd backend
-python manage.py test apps.users apps.posts apps.follows apps.reports
+```env
+VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
 ---
 
-## 📄 Belgeler
+## API Endpoints (Özet)
 
-Ayrıntılı kılavuzlar `documentation/` klasöründe:
+```
+POST   /api/auth/register/
+POST   /api/auth/login/
+POST   /api/auth/verify-email/
+POST   /api/auth/resend-verification/
+POST   /api/auth/password-reset/
+POST   /api/auth/password-reset/confirm/
+POST   /api/auth/token/refresh/
+POST   /api/auth/logout/
 
-- 📖 **KULLANICI_KILAVUZU.md** — Kullanıcı özellikleri
-- 👨‍💼 **ADMIN_REHBERI.md** — Admin kontrol paneli
-- 🚀 **DEPLOYMENT_SETUP.md** — Production kurulumu
-- 🏛️ **INFRASTRUCTURE_DEVOPS.md** — DevOps yapılandırması
-- 📋 **TEST_RAPORLARI.md** — Test sonuçları
-- 🔐 **GIZLILIK_POLITIKASI.md** — Gizlilik politikası
-- 📜 **KULLANIM_SARTLARI.md** — Kullanım şartları
+GET    /api/users/me/
+PATCH  /api/users/me/
+DELETE /api/users/me/
+GET    /api/users/<username>/
+
+GET    /api/posts/feed/
+POST   /api/posts/
+PATCH  /api/posts/<id>/
+DELETE /api/posts/<id>/
+POST   /api/posts/<id>/repost/
+
+POST   /api/follows/<username>/follow/
+DELETE /api/follows/<username>/follow/
+GET    /api/follows/<username>/followers/
+GET    /api/follows/<username>/following/
+```
 
 ---
 
-## 💬 İletişim & Destek
+## Öğrendiklerimiz
 
-- 📧 **E-posta:** support@fisilti.dev
-- 🐛 **Hata Bildir:** [Issues](../../issues)
-- 💡 **Öneriler:** Pull request açın
+Bu proje boyunca production ortamında karşılaşılan ve çözülen başlıca problemler:
 
----
-
-## 📜 Lisans
-
-Bu proje MIT Lisansı altında yayınlanmıştır.
+- **Frontend/backend ayrımı:** SPA routing, CORS ve API base URL yönetimi local'de görünmez ama production'da kritik hale geliyor.
+- **Token lifecycle yönetimi:** Access token expire olduğunda interceptor'ın login isteğini de bloklayabileceği; public/private endpoint ayrımının neden gerekli olduğu anlaşıldı.
+- **Deployment debugging:** Render'da `collectstatic` hataları, Vercel'de SPA routing sorunları ve environment variable uyumsuzlukları adım adım izole edilerek çözüldü.
+- **Güvenlik detayları:** Multi-tab token karışıklığı gibi edge case'ler; rate limiting ve login throttle'ın gerçek kullanımda nasıl davrandığı incelendi.
+- **Email akışları:** OTP tabanlı doğrulama ile link tabanlı şifre sıfırlama arasındaki farklar ve her birinin UX/güvenlik dengesi değerlendirildi.
 
 ---
 
-**Fısıltı — Düşüncelerinizi Paylaşmak Kadar Kolay** 🎤
+## Proje Ekibi
+
+Bu proje, BLGM312 Software Engineering dersi kapsamında ekip çalışması olarak geliştirilmiştir.
+
+| İsim | Rol |
+|------|-----|
+| Yusuf Eren Çakır | Proje Yöneticisi / Web Geliştiricisi |
+| Kadircan Alaca | Veritabanı Geliştiricisi / Web Geliştiricisi |
+| Görkem Yümsel | Kullanıcı Arayüzü Tasarımcısı / Web Geliştiricisi |
+| Kaan Soruş | Ağ Tasarımcısı / Test Uzmanı / Web Geliştiricisi |
+
+---
+
+## Ekran Görüntüleri
+
+![Ana Sayfa](documentation/screenshots/home.png)
+
+---
+
+## İletişim
+
+**GitHub:** [@ysferencakir](https://github.com/ysferencakir)
+**LinkedIn:** https://www.linkedin.com/in/yusuferencakir/
+**E-posta:** ysferencakir@gmail.com

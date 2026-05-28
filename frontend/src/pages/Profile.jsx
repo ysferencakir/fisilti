@@ -152,7 +152,7 @@ function UserListModal({ title, users, loading, onClose }) {
 /* ── Ana Profile bileşeni ─────────────────────────────────────── */
 const Profile = () => {
   const { username } = useParams();
-  const { user: currentUser, login } = useAuth();
+  const { user: currentUser, login, logout } = useAuth();
 
   const [profile, setProfile] = useState(null);
   const [feed, setFeed] = useState([]);
@@ -345,13 +345,24 @@ const Profile = () => {
         {/* Kendi profili: Hesabı deaktive et */}
         {isOwnProfile && (
           <button
-            onClick={() => {
+            onClick={async () => {
               if (!window.confirm('Hesabınız deaktive edilecek. Emin misiniz?')) return;
-              api.delete('/users/me/').then(() => {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                window.location.href = '/login';
-              }).catch(err => alert('Deaktivation hata: ' + err.message));
+              try {
+                // Canlı token sahibini backend'den çek — stale React state veya
+                // multi-tab token karışıklığına karşı güvenlik kontrolü
+                const { data: liveUser } = await api.get('/users/me/');
+                if (liveUser.username !== profile?.username) {
+                  alert('Oturumunuz başka bir kullanıcıya ait görünüyor. Güvenliğiniz için tekrar giriş yapın.');
+                  await logout();
+                  navigate('/login');
+                  return;
+                }
+                await api.delete('/users/me/');
+                await logout();
+                navigate('/login');
+              } catch (err) {
+                alert('Deaktivasyon hatası: ' + (err.response?.data?.detail || err.message));
+              }
             }}
             style={{
               marginTop: 16,

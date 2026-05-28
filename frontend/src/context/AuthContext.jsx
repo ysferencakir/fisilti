@@ -41,6 +41,7 @@ export function AuthProvider({ children }) {
     }
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    delete api.defaults.headers.common['Authorization'];
     setUser(null);
   };
 
