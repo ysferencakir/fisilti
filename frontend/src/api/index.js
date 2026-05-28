@@ -6,6 +6,19 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
+const PUBLIC_ENDPOINTS = [
+  '/auth/login/',
+  '/auth/register/',
+  '/auth/verify-email/',
+  '/auth/resend-verification/',
+  '/auth/password-reset/',
+  '/auth/password-reset/confirm/',
+  '/auth/token/refresh/',
+];
+
+const isPublicEndpoint = (url) =>
+  PUBLIC_ENDPOINTS.some((e) => url?.includes(e));
+
 let isRefreshing = false;
 let refreshSubscribers = [];
 
@@ -20,7 +33,7 @@ const addRefreshSubscriber = (callback) => {
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
-  if (token) {
+  if (token && !isPublicEndpoint(config.url)) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -32,6 +45,11 @@ api.interceptors.response.use(
     const original = error.config;
 
     if (error.response?.status === 401 && !original._retry) {
+      // Public endpointlerde (login, register vb.) refresh/alert/redirect yapma
+      if (isPublicEndpoint(original.url)) {
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         return new Promise((resolve) => {
           addRefreshSubscriber(token => {
@@ -65,8 +83,12 @@ api.interceptors.response.use(
         isRefreshing = false;
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        alert('Oturum süresi dolmuş. Lütfen tekrar giriş yapınız.');
-        window.location.href = '/login';
+        delete api.defaults.headers.common['Authorization'];
+        // Zaten login sayfasındaysa alert + redirect yapma
+        if (window.location.pathname !== '/login') {
+          alert('Oturum süresi dolmuş. Lütfen tekrar giriş yapınız.');
+          window.location.href = '/login';
+        }
         return Promise.reject(err);
       }
     }

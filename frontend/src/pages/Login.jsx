@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../api';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -17,6 +18,10 @@ export default function Login() {
         e.preventDefault();
         setLoading(true);
         setError('');
+        // Eski expired tokenları temizle — interceptor login isteğine header eklemesin
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        delete api.defaults.headers.common['Authorization'];
         try {
             await login(form.email, form.password);
             navigate('/');
