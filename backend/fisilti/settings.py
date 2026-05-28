@@ -87,10 +87,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Serve React app assets
-STATICFILES_DIRS = [
-    BASE_DIR.parent / 'frontend' / 'dist' / 'assets',  # React build assets
-]
+_frontend_assets = BASE_DIR.parent / 'frontend' / 'dist' / 'assets'
+STATICFILES_DIRS = [_frontend_assets] if _frontend_assets.exists() else []
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

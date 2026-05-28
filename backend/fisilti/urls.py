@@ -30,13 +30,19 @@ def react_app_fallback(request, fallback=''):
 
 
 def handler404(request, exception=None):
-    """Custom 404 error page"""
-    return render(request, '404.html', status=404)
+    from django.http import HttpResponse
+    try:
+        return render(request, '404.html', status=404)
+    except Exception:
+        return HttpResponse('<h1>404 Not Found</h1>', status=404)
 
 
 def handler500(request):
-    """Custom 500 error page"""
-    return render(request, '500.html', status=500)
+    from django.http import HttpResponse
+    try:
+        return render(request, '500.html', status=500)
+    except Exception:
+        return HttpResponse('<h1>500 Server Error</h1>', status=500)
 
 
 urlpatterns = [
