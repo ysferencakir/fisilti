@@ -50,7 +50,7 @@ export default function PasswordReset() {
 
         setLoading(true);
         try {
-            await api.post('/auth/password-reset-confirm/', {
+            await api.post('/auth/password-reset/confirm/', {
                 token,
                 new_password: password,
             });
