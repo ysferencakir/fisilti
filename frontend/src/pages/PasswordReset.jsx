@@ -7,17 +7,18 @@ export default function PasswordReset() {
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
 
+    // Request form state
+    const [email, setEmail] = useState('');
+    const [requestLoading, setRequestLoading] = useState(false);
+    const [requestMessage, setRequestMessage] = useState('');
+    const [requestError, setRequestError] = useState('');
+
+    // Confirm form state
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (!token) {
-            setError('Geçersiz sıfırlama linki.');
-        }
-    }, [token]);
 
     const validatePassword = (pwd) => {
         if (pwd.length < 8) return 'Şifre en az 8 karakter olmalıdır';
@@ -27,43 +28,45 @@ export default function PasswordReset() {
         return null;
     };
 
-    const handleSubmit = async (e) => {
+    const handleRequestSubmit = async (e) => {
+        e.preventDefault();
+        setRequestError('');
+        setRequestMessage('');
+        if (!email) { setRequestError('E-posta adresinizi girin.'); return; }
+        setRequestLoading(true);
+        try {
+            await api.post('/auth/password-reset/', { email });
+            setRequestMessage('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.');
+        } catch (err) {
+            setRequestError(err.response?.data?.detail || 'Bir hata oluştu. Lütfen tekrar deneyin.');
+        } finally {
+            setRequestLoading(false);
+        }
+    };
+
+    const handleConfirmSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setMessage('');
 
-        if (!password || !confirmPassword) {
-            setError('Lütfen tüm alanları doldurun.');
-            return;
-        }
-
+        if (!password || !confirmPassword) { setError('Lütfen tüm alanları doldurun.'); return; }
         const pwdError = validatePassword(password);
-        if (pwdError) {
-            setError(pwdError);
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError('Şifreler eşleşmiyor.');
-            return;
-        }
+        if (pwdError) { setError(pwdError); return; }
+        if (password !== confirmPassword) { setError('Şifreler eşleşmiyor.'); return; }
 
         setLoading(true);
         try {
-            await api.post('/auth/password-reset/confirm/', {
-                token,
-                new_password: password,
-            });
+            await api.post('/auth/password-reset/confirm/', { token, new_password: password });
             setMessage('Şifreniz başarıyla sıfırlandı. Giriş sayfasına yönlendiriliyorsunuz…');
             setTimeout(() => navigate('/login'), 1800);
         } catch (err) {
-            const detail = err.response?.data?.detail || 'Şifre sıfırlanamadı.';
-            setError(detail);
+            setError(err.response?.data?.detail || 'Şifre sıfırlama linki geçersiz veya süresi dolmuş.');
         } finally {
             setLoading(false);
         }
     };
 
+    // --- Token yoksa: email request formu ---
     if (!token) {
         return (
             <div style={s.container}>
@@ -74,30 +77,49 @@ export default function PasswordReset() {
                             Fısıltı
                         </span>
                     </div>
-                    <h2 style={s.title}>Geçersiz Link</h2>
-                    <p style={s.subtitle}>Şifre sıfırlama linki geçersiz veya süresi dolmuş.</p>
-                    <Link
-                        to="/login"
-                        style={{
-                            display: 'block',
-                            textAlign: 'center',
-                            color: 'var(--accent)',
-                            textDecoration: 'none',
-                            fontSize: 14,
-                            fontWeight: 600,
-                        }}
-                    >
-                        Girişe dön
-                    </Link>
+                    <h2 style={s.title}>Şifreni Sıfırla</h2>
+                    <p style={s.subtitle}>E-posta adresinizi girin, sıfırlama bağlantısı gönderelim.</p>
+
+                    {requestError && <div style={s.errorBox}>⚠ {requestError}</div>}
+                    {requestMessage && <div style={s.successBox}>✓ {requestMessage}</div>}
+
+                    {!requestMessage && (
+                        <form onSubmit={handleRequestSubmit}>
+                            <input
+                                type="email"
+                                placeholder="E-posta adresiniz"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                                disabled={requestLoading}
+                                style={s.input}
+                                required
+                            />
+                            <button
+                                type="submit"
+                                disabled={requestLoading || !email}
+                                style={{
+                                    ...s.btn,
+                                    opacity: (requestLoading || !email) ? 0.6 : 1,
+                                    cursor: (requestLoading || !email) ? 'not-allowed' : 'pointer',
+                                }}
+                            >
+                                {requestLoading ? 'Gönderiliyor…' : 'Sıfırlama Bağlantısı Gönder'}
+                            </button>
+                        </form>
+                    )}
+
+                    <p style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: 'var(--text)' }}>
+                        <Link to="/login" style={{ color: 'var(--accent)' }}>Girişe dön</Link>
+                    </p>
                 </div>
             </div>
         );
     }
 
+    // --- Token varsa: yeni şifre formu ---
     return (
         <div style={s.container}>
             <div style={s.card}>
-                {/* Logo */}
                 <div style={{ textAlign: 'center', marginBottom: 24 }}>
                     <span style={{ fontSize: 32, display: 'block', marginBottom: 4 }}>🦊</span>
                     <span style={{ fontSize: 22, fontWeight: 800, color: 'var(--accent)', letterSpacing: '-0.5px' }}>
@@ -105,47 +127,43 @@ export default function PasswordReset() {
                     </span>
                 </div>
 
-                <h2 style={s.title}>Şifre Sıfırla</h2>
-                <p style={s.subtitle}>Yeni şifrenizi belirleyin.</p>
+                <h2 style={s.title}>Yeni Şifre Belirle</h2>
+                <p style={s.subtitle}>Yeni şifrenizi girin.</p>
 
-                {error && (
-                    <div style={s.errorBox}>⚠ {error}</div>
+                {error && <div style={s.errorBox}>⚠ {error}</div>}
+                {message && <div style={s.successBox}>✓ {message}</div>}
+
+                {!message && (
+                    <form onSubmit={handleConfirmSubmit}>
+                        <input
+                            type="password"
+                            placeholder="Yeni Şifre"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            disabled={loading}
+                            style={s.input}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Şifre Tekrar"
+                            value={confirmPassword}
+                            onChange={e => setConfirmPassword(e.target.value)}
+                            disabled={loading}
+                            style={s.input}
+                        />
+                        <button
+                            type="submit"
+                            disabled={loading || !password || !confirmPassword}
+                            style={{
+                                ...s.btn,
+                                opacity: (loading || !password || !confirmPassword) ? 0.6 : 1,
+                                cursor: (loading || !password || !confirmPassword) ? 'not-allowed' : 'pointer',
+                            }}
+                        >
+                            {loading ? 'Sıfırlanıyor…' : 'Şifre Sıfırla'}
+                        </button>
+                    </form>
                 )}
-                {message && (
-                    <div style={s.successBox}>✓ {message}</div>
-                )}
-
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="password"
-                        placeholder="Yeni Şifre"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        disabled={loading}
-                        style={s.input}
-                    />
-
-                    <input
-                        type="password"
-                        placeholder="Şifre Tekrar"
-                        value={confirmPassword}
-                        onChange={e => setConfirmPassword(e.target.value)}
-                        disabled={loading}
-                        style={s.input}
-                    />
-
-                    <button
-                        type="submit"
-                        disabled={loading || !password || !confirmPassword}
-                        style={{
-                            ...s.btn,
-                            opacity: (loading || !password || !confirmPassword) ? 0.6 : 1,
-                            cursor: (loading || !password || !confirmPassword) ? 'not-allowed' : 'pointer',
-                        }}
-                    >
-                        {loading ? 'Sıfırlanıyor…' : 'Şifre Sıfırla'}
-                    </button>
-                </form>
 
                 <p style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: 'var(--text)' }}>
                     <Link to="/login" style={{ color: 'var(--accent)' }}>Girişe dön</Link>
