@@ -89,6 +89,12 @@ body {
   min-height: 100vh;
 }
 
+.app-layout > main {
+  min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 @media (max-width: 768px) {
   .app-layout {
     grid-template-columns: 72px 1fr;
@@ -98,6 +104,12 @@ body {
   }
   .post-btn-text {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-layout {
+    grid-template-columns: 56px 1fr;
   }
 }
 

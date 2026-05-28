@@ -189,7 +189,7 @@ const PostCard = ({ item, currentUser }) => {
               </div>
             </div>
           ) : (
-            <p style={{ marginTop: 4, fontSize: 15, color: 'var(--text-h)', lineHeight: '1.6', wordBreak: 'break-word' }}>
+            <p style={{ marginTop: 4, fontSize: 15, color: 'var(--text-h)', lineHeight: '1.6', wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>
               {renderContent(post.content)}
             </p>
           )}
@@ -228,7 +228,7 @@ const PostCard = ({ item, currentUser }) => {
         }}>
           <div style={{
             backgroundColor: 'var(--card-bg)', color: 'var(--text-h)', padding: 24,
-            borderRadius: 16, width: 380, display: 'flex', flexDirection: 'column', gap: 12,
+            borderRadius: 16, width: 'min(380px, 90vw)', display: 'flex', flexDirection: 'column', gap: 12,
             border: '1px solid var(--border)',
           }}>
             <h3 style={{ margin: 0, fontWeight: 700, fontSize: 18, color: 'var(--text-h)' }}>Postu Raporla</h3>

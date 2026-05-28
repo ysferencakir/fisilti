@@ -38,7 +38,7 @@ const Home = () => {
   const charColor = content.length > 250 ? '#EF4444' : 'var(--text)';
 
   return (
-    <div style={{ maxWidth: 650, margin: '0 auto' }}>
+    <div style={{ maxWidth: 650, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
       {/* Header */}
       <div style={{
         padding: '16px 20px',

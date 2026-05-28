@@ -23,7 +23,7 @@ function AnimalPickerModal({ current, onSelect, onClose }) {
           background: 'var(--card-bg)',
           border: '1px solid var(--border)',
           borderRadius: 20,
-          width: 340,
+          width: 'min(340px, 90vw)',
           padding: 24,
         }}
       >
@@ -249,7 +249,7 @@ const Profile = () => {
   const initial = username?.[0]?.toUpperCase() ?? '?';
 
   return (
-    <div style={{ maxWidth: 650, margin: '0 auto' }}>
+    <div style={{ maxWidth: 650, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
       {/* Sticky başlık */}
       <div style={{
         padding: '16px 20px',
