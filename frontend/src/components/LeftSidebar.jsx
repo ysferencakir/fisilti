@@ -50,7 +50,7 @@ export default function LeftSidebar() {
   };
 
   return (
-    <aside style={{
+    <aside className="left-sidebar" style={{
       position: 'sticky',
       top: 0,
       height: '100vh',
@@ -63,7 +63,7 @@ export default function LeftSidebar() {
       background: 'var(--bg)',
     }}>
       {/* Logo */}
-      <NavLink to="/" style={{ textDecoration: 'none', marginBottom: 4 }}>
+      <NavLink to="/" className="left-sidebar-brand" style={{ textDecoration: 'none', marginBottom: 4 }}>
         <div
           style={{
             display: 'flex',
@@ -88,7 +88,7 @@ export default function LeftSidebar() {
       </NavLink>
 
       {/* Nav */}
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <nav className="left-sidebar-nav" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <NavItem to="/" icon={Home} label="Ana Sayfa" end />
         {user && (
           <>
@@ -103,6 +103,7 @@ export default function LeftSidebar() {
 
       {/* Fısılda butonu */}
       <button
+        className="left-sidebar-post-btn"
         onClick={() => navigate('/')}
         style={{
           marginTop: 16,
@@ -126,10 +127,11 @@ export default function LeftSidebar() {
       </button>
 
       {/* Spacer */}
-      <div style={{ flex: 1 }} />
+      <div className="left-sidebar-spacer" style={{ flex: 1 }} />
 
       {/* Dark / Light toggle */}
       <button
+        className="left-sidebar-theme-btn"
         onClick={toggle}
         title={theme === 'dark' ? 'Açık moda geç' : 'Koyu moda geç'}
         style={{
@@ -161,9 +163,9 @@ export default function LeftSidebar() {
         </span>
       </button>
 
-      {/* Kullanıcı footer */}
+      {/* Kullanıcı footer — desktop/tablet */}
       {user && (
-        <div style={{
+        <div className="left-sidebar-user" style={{
           paddingTop: 12,
           display: 'flex',
           alignItems: 'center',
@@ -215,6 +217,31 @@ export default function LeftSidebar() {
             <LogOut size={17} />
           </button>
         </div>
+      )}
+
+      {/* Logout — sadece mobil bottom nav'da görünür */}
+      {user && (
+        <button
+          className="left-sidebar-logout-btn"
+          onClick={handleLogout}
+          title="Çıkış Yap"
+          style={{
+            display: 'none',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            color: 'var(--text)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 6,
+            borderRadius: 9999,
+            transition: 'color 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text)'; }}
+        >
+          <LogOut size={22} strokeWidth={1.75} />
+        </button>
       )}
     </aside>
   );

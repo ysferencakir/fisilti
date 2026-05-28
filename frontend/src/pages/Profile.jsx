@@ -249,7 +249,7 @@ const Profile = () => {
   const initial = username?.[0]?.toUpperCase() ?? '?';
 
   return (
-    <div style={{ maxWidth: 650, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ maxWidth: 650, margin: '0 auto', width: '100%', boxSizing: 'border-box', minWidth: 0 }}>
       {/* Sticky başlık */}
       <div style={{
         padding: '16px 20px',
