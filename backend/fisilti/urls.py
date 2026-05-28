@@ -60,6 +60,5 @@ urlpatterns.append(
     re_path(r'^(?!api|admin|health|static)(?P<fallback>.*)$', react_app_fallback)
 )
 
-# Custom error handlers
-handler404 = "fisilti.urls.handler404"
-handler500 = "fisilti.urls.handler500"
+# Custom error handlers — must reference the callable directly, not as strings
+# (string form causes ViewDoesNotExist when the module itself has errors)
