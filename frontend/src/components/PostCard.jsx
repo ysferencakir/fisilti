@@ -97,10 +97,9 @@ const PostCard = ({ item, currentUser }) => {
 
   const handleReportSubmit = async () => {
     try {
-      await api.post("/reports/", {
-        post: post.id,
+      await api.post("/reports/reports/", {
+        post_id: post.id,
         reason: reportReason,
-        description: reportDescription,
       });
       alert("Post başarıyla raporlandı.");
       setShowReportModal(false);
